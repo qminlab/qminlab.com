@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
 import { Lens } from '@/lib/lens';
-import { ACCENT, BONE, INK, LINE, MONO_KR, XRAY, EASE_SWAP } from '@/lib/tokens';
+import { ACCENT, BONE, DOTS, INK, LINE, MONO_KR, XRAY, EASE_SWAP } from '@/lib/tokens';
 import { WemingPhone } from '../objects/WemingPhone';
 
 const JarvisCore = dynamic(() => import('../objects/JarvisCore').then((m) => m.JarvisCore), { ssr: false });
@@ -61,11 +61,11 @@ function xray(step: number, ko: boolean): { shapes: Shape[]; notes: Note[] } {
 }
 
 
-export function SpecimenStage({ step, ko, mobile, enabled, onSwipe }: { step: number; ko: boolean; mobile: boolean; enabled: boolean; onSwipe?: (dir: 1 | -1) => void }) {
+export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko: boolean; mobile: boolean; enabled: boolean }) {
   const t = useTranslations('stage');
   const H = mobile ? 400 : 560;
-  const R = mobile ? 70 : 100;
-  const scales = mobile ? [0.56, 0.72, 0.58, 0.8] : [0.8, 1, 0.98, 1];
+  const R = 100;
+  const scales = mobile ? [0.5, 0.72, 0.58, 0.8] : [0.8, 1, 0.98, 1];
   const root = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLDivElement>(null);
   const layer = useRef<HTMLDivElement>(null);
@@ -77,29 +77,17 @@ export function SpecimenStage({ step, ko, mobile, enabled, onSwipe }: { step: nu
   const stepRef = useRef(step);
   stepRef.current = step;
 
-  const parkAt = (animate: boolean) => {
-    const el = root.current;
-    if (!el || !lens.current) return;
-    const s = stepRef.current;
-    const px = (s === 0 ? 0.22 : 0.68) * el.clientWidth;
-    const py = (s === 0 ? 0.62 : 0.34) * el.clientHeight;
-    lens.current.park(px, py, t('parked'), animate, false);
-  };
-
   useEffect(() => {
     if (!ring.current || !layer.current) return;
     lens.current = new Lens({ ring: ring.current, clips: [layer.current], label: label.current }, R);
-    if (mobile) parkAt(false); else lens.current.hide();
+    lens.current.hide();
     return () => lens.current?.dispose();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mobile, R]);
+  }, [mobile]);
 
   // Arriving on the phone step by scroll: keep the lens hidden until the mouse moves (design-phase bug fix).
   useEffect(() => {
-    if (mobile) { if (!drag.current.lens) parkAt(true); return; }
     if (step === 0) lens.current?.hide();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, mobile]);
+  }, [step]);
 
   const setOverBoth = (v: boolean) => { if (overRef.current !== v) { overRef.current = v; setOver(v); } };
 
@@ -121,57 +109,18 @@ export function SpecimenStage({ step, ko, mobile, enabled, onSwipe }: { step: nu
     setOverBoth(false);
   };
 
-  // Mobile: press and hold to lift the lens 80px above the finger; a quick horizontal swipe changes stage.
-  const drag = useRef({ id: -1, x0: 0, y0: 0, lens: false, timer: 0 as unknown as ReturnType<typeof setTimeout>, moved: false });
-  const local = (e: { clientX: number; clientY: number }) => {
-    const r = root.current!.getBoundingClientRect();
-    return { mx: e.clientX - r.left, my: e.clientY - r.top };
-  };
-  const showAt = (mx: number, my: number) => lens.current?.move(mx, Math.max(R, my - 80), `X ${String(Math.round(mx)).padStart(4, '0')} · Y ${String(Math.round(my)).padStart(4, '0')}`);
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!mobile || e.pointerType === 'mouse' && e.button !== 0) return;
-    const d = drag.current;
-    d.id = e.pointerId; d.x0 = e.clientX; d.y0 = e.clientY; d.lens = false; d.moved = false;
-    clearTimeout(d.timer);
-    const p = local(e);
-    d.timer = setTimeout(() => { d.lens = true; showAt(p.mx, p.my); try { root.current?.setPointerCapture(d.id); } catch {} }, 280);
-  };
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    const d = drag.current;
-    if (!mobile || e.pointerId !== d.id) return;
-    if (d.lens) { const p = local(e); showAt(p.mx, p.my); return; }
-    if (Math.hypot(e.clientX - d.x0, e.clientY - d.y0) > 10) { d.moved = true; clearTimeout(d.timer); }
-  };
-  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    const d = drag.current;
-    if (!mobile || e.pointerId !== d.id) return;
-    clearTimeout(d.timer);
-    const dx = e.clientX - d.x0, dy = e.clientY - d.y0;
-    if (d.lens) parkAt(true);
-    else if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.2) onSwipe?.(dx < 0 ? 1 : -1);
-    d.lens = false; d.id = -1;
-  };
-  // While the lens is out, the page must not scroll under the finger.
-  useEffect(() => {
-    const el = root.current;
-    if (!el || !mobile) return;
-    const block = (ev: TouchEvent) => { if (drag.current.lens) ev.preventDefault(); };
-    el.addEventListener('touchmove', block, { passive: false });
-    return () => el.removeEventListener('touchmove', block);
-  }, [mobile]);
-
   const X = xray(step, ko);
   const hints = mobile ? (t.raw('hintsMobile') as string[]) : (t.raw('hints') as string[]);
 
   return (
     <div ref={root} data-stage={mobile ? 'mobile' : 'desktop'} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}
-      onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
-      style={{ position: 'relative', width: '100%', height: H, overflow: 'hidden', cursor: over || mobile ? 'pointer' : 'none', touchAction: mobile ? 'pan-y' : 'auto', userSelect: 'none', WebkitUserSelect: 'none', fontFamily: MONO_KR, color: BONE }}>
+      style={{ position: 'relative', width: '100%', height: H, overflow: 'hidden', cursor: over || mobile ? 'pointer' : 'none', touchAction: mobile ? 'pan-y' : 'auto', userSelect: 'none', WebkitUserSelect: 'none', fontFamily: MONO_KR, color: BONE, background: DOTS }}>
       {SIZES.map(([w, h], i) => {
         const on = i === step;
         const sc = scales[i] * (on ? 1 : 0.86);
         let tf = `scale(${sc})`;
-        if (i === 0) tf = mobile ? tf : `perspective(1400px) rotateY(${over ? 0 : -16}deg) rotateX(${over ? 0 : 5}deg) ${tf}`;
+        // Mobile has no hover, so the phone stands upright from the start, lifted clear of the hint chip.
+        if (i === 0) tf = `${mobile ? 'translateY(-20px) ' : ''}perspective(1400px) rotateY(${over || mobile ? 0 : -16}deg) rotateX(${over || mobile ? 0 : 5}deg) ${tf}`;
         return (
           <div key={i} data-phone={i === 0 ? 'true' : 'false'}
             onPointerDown={i === 0 ? (e) => e.stopPropagation() : undefined}
@@ -185,7 +134,8 @@ export function SpecimenStage({ step, ko, mobile, enabled, onSwipe }: { step: nu
         );
       })}
 
-      <div ref={layer} aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', clipPath: 'circle(0px at 0 0)', background: XRAY(32) }}>
+      {/* Mobile has no x-ray lens on the stage, so nothing covers the phone. */}
+      {!mobile && <div ref={layer} aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', clipPath: 'circle(0px at 0 0)', background: XRAY(32) }}>
         {X.shapes.map((s, i) => {
           const k = mobile ? scales[step] : 1;
           const w = s.w * k, h = s.h * k;
@@ -198,13 +148,13 @@ export function SpecimenStage({ step, ko, mobile, enabled, onSwipe }: { step: nu
         {X.notes.map((n, i) => (
           <div key={`${step}-n${i}`} style={{ position: 'absolute', left: n.x, top: n.y, transform: n.r ? 'translateX(-100%)' : 'none', textAlign: n.r ? 'right' : 'left', fontSize: mobile ? 9 : 11, lineHeight: 1.6, color: ACCENT, whiteSpace: 'pre-line' }}>{n.text}</div>
         ))}
-      </div>
+      </div>}
 
-      <div ref={ring} aria-hidden="true" style={{ position: 'absolute', left: 0, top: 0, width: R * 2, height: R * 2, border: `1.5px solid ${ACCENT}`, borderRadius: '50%', boxSizing: 'border-box', pointerEvents: 'none', visibility: 'hidden', willChange: 'transform' }}>
+      {!mobile && <div ref={ring} aria-hidden="true" style={{ position: 'absolute', left: 0, top: 0, width: R * 2, height: R * 2, border: `1.5px solid ${ACCENT}`, borderRadius: '50%', boxSizing: 'border-box', pointerEvents: 'none', visibility: 'hidden', willChange: 'transform' }}>
         <div style={{ position: 'absolute', left: '50%', top: -12, bottom: -12, width: 1, background: ACCENT }} />
         <div style={{ position: 'absolute', top: '50%', left: -12, right: -12, height: 1, background: ACCENT }} />
         <div ref={label} style={{ position: 'absolute', left: '50%', top: '100%', marginTop: 18, transform: 'translateX(-50%)', whiteSpace: 'nowrap', fontSize: 10, letterSpacing: '0.12em', color: ACCENT }} />
-      </div>
+      </div>}
 
       <div style={{ position: 'absolute', left: '50%', bottom: 10, transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', border: `1px solid ${LINE}`, background: INK, fontSize: 10, letterSpacing: '0.08em', whiteSpace: 'nowrap', pointerEvents: 'none' }}>
         <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.2"><circle cx="6" cy="6" r="4.5" /><path d="M6 0v3M6 9v3M0 6h3M9 6h3" /></svg>{hints[step]}

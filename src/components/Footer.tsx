@@ -114,7 +114,7 @@ export function FooterMobile({ ko, enabled }: { ko: boolean; enabled: boolean })
           : { margin: 0, fontSize: 26, fontWeight: 500, lineHeight: 1.2, letterSpacing: '-0.03em' }}>{t('title')}</p>
         <a href="mailto:hello@qminlab.com" style={{ display: 'flex', alignItems: 'center', minHeight: 44, color: INK, fontSize: 17 }}>hello@qminlab.com</a>
       </div>
-      <div ref={host} aria-hidden="true" style={{ borderTop: `1px solid ${INK}`, padding: '18px 10px 0', fontFamily: ARCHIVO, fontWeight: 900, fontStretch: '125%', fontSize: 64, lineHeight: 0.85, letterSpacing: '-0.03em', whiteSpace: 'nowrap', clipPath: clip ? 'inset(0)' : undefined }}>{letters(WORD)}</div>
+      <div ref={host} aria-hidden="true" style={{ overflow: 'hidden', borderTop: `1px solid ${INK}`, padding: '18px 10px 0', fontFamily: ARCHIVO, fontWeight: 900, fontStretch: '125%', fontSize: 64, lineHeight: 0.85, letterSpacing: '-0.03em', whiteSpace: 'nowrap', clipPath: clip ? 'inset(0)' : undefined }}>{letters(WORD)}</div>
       <div style={{ padding: '18px 16px 0', fontSize: ko ? 11 : 10, letterSpacing: ko ? undefined : '0.1em' }}>© 2026 QMIN LAB · <LangLinks /></div>
     </footer>
   );

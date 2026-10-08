@@ -1,6 +1,6 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ACCENT, BODY, BONE, DIM, DOTS_M, INK, KR, LINE, MONO, MUTED, pill } from '@/lib/tokens';
 import type { Project } from '@/lib/projects';
 import { SpecimenStage } from './SpecimenStage';
@@ -13,6 +13,21 @@ export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean
   const [step, setStep] = useState(0);
   const n = projects.length;
   const cur = projects[step];
+  // Mockup: a horizontal swipe (40px+) on the stage or the file changes the step. A swipe that starts on
+  // the phone is the phone's own gesture (the phone stops the pointerdown), and a cancelled one is dropped.
+  const start = useRef<{ x: number; y: number } | null>(null);
+  const swipe = {
+    onPointerDown: (e: React.PointerEvent) => { start.current = { x: e.clientX, y: e.clientY }; },
+    onPointerCancel: () => { start.current = null; },
+    onPointerUp: (e: React.PointerEvent) => {
+      const s0 = start.current;
+      start.current = null;
+      if (!s0) return;
+      const dx = e.clientX - s0.x, dy = e.clientY - s0.y;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+      setStep((s) => Math.max(0, Math.min(n - 1, s + (dx < 0 ? 1 : -1))));
+    },
+  };
   const small = { fontSize: ko ? 11 : 10, letterSpacing: ko ? undefined : '0.12em', color: MUTED } as const;
 
   return (
@@ -20,12 +35,12 @@ export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean
       <span style={{ fontSize: ko ? 11 : 10, letterSpacing: ko ? '0.1em' : '0.14em', color: ACCENT }}>{t('eyebrow')}</span>
       <h2 style={ko ? { margin: '10px 0 20px', fontFamily: KR, fontSize: 28, fontWeight: 700, letterSpacing: '-0.05em' } : { margin: '10px 0 20px', fontSize: 30, fontWeight: 500, letterSpacing: '-0.03em' }}>{t('title')}</h2>
 
-      <div style={{ border: `1px solid ${LINE}`, background: DOTS_M }}>
+      <div {...swipe} style={{ border: `1px solid ${LINE}`, background: DOTS_M, touchAction: 'pan-y' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 12px', fontSize: ko ? 11 : 10, letterSpacing: ko ? '0.08em' : '0.12em', color: MUTED, borderBottom: `1px solid ${LINE}` }}>
           <span>{`${cur.code} · 0${step + 1}/0${n}`}</span><span style={{ color: ACCENT }}>{cur.formMobile ?? cur.form}</span>
         </div>
         <div style={{ height: 400, overflow: 'hidden' }}>
-          <SpecimenStage step={step} ko={ko} mobile enabled={enabled} onSwipe={(d) => setStep((s) => Math.min(n - 1, Math.max(0, s + d)))} />
+          <SpecimenStage step={step} ko={ko} mobile enabled={enabled} />
         </div>
         <div role="tablist" aria-label={t('label')} style={{ display: 'grid', gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, borderTop: `1px solid ${LINE}` }}>
           {projects.map((p, i) => {
@@ -38,7 +53,7 @@ export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean
         </div>
       </div>
 
-      <div style={{ display: 'grid', paddingTop: 24 }}>
+      <div {...swipe} style={{ display: 'grid', paddingTop: 24, touchAction: 'pan-y', overflow: 'hidden' }}>
         {projects.map((p, i) => {
           const on = i === step;
           const pl = pill(p.st);
