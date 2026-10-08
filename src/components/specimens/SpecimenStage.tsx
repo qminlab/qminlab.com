@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { Lens } from '@/lib/lens';
 import { ACCENT, BONE, DOTS, INK, LINE, MONO_KR, XRAY, EASE_SWAP } from '@/lib/tokens';
 import { WemingPhone } from '../objects/WemingPhone';
+import { Loading } from '../Loading';
 
 const JarvisCore = dynamic(() => import('../objects/JarvisCore').then((m) => m.JarvisCore), { ssr: false });
 const TftBoard = dynamic(() => import('../objects/TftBoard').then((m) => m.TftBoard), { ssr: false });
@@ -63,7 +64,8 @@ function xray(step: number, ko: boolean): { shapes: Shape[]; notes: Note[] } {
 
 export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko: boolean; mobile: boolean; enabled: boolean }) {
   const t = useTranslations('stage');
-  const H = mobile ? 400 : 560;
+  // Desktop fills its panel (which grows with tall windows); mobile keeps the mockup's fixed height.
+  const H = mobile ? 400 : '100%';
   const R = 100;
   const scales = mobile ? [0.5, 0.72, 0.58, 0.8] : [0.8, 1, 0.98, 1];
   const root = useRef<HTMLDivElement>(null);
@@ -76,6 +78,27 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
   const overRef = useRef(false);
   const stepRef = useRef(step);
   stepRef.current = step;
+
+  // Load order: nothing until the stage is near the viewport, then the current specimen first, and the
+  // other specimens only once that one has drawn its first frame. The phone (step 0) is plain HTML.
+  const [near, setNear] = useState(false);
+  const [ready, setReady] = useState([true, false, false, false]);
+  const [seen, setSeen] = useState([false, false, false, false]);
+  const [all, setAll] = useState(false);
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setNear(true); io.disconnect(); } }, { rootMargin: '600px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    if (!near || !enabled) return;
+    setSeen((s) => (s[step] ? s : s.map((v, i) => v || i === step)));
+    if (ready[step]) setAll(true);
+  }, [near, enabled, step, ready]);
+  const markReady = useRef([1, 2, 3].map((i) => () => setReady((r) => (r[i] ? r : r.map((v, j) => v || j === i)))));
+  const load = (i: number) => enabled && (all || seen[i]);
 
   useEffect(() => {
     if (!ring.current || !layer.current) return;
@@ -117,6 +140,7 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
       style={{ position: 'relative', width: '100%', height: H, overflow: 'hidden', cursor: over || mobile ? 'pointer' : 'none', touchAction: mobile ? 'pan-y' : 'auto', userSelect: 'none', WebkitUserSelect: 'none', fontFamily: MONO_KR, color: BONE, background: DOTS }}>
       {SIZES.map(([w, h], i) => {
         const on = i === step;
+        const shown = on && ready[i];
         const sc = scales[i] * (on ? 1 : 0.86);
         let tf = `scale(${sc})`;
         // Mobile has no hover, so the phone stands upright from the start, lifted clear of the hint chip.
@@ -125,14 +149,16 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
           <div key={i} data-phone={i === 0 ? 'true' : 'false'}
             onPointerDown={i === 0 ? (e) => e.stopPropagation() : undefined}
             aria-hidden={!on}
-            style={{ position: 'absolute', left: '50%', top: '50%', width: w, height: h, marginLeft: -w / 2, marginTop: -h / 2, opacity: on ? 1 : 0, transform: tf, transition: `opacity 600ms ease, transform 900ms ${EASE_SWAP}`, pointerEvents: on && i === 0 ? 'auto' : 'none', cursor: i === 0 ? 'pointer' : 'auto' }}>
+            style={{ position: 'absolute', left: '50%', top: '50%', width: w, height: h, marginLeft: -w / 2, marginTop: -h / 2, opacity: shown ? 1 : 0, transform: tf, transition: `opacity 600ms ease, transform 900ms ${EASE_SWAP}`, pointerEvents: on && i === 0 ? 'auto' : 'none', cursor: i === 0 ? 'pointer' : 'auto' }}>
             {i === 0 && <WemingPhone />}
-            {i === 1 && enabled && <JarvisCore active={on} ko={ko} pointer={mobile ? undefined : pointer} />}
-            {i === 2 && enabled && <TftBoard active={on} ko={ko} />}
-            {i === 3 && enabled && <GameCart active={on} ko={ko} />}
+            {i === 1 && load(1) && <JarvisCore active={on} ko={ko} pointer={mobile ? undefined : pointer} onReady={markReady.current[0]} />}
+            {i === 2 && load(2) && <TftBoard active={on} ko={ko} onReady={markReady.current[1]} />}
+            {i === 3 && load(3) && <GameCart active={on} ko={ko} onReady={markReady.current[2]} />}
           </div>
         );
       })}
+
+      <Loading show={!ready[step]} code={`QL-00${step + 1}`} label={t('loading')} />
 
       {/* Mobile has no x-ray lens on the stage, so nothing covers the phone. */}
       {!mobile && <div ref={layer} aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', clipPath: 'circle(0px at 0 0)', background: XRAY(32) }}>

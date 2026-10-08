@@ -1,39 +1,27 @@
 'use client';
-import { Canvas, useThree, useFrame } from '@react-three/fiber';
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import type { PerspectiveCamera } from 'three';
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { Group, Renderer } from './gl';
+import { useFontsReady } from './textures';
 
-/**
- * A three.js canvas that projects exactly like a CSS `perspective` container:
- * 1 unit = 1 CSS px on the z=0 plane, vanishing point at (originX, originY) in canvas px.
- */
-function CssCamera({ perspective, originX, originY }: { perspective: number; originX?: number; originY?: number }) {
-  const camera = useThree((s) => s.camera) as PerspectiveCamera;
-  const size = useThree((s) => s.size);
-  const invalidate = useThree((s) => s.invalidate);
-  useLayoutEffect(() => {
-    const { width: w, height: h } = size;
-    camera.fov = (2 * Math.atan(h / 2 / perspective) * 180) / Math.PI;
-    camera.aspect = w / h;
-    camera.near = 1;
-    camera.far = perspective * 4;
-    camera.position.set(0, 0, perspective);
-    camera.lookAt(0, 0, 0);
-    const ox = originX ?? w / 2;
-    const oy = originY ?? h / 2;
-    camera.setViewOffset(w, h, w / 2 - ox, h / 2 - oy, w, h);
-    camera.updateProjectionMatrix();
-    invalidate();
-  }, [camera, size, perspective, originX, originY, invalidate]);
-  return null;
+type Stage = { group: Group; invalidate: () => void; onFrame: (cb: () => void) => () => void };
+const StageContext = createContext<Stage | null>(null);
+
+function useStage() {
+  const s = useContext(StageContext);
+  if (!s) throw new Error('3D hooks must be used inside <CssCanvas>');
+  return s;
 }
 
-function Kick({ on }: { on: boolean }) {
-  // Keeps 'demand' canvases rendering every frame while active.
-  const invalidate = useThree((s) => s.invalidate);
-  useFrame(() => { if (on) invalidate(); });
-  useEffect(() => { invalidate(); }, [on, invalidate]);
-  return null;
+/** Meshes added to this group are drawn by the surrounding canvas. */
+export const useGroup = () => useStage().group;
+/** Request one more frame (the canvas only draws on demand). */
+export const useInvalidate = () => useStage().invalidate;
+/** Run `cb` before every drawn frame. */
+export function useFrame(cb: () => void) {
+  const { onFrame } = useStage();
+  const ref = useRef(cb);
+  ref.current = cb;
+  useEffect(() => onFrame(() => ref.current()), [onFrame]);
 }
 
 export function useInView<T extends Element>(margin = '200px') {
@@ -49,32 +37,76 @@ export function useInView<T extends Element>(margin = '200px') {
   return [ref, inView] as const;
 }
 
+/**
+ * A WebGL canvas that projects exactly like a CSS `perspective` container:
+ * 1 unit = 1 CSS px on the z=0 plane, vanishing point at (originX, originY) in canvas px.
+ * Children mount once the web fonts are usable (textures are painted once, with the right fonts), and
+ * `onReady` fires after the first complete frame so callers can drop their loading placeholder.
+ */
 export function CssCanvas({
-  perspective, originX, originY, active = true, style, className, children,
+  perspective, originX, originY, active = true, onReady, style, className, children,
 }: {
-  perspective: number; originX?: number; originY?: number; active?: boolean;
+  perspective: number; originX?: number; originY?: number; active?: boolean; onReady?: () => void;
   style?: CSSProperties; className?: string; children: ReactNode;
 }) {
   const [ref, inView] = useInView<HTMLDivElement>();
-  const running = active && inView;
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const fonts = useFontsReady();
+  const [stage, setStage] = useState<Stage | null>(null);
+  const running = useRef(false);
+  running.current = active && inView;
+  const view = useRef({ perspective, originX, originY });
+  view.current = { perspective, originX, originY };
+  const ready = useRef(onReady);
+  ready.current = onReady;
+
+  useLayoutEffect(() => {
+    const el = canvas.current, box = ref.current;
+    if (!el || !box) return;
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer(el);
+    } catch {
+      ready.current?.();
+      return;
+    }
+    const group = new Group();
+    const callbacks = new Set<() => void>();
+    let raf = 0, fired = false, alive = true;
+    const frame = () => {
+      raf = 0;
+      callbacks.forEach((cb) => cb());
+      const { perspective: p, originX: ox, originY: oy } = view.current;
+      renderer.render(group.children, p, ox ?? renderer.width / 2, oy ?? renderer.height / 2);
+      if (!fired && group.children.size > 0) { fired = true; ready.current?.(); }
+      if (running.current) invalidate();
+    };
+    const invalidate = () => { if (alive && !raf) raf = requestAnimationFrame(frame); };
+    const resize = () => {
+      // Layout size, not getBoundingClientRect: the stage objects sit inside CSS scale() transforms.
+      renderer.setSize(box.offsetWidth, box.offsetHeight, Math.min(Math.max(1, window.devicePixelRatio || 1), 2));
+      invalidate();
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(box);
+    setStage({ group, invalidate, onFrame: (cb) => { callbacks.add(cb); invalidate(); return () => { callbacks.delete(cb); }; } });
+    return () => {
+      alive = false;
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      renderer.dispose();
+      setStage(null);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => { stage?.invalidate(); }, [stage, active, inView, perspective, originX, originY]);
+
   return (
     <div ref={ref} className={className} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', ...style }}>
-      <Canvas
-        flat
-        linear
-        dpr={[1, 2]}
-        frameloop="demand"
-        // Size the canvas from its layout box, not getBoundingClientRect: the stage objects sit inside
-        // CSS scale() transforms, and the transformed size made the drawing area smaller than the element.
-        resize={{ offsetSize: true }}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-        camera={{ position: [0, 0, perspective], fov: 45 }}
-      >
-        <CssCamera perspective={perspective} originX={originX} originY={originY} />
-        <Kick on={running} />
-        {children}
-      </Canvas>
+      <canvas ref={canvas} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block', pointerEvents: 'none' }} />
+      {stage && fonts && <StageContext.Provider value={stage}>{children}</StageContext.Provider>}
     </div>
   );
 }

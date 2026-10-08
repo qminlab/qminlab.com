@@ -2,7 +2,7 @@
 
 Homepage of Qmin Lab, a one-person studio making apps, programs and games.
 
-- Next.js (App Router, static export) · GSAP ScrollTrigger · react-three-fiber · next-intl (EN / KO)
+- Next.js (App Router, static export) · GSAP ScrollTrigger · a small WebGL renderer for the CSS-transformed 3D specimens (src/components/three/gl.ts) · next-intl (EN / KO)
 - `npm run dev` for local work, `npm run build` writes the static site to `out/`, `npm run typecheck` runs `tsc`.
 
 ## Deploy (Cloudflare Pages)
