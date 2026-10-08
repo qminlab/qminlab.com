@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "title": "Qmin Lab — 궁금함과 의미",
+    "description": "Qmin Lab은 앱, 프로그램, 게임을 만드는 1인 스튜디오입니다."
+  },
+  "header": {
+    "tagline": "1인 스튜디오 / 앱 · 프로그램 · 게임",
+    "nav": { "specimens": "표본", "index": "색인", "lab": "연구실", "contact": "연락" },
+    "navLabel": "주 메뉴",
+    "langLabel": "언어",
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기"
+  },
+  "hero": {
+    "label": "소개",
+    "file": "FILE 000 / QMIN LAB — 표본 대장",
+    "fileMobile": "FILE 000 / 표본 대장",
+    "status": "연구실 상태: 가동 중",
+    "statusMobile": "가동 중",
+    "unfoldAria": "Qmin: Q는 Curious, min은 Mean",
+    "key": "Q = CURIOUS (궁금함) · MIN = MEAN (의미)",
+    "keyMobile": "Q = CURIOUS (궁금함) · MIN = MEAN (의미) · 탭하면 펼쳐져요",
+    "brand": ["궁금함으로 시작해,", "의미 있게 만듭니다."],
+    "body": "Qmin Lab은 앱, 프로그램, 게임을 만드는 1인 스튜디오입니다. 한 사람을 위해 만들고 모두와 나눕니다. 대부분은 제 일상을 위한 도구에서 시작했어요. 오른쪽 표본 위에 커서를 올려 속을 들여다보세요.",
+    "bodyMobile": "Qmin Lab은 앱, 프로그램, 게임을 만드는 1인 스튜디오입니다. 한 사람을 위해 만들고 모두와 나눕니다. 대부분은 제 일상을 위한 도구에서 시작했어요.",
+    "ctaOpen": "표본 열어보기 ↓",
+    "ctaIndex": "전체 색인",
+    "stats": ["표본", "심사 중", "개발 중", "일시정지"],
+    "panel": { "tl": "표본 000 — 연구실", "tr": "배율 ×2.0", "bl": "커서를 올려 검사", "br": "그림 0.1", "mobile": "표본 000" },
+    "xray": {
+      "a": "// 표본 000 : 연구실 그 자체\nwhile (alive) {\n  build(for: .me)\n  share(with: .everyone)\n}",
+      "b": "core.temp = 36.5°\ncoffee = 3 / 4\nideas.queue = 27",
+      "c": "shell: 개발자 1명, 회의 0건\nuptime: since 2026",
+      "d": "status: 만지작거리는 중\nnext(): 미정",
+      "mA": "while (alive) {\n  build(for: .me)\n  share(.everyone)\n}",
+      "mB": "coffee = 3 / 4\nstatus: 만지작거리는 중"
+    },
+    "lensIdle": "대기 중 · 커서를 여기로",
+    "hintIdle": "길게 눌러 끌면 속이 보여요",
+    "hintDrag": "검사 중"
+  },
+  "specimens": {
+    "label": "표본",
+    "eyebrow": "01 — 작업대 위",
+    "title": "지금 만들고 있는 것들",
+    "intro": "스크롤하거나 무대 아래 표시를 눌러 보세요. 오브젝트와 설명이 함께 바뀝니다.",
+    "stage": "무대",
+    "form": "형태",
+    "stepAria": "표본 보기",
+    "fields": { "platform": "플랫폼", "stage": "단계", "stack": "기술 스택" },
+    "link": "케이스 파일 보기 →",
+    "swipe": "← 옆으로 넘기거나 01–04를 탭하세요 →"
+  },
+  "types": { "APP": "앱", "PROGRAM": "프로그램", "GAME": "게임", "ALL": "전체", "ANY": "장르 미정" },
+  "status": { "review": "심사 중", "dev": "개발 중", "live": "출시", "paused": "일시정지" },
+  "statusMobile": { "review": "심사 중", "dev": "개발 중", "live": "출시", "paused": "일시정지" },
+  "projects": [
+    { "code": "QL-001", "name": "위밍", "type": "APP", "st": "review", "one": "친구가 없는 1인 개발자는 외로워서 친구를 만들기 위해 친구를 찾을 수 있는 앱을 만들었어요.", "tip": "← 왼쪽 폰은 진짜로 움직여요. 탭을 눌러 보고 바로 대화도 해 보세요.", "tipMobile": "↑ 위 폰은 진짜로 움직여요. 탭을 눌러 보고 바로 대화도 해 보세요.", "platform": "iOS\nAndroid", "stage": "App Store 심사 중\nGoogle Play 비공개 테스트 중", "stageLine": "iOS App Store 심사 중 · Android Google Play 비공개 테스트 중", "stack": "React Native, Expo, TypeScript, Firebase (Auth · Firestore · Storage · Cloud Functions), RevenueCat", "form": "아이폰 · 라이브 데모", "dims": "화면 393 × 852 PT" },
+    { "code": "QL-002", "name": "자비스", "type": "PROGRAM", "st": "dev", "one": "나의 일상 관리를 위한 AI 비서 겸 감독관.", "platform": "macOS (메인 서버)\nWindows (보조 기기)\niOS 단축어 연동", "stage": "개발 중", "stageLine": "개발 중", "stack": "Python, FastAPI, YOLO (객체 감지), Claude API, Whisper (음성 인식)", "form": "홀로그램 링", "dims": "Ø 400 · 링 7겹" },
+    { "code": "QL-003", "name": "TFT 어시스턴트", "type": "PROGRAM", "st": "dev", "one": "LoLCHESS 공략을 바탕으로 TFT 화면 위에 필요한 정보만 띄우는 개인용 도우미.", "platform": "Windows\n(개발은 macOS)", "stage": "개발 중\nv0.1", "stageLine": "개발 중 · v0.1", "stack": "Python, PySide6", "form": "육각 보드 + 오버레이", "formMobile": "헥스 보드 + 오버레이", "dims": "4 × 7 육각 · 패널 3개" },
+    { "code": "QL-004", "name": "Untitled Game", "type": "GAME", "st": "paused", "one": "재설계를 위해 잠시 멈춰 있어요. 다시 재밌어지면 친구들에게 먼저 공개합니다.", "platform": "미정", "stage": "일시정지\n재설계 중", "stageLine": "일시정지 · 재설계 중", "stack": "미정", "form": "카트리지 · 정지", "dims": "200 × 230 × 34" }
+  ],
+  "index": {
+    "label": "전체 색인",
+    "eyebrow": "02 — 표본 대장",
+    "title": "모든 표본을 한 줄씩",
+    "titleMobile": "모든 표본",
+    "filterLabel": "유형별 보기",
+    "cols": ["번호", "이름", "유형", "상태"],
+    "stage": "단계",
+    "stack": "스택",
+    "next": "다음 표본 배양 중…",
+    "nextType": "앱 / 프로그램 / 게임",
+    "key": "상태 범례",
+    "keys": ["출시", "심사 중", "개발 중", "일시 중지"]
+  },
+  "lab": {
+    "label": "연구실 규칙",
+    "eyebrow": "03 — 연구실 규칙",
+    "title": "연구실은 이렇게 일합니다",
+    "tablist": "규칙",
+    "protocol": "규칙",
+    "tabs": [
+      { "title": "나부터 쓰는 것", "titleMobile": "나부터 쓰는 것", "body": "모든 프로젝트는 제 하루의 불편을 고치는 데서 시작합니다. 제가 한 달을 써도 살아남으면, 표본 대장에 오릅니다." },
+      { "title": "장르를 가리지 않음", "titleMobile": "장르 무관", "body": "이번 달엔 앱, 다음 달엔 데스크톱 도구, 그다음엔 게임. 연구실은 플랫폼이 아니라 문제를 따라갑니다." },
+      { "title": "열린 기록", "titleMobile": "열린 기록", "body": "모든 표본에는 공개 케이스 파일이 붙습니다. 무엇을 하는지, 지금 어디까지 왔는지, 다음은 무엇인지." }
+    ]
+  },
+  "contact": {
+    "eyebrow": "04 — 연락",
+    "title": "전용 도구가 필요한 문제가 있나요?",
+    "copyright": "© 2026 QMIN LAB. 모든 표본의 권리를 보유합니다."
+  },
+  "stage": {
+    "hints": ["폰 위에서는 직접 조작 · 바깥에서는 조준경으로 속 보기", "커서를 움직여 속을 들여다보세요", "커서를 움직여 속을 들여다보세요", "커서를 움직여 속을 들여다보세요"],
+    "hintsMobile": ["폰은 직접 눌러 보세요 · 바깥을 길게 눌러 끌면 속이 보여요", "길게 눌러 끌면 속이 보여요", "길게 눌러 끌면 속이 보여요", "길게 눌러 끌면 속이 보여요"],
+    "parked": "대기 중"
+  }
+}
