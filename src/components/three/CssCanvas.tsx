@@ -64,6 +64,9 @@ export function CssCanvas({
         linear
         dpr={[1, 2]}
         frameloop="demand"
+        // Size the canvas from its layout box, not getBoundingClientRect: the stage objects sit inside
+        // CSS scale() transforms, and the transformed size made the drawing area smaller than the element.
+        resize={{ offsetSize: true }}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
         camera={{ position: [0, 0, perspective], fov: 45 }}
