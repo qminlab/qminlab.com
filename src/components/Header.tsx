@@ -13,6 +13,8 @@ function LangSwitch({ mobile }: { mobile: boolean }) {
         const on = l === locale;
         return (
           <a key={l} href={`../${l}/`} aria-current={on ? 'page' : undefined}
+            // Remembered by the `/` redirect (functions/index.js) on the next visit.
+            onClick={() => { document.cookie = `lang=${l}; path=/; max-age=31536000; samesite=lax`; }}
             style={mobile
               ? { display: 'flex', alignItems: 'center', minHeight: 36, textDecoration: 'none', padding: '0 12px', borderRadius: 999, background: on ? BONE : undefined, color: on ? INK : BONE }
               : { textDecoration: 'none', padding: '7px 14px', borderRadius: 999, background: on ? BONE : undefined, color: on ? INK : BONE }}>

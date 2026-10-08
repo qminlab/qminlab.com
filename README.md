@@ -13,4 +13,4 @@ The site is a static export, so Cloudflare Pages serves it as plain files.
 - Build command: `npx next build`
 - Build output directory: `out`
 
-`/` sends Korean browsers to `/ko/` and everyone else to `/en/`.
+`/` is redirected at the edge by a Pages Function (`functions/index.js`, picked up automatically from the repo root): the language last chosen in the header, else the browser language (Korean → `/ko/`, others → `/en/`), else country (KR → `/ko/`). `src/app/page.tsx` does the same in the browser as a fallback.
