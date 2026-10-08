@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { Lens } from '@/lib/lens';
 import { ACCENT, BODY, BONE, DOTS, INK, KR, LINE, MONO, MONO_KR, MUTED, XRAY } from '@/lib/tokens';
 import { Unfold } from './Unfold';
+import { Loading } from '../Loading';
 import { CountUp, Scramble } from '../Scramble';
 
 const HeroCanvas = dynamic(() => import('./HeroCanvas'), { ssr: false });
@@ -20,6 +21,8 @@ export function HeroDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }) 
   const lens = useRef<Lens | null>(null);
   const tilt = useRef({ tx: 0, ty: 0 });
   const [live, setLive] = useState(false);
+  const [cube, setCube] = useState(false);
+  const ts = useTranslations('stage');
   const idle = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const park = (animate: boolean) => {
@@ -100,12 +103,12 @@ export function HeroDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }) 
         <div style={{ flex: '1.35 1 560px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div ref={panel} onMouseMove={onMove} onMouseLeave={onLeave} style={{ position: 'relative', height: 620, overflow: 'hidden', border: `1px solid ${LINE}`, cursor: 'none' }}>
             <div style={{ position: 'absolute', inset: 0, background: DOTS }}>
-              <div className="qlfloat" style={{ position: 'absolute', inset: 0 }}>
-                {enabled && <HeroCanvas layer="shell" tilt={tilt} active={live} perspective={1600} />}
+              <div className="qlfloat" style={{ position: 'absolute', inset: 0, opacity: cube ? 1 : 0, transition: 'opacity 600ms ease' }}>
+                {enabled && <HeroCanvas layer="shell" tilt={tilt} active={live} perspective={1600} onReady={() => setCube(true)} />}
               </div>
             </div>
             <div ref={xray} aria-hidden="true" style={{ position: 'absolute', inset: 0, clipPath: 'circle(0px at 0 0)', background: XRAY(32) }}>
-              <div className="qlfloat" style={{ position: 'absolute', inset: 0 }}>
+              <div className="qlfloat" style={{ position: 'absolute', inset: 0, opacity: cube ? 1 : 0, transition: 'opacity 600ms ease' }}>
                 {enabled && <HeroCanvas layer="xray" tilt={tilt} active={live} perspective={1600} />}
               </div>
               <div style={{ position: 'absolute', left: '7%', top: '12%', fontSize: 12, lineHeight: 1.7, color: ACCENT, fontFamily: MONO_KR }}>{xr(t('xray.a'))}</div>
@@ -113,6 +116,7 @@ export function HeroDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }) 
               <div style={{ position: 'absolute', left: '9%', bottom: '14%', fontSize: 12, lineHeight: 1.7, color: ACCENT, fontFamily: MONO_KR }}>{xr(t('xray.c'))}</div>
               <div style={{ position: 'absolute', right: '8%', bottom: '12%', fontSize: 12, lineHeight: 1.7, color: ACCENT, textAlign: 'right', fontFamily: MONO_KR }}>{xr(t('xray.d'))}</div>
             </div>
+            <Loading show={!cube} code="QL-000" label={ts('loading')} />
             <div ref={ring} aria-hidden="true" style={{ position: 'absolute', left: 0, top: 0, width: R * 2, height: R * 2, border: `1.5px solid ${ACCENT}`, borderRadius: '50%', pointerEvents: 'none', boxSizing: 'border-box', visibility: 'hidden', willChange: 'transform' }}>
               <div style={{ position: 'absolute', left: '50%', top: -14, bottom: -14, width: 1, background: ACCENT }} />
               <div style={{ position: 'absolute', top: '50%', left: -14, right: -14, height: 1, background: ACCENT }} />

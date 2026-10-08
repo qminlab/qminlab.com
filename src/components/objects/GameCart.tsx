@@ -1,12 +1,10 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Group } from 'three';
-import { useThree } from '@react-three/fiber';
 import { css } from '@/lib/cssMatrix';
 import { ACCENT, ARCHIVO, BONE, INK, MONO_KR, MUTED } from '@/lib/tokens';
 import { easeOutCubic as ease } from '@/lib/ease';
 import { useReducedMotion } from '@/lib/useMedia';
-import { CssCanvas } from '../three/CssCanvas';
+import { CssCanvas, useGroup, useInvalidate } from '../three/CssCanvas';
 import { makePlane, setCss, disposeMesh } from '../three/Plane';
 import { boxFaces } from '../three/cube';
 import { paintTexture, cssFont, useFontsReady, centerText } from '../three/textures';
@@ -15,8 +13,8 @@ const SHADE = { front: 1, back: 1, right: 0.8, left: 0.7, top: 1.1, bottom: 0.5 
 
 function Cart({ ko }: { ko: boolean }) {
   const ready = useFontsReady();
-  const invalidate = useThree((s) => s.invalidate);
-  const group = useMemo(() => new Group(), []);
+  const invalidate = useInvalidate();
+  const group = useGroup();
   const faces = useMemo(() => {
     const arch = cssFont('--font-archivo', 'sans-serif');
     const mono = cssFont('--font-mono', 'monospace');
@@ -43,7 +41,7 @@ function Cart({ ko }: { ko: boolean }) {
           ctx.fillStyle = '#CFCABD'; ctx.fillRect(0, 0, w, h);
         }
       });
-      const mesh = makePlane(f.fw, f.fh, tex, { shade: SHADE[f.id], color: '#ffffff' });
+      const mesh = makePlane(f.fw, f.fh, tex, { shade: SHADE[f.id] });
       setCss(mesh, G.clone().multiply(f.local));
       return mesh;
     });
@@ -54,17 +52,20 @@ function Cart({ ko }: { ko: boolean }) {
     invalidate();
     return () => faces.forEach((m) => { group.remove(m); disposeMesh(m); });
   }, [faces, group, invalidate]);
-  return <primitive object={group} />;
+  return null;
 }
 
 /** Frozen cartridge: no rotation, grayscale + blur, a 0.12s glitch every 3.4s, hazard tape slides in. */
-export function GameCart({ active, ko }: { active: boolean; ko: boolean }) {
+export function GameCart({ active, ko, onReady }: { active: boolean; ko: boolean; onReady?: () => void }) {
   const [glitch, setGlitch] = useState(false);
   const [tape, setTape] = useState(0);
   const reduce = useReducedMotion();
   const since = useRef(0);
+  // The hazard tape waits for the cartridge's first frame, so the animation starts once it is visible.
+  const [drawn, setDrawn] = useState(false);
+  const ready = () => { setDrawn(true); onReady?.(); };
   useEffect(() => {
-    if (!active) return;
+    if (!active || !drawn) return;
     since.current = performance.now();
     let raf = 0;
     const tick = (now: number) => {
@@ -76,12 +77,12 @@ export function GameCart({ active, ko }: { active: boolean; ko: boolean }) {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [active, reduce]);
+  }, [active, reduce, drawn]);
   const tapeX = ((1 - ease(reduce ? 1 : tape)) * -460).toFixed(1);
   return (
     <div style={{ position: 'relative', width: 420, height: 460, overflow: 'hidden', fontFamily: MONO_KR, color: BONE }}>
       <div style={{ position: 'absolute', inset: 0, transformOrigin: '210px 200px', filter: `grayscale(0.85) brightness(0.72) contrast(0.92) blur(${glitch ? 1.6 : 0.5}px)`, transform: `translateX(${glitch ? 5 : 0}px) skewX(${glitch ? 3 : 0}deg)` }}>
-        <CssCanvas perspective={1400} originX={210} originY={200} active={false}>
+        <CssCanvas perspective={1400} originX={210} originY={200} active={false} onReady={ready}>
           <Cart ko={ko} />
         </CssCanvas>
       </div>

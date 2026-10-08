@@ -1,11 +1,10 @@
 'use client';
 import { useEffect, useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Group, type Mesh } from 'three';
+import type { Mesh } from '../three/gl';
 import { css, box } from '@/lib/cssMatrix';
 import { ACCENT, MONO, KR, MUTED, BONE } from '@/lib/tokens';
 import { easeOutCubic as ease } from '@/lib/ease';
-import { CssCanvas } from '../three/CssCanvas';
+import { CssCanvas, useFrame, useGroup } from '../three/CssCanvas';
 import { makePlane, setCss, setOpacity, disposeMesh } from '../three/Plane';
 import { paintTexture, cssFont, useFontsReady, measure } from '../three/textures';
 import { annulus, repeatSegs, type Seg } from '../three/paint';
@@ -29,7 +28,7 @@ type Pointer = { current: { x: number; y: number } };
 
 function Rings({ active, labels, nameRef, pointer }: { active: boolean; labels: string[]; nameRef: React.RefObject<HTMLDivElement | null>; pointer?: Pointer }) {
   const ready = useFontsReady();
-  const group = useMemo(() => new Group(), []);
+  const group = useGroup();
   const since = useRef(0);
   const wasActive = useRef(false);
   const tilt = useRef({ x: 0, y: 0 });
@@ -105,15 +104,15 @@ function Rings({ active, labels, nameRef, pointer }: { active: boolean; labels: 
     if (nameRef.current) nameRef.current.style.opacity = String(ease(intro * 1.5 - 0.6));
   });
 
-  return <primitive object={group} />;
+  return null;
 }
 
-export function JarvisCore({ active, ko, pointer }: { active: boolean; ko: boolean; pointer?: Pointer }) {
+export function JarvisCore({ active, ko, pointer, onReady }: { active: boolean; ko: boolean; pointer?: Pointer; onReady?: () => void }) {
   const nameRef = useRef<HTMLDivElement>(null);
   const labels = ko ? ['시각 · YOLO', '음성 · WHISPER', '계획 · CLAUDE', '서버 · FASTAPI'] : ['VISION · YOLO', 'VOICE · WHISPER', 'PLAN · CLAUDE', 'API · FASTAPI'];
   return (
     <div style={{ position: 'relative', width: 480, height: 500, overflow: 'hidden', fontFamily: MONO, color: BONE }}>
-      <CssCanvas perspective={1100} originX={240} originY={210} active={active}>
+      <CssCanvas perspective={1100} originX={240} originY={210} active={active} onReady={onReady}>
         <Rings active={active} labels={labels} nameRef={nameRef} pointer={pointer} />
       </CssCanvas>
       <div ref={nameRef} style={{ position: 'absolute', left: 0, right: 0, bottom: 26, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, opacity: 0 }}>

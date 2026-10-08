@@ -1,4 +1,4 @@
-import type { Texture } from 'three';
+import type { Tex } from './gl';
 import { box } from '@/lib/cssMatrix';
 import { paintTexture, centerText, topLeftText, type Painter } from './textures';
 
@@ -20,7 +20,7 @@ export function boxFaces(w: number, h: number, d: number) {
 
 export type FaceSkin = { bg?: string; border?: [number, string]; paint?: Painter; shade?: number };
 
-export function faceTexture(fw: number, fh: number, skin: FaceSkin): Texture {
+export function faceTexture(fw: number, fh: number, skin: FaceSkin): Tex {
   return paintTexture(fw, fh, (ctx, w, h) => {
     if (skin.bg) { ctx.fillStyle = skin.bg; ctx.fillRect(0, 0, w, h); }
     skin.paint?.(ctx, w, h);

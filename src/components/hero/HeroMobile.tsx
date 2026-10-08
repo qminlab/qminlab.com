@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { Lens } from '@/lib/lens';
 import { ACCENT, BODY, DOTS_M, INK, KR, LINE, MONO_KR, MUTED, XRAY } from '@/lib/tokens';
 import { Unfold } from './Unfold';
+import { Loading } from '../Loading';
 import { CountUp, Scramble } from '../Scramble';
 
 const HeroCanvas = dynamic(() => import('./HeroCanvas'), { ssr: false });
@@ -21,6 +22,8 @@ export function HeroMobile({ ko, enabled }: { ko: boolean; enabled: boolean }) {
   const finger = useRef<HTMLDivElement>(null);
   const lens = useRef<Lens | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [cube, setCube] = useState(false);
+  const ts = useTranslations('stage');
   const drag = useRef({ id: -1, x0: 0, y0: 0, on: false, timer: 0 as unknown as ReturnType<typeof setTimeout> });
 
   const park = () => {
@@ -100,17 +103,18 @@ export function HeroMobile({ ko, enabled }: { ko: boolean; enabled: boolean }) {
         onContextMenu={(e) => e.preventDefault()}
         style={{ position: 'relative', marginTop: 24, height: 400, overflow: 'hidden', border: `1px solid ${LINE}`, touchAction: 'pan-y', userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' }}>
         <div style={{ position: 'absolute', inset: 0, background: DOTS_M }}>
-          <div className="qlfloat" style={{ position: 'absolute', inset: 0 }}>
-            {enabled && <HeroCanvas layer="shell" active={false} perspective={1400} mobile />}
+          <div className="qlfloat" style={{ position: 'absolute', inset: 0, opacity: cube ? 1 : 0, transition: 'opacity 600ms ease' }}>
+            {enabled && <HeroCanvas layer="shell" active={false} perspective={1400} mobile onReady={() => setCube(true)} />}
           </div>
         </div>
         <div ref={xray} aria-hidden="true" style={{ position: 'absolute', inset: 0, clipPath: 'circle(0px at 0 0)', background: XRAY(28) }}>
-          <div className="qlfloat" style={{ position: 'absolute', inset: 0 }}>
+          <div className="qlfloat" style={{ position: 'absolute', inset: 0, opacity: cube ? 1 : 0, transition: 'opacity 600ms ease' }}>
             {enabled && <HeroCanvas layer="xray" active={false} perspective={1400} mobile />}
           </div>
           <div style={{ position: 'absolute', left: 14, top: 40, fontSize: 11, lineHeight: 1.6, color: ACCENT, fontFamily: MONO_KR }}>{xr(t('xray.mA'))}</div>
           <div style={{ position: 'absolute', right: 14, bottom: 44, fontSize: 11, lineHeight: 1.6, color: ACCENT, textAlign: 'right', fontFamily: MONO_KR }}>{xr(t('xray.mB'))}</div>
         </div>
+        <Loading show={!cube} code="QL-000" label={ts('loading')} />
         <div ref={ring} aria-hidden="true" style={{ position: 'absolute', left: 0, top: 0, width: R * 2, height: R * 2, border: `1.5px solid ${ACCENT}`, borderRadius: '50%', pointerEvents: 'none', boxSizing: 'border-box', visibility: 'hidden', willChange: 'transform' }}>
           <div style={{ position: 'absolute', left: '50%', top: -10, bottom: -10, width: 1, background: ACCENT }} />
           <div style={{ position: 'absolute', top: '50%', left: -10, right: -10, height: 1, background: ACCENT }} />

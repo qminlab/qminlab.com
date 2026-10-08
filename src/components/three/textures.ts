@@ -1,4 +1,4 @@
-import { CanvasTexture, LinearFilter, SRGBColorSpace, NoColorSpace } from 'three';
+import { Tex } from './gl';
 
 export const TEX_SCALE = 2;
 
@@ -13,13 +13,7 @@ export function paintTexture(w: number, h: number, paint: Painter, pad = 0) {
   ctx.scale(TEX_SCALE, TEX_SCALE);
   ctx.translate(pad, pad);
   paint(ctx, w, h);
-  const t = new CanvasTexture(c);
-  t.colorSpace = NoColorSpace;
-  t.minFilter = LinearFilter;
-  t.generateMipmaps = false;
-  t.anisotropy = 4;
-  void SRGBColorSpace;
-  return t;
+  return new Tex(c);
 }
 
 /** Draw text centred like a flex-centred CSS line box. */

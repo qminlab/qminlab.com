@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useMemo, useRef } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
-import { Group, Matrix4 } from 'three';
+import type { M4 } from '@/lib/m4';
 import { css } from '@/lib/cssMatrix';
+import { useFrame, useGroup, useInvalidate } from './CssCanvas';
 import { bezier, Tween } from '@/lib/ease';
 import { ACCENT, BONE, INK } from '@/lib/tokens';
 import { boxFaces, faceTexture, SHADE, centerText, topLeftText } from './cube';
@@ -17,13 +17,13 @@ const WIRE_LABEL: Record<string, string> = { front: 'shell.front', back: 'shell.
  * seen through the lens. Rotation follows `tilt` with the mockup's 500ms cubic-bezier(.2,.7,.2,1).
  */
 export function HeroCube({ layer, tilt, mobile = false }: { layer: 'shell' | 'xray'; tilt?: { current: { tx: number; ty: number } }; mobile?: boolean }) {
-  const group = useMemo(() => new Group(), []);
-  const invalidate = useThree((s) => s.invalidate);
+  const group = useGroup();
+  const invalidate = useInvalidate();
   const tx = useRef(new Tween(0, 500, heroEase));
   const ty = useRef(new Tween(0, 500, heroEase));
   const ready = useFontsReady();
   const faces = useMemo(() => {
-    const out: { mesh: ReturnType<typeof makePlane>; local: Matrix4 }[] = [];
+    const out: { mesh: ReturnType<typeof makePlane>; local: M4 }[] = [];
     const mono = cssFont('--font-mono', 'monospace');
     const arch = cssFont('--font-archivo', 'sans-serif');
     if (layer === 'shell') {
@@ -75,5 +75,5 @@ export function HeroCube({ layer, tilt, mobile = false }: { layer: 'shell' | 'xr
     if (!tx.current.done || !ty.current.done) invalidate();
   });
 
-  return <primitive object={group} />;
+  return null;
 }

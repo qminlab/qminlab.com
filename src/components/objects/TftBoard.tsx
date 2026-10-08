@@ -1,11 +1,10 @@
 'use client';
 import { useEffect, useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Group, type Mesh } from 'three';
+import type { Mesh } from '../three/gl';
 import { css, box } from '@/lib/cssMatrix';
 import { ACCENT, BONE, INK, MONO_KR, MUTED, LINE } from '@/lib/tokens';
 import { easeOutCubic as ease } from '@/lib/ease';
-import { CssCanvas } from '../three/CssCanvas';
+import { CssCanvas, useFrame, useGroup } from '../three/CssCanvas';
 import { makePlane, setCss, setOpacity, disposeMesh } from '../three/Plane';
 import { paintTexture } from '../three/textures';
 import { hexPath, polyPath, roundRect } from '../three/paint';
@@ -28,7 +27,7 @@ const PAD = 12;
 type Refs = { p: (HTMLElement | null)[]; fit: HTMLElement | null; fitN: HTMLElement | null };
 
 function Board({ active, refs }: { active: boolean; refs: React.RefObject<Refs> }) {
-  const group = useMemo(() => new Group(), []);
+  const group = useGroup();
   const since = useRef(0);
   const was = useRef(false);
 
@@ -136,10 +135,10 @@ function Board({ active, refs }: { active: boolean; refs: React.RefObject<Refs> 
     }
   });
 
-  return <primitive object={group} />;
+  return null;
 }
 
-export function TftBoard({ active, ko }: { active: boolean; ko: boolean }) {
+export function TftBoard({ active, ko, onReady }: { active: boolean; ko: boolean; onReady?: () => void }) {
   const refs = useRef<Refs>({ p: [], fit: null, fitN: null });
   const T = ko
     ? { comp: '추천 덱', compName: '선봉 러시', fit: '적합도', items: '아이템 조합', next: '다음 라운드', tip: '지금 레벨업, 4-5에서 리롤', source: 'LoLCHESS 공략 기반 · 예시 데이터', win: 'TFT 게임 화면 · 1920×1080' }
@@ -152,7 +151,7 @@ export function TftBoard({ active, ko }: { active: boolean; ko: boolean }) {
   const sq = { width: 18, height: 18, border: `1px solid ${BONE}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9 } as const;
   return (
     <div style={{ position: 'relative', width: 600, height: 500, overflow: 'hidden', fontFamily: MONO_KR, color: BONE }}>
-      <CssCanvas perspective={1100} originX={300} originY={290} active={active}>
+      <CssCanvas perspective={1100} originX={300} originY={290} active={active} onReady={onReady}>
         <Board active={active} refs={refs} />
       </CssCanvas>
       <div aria-hidden="true" style={{ position: 'absolute', inset: 14, border: '1px dashed #3A3D35' }} />

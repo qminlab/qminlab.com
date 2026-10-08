@@ -9,6 +9,11 @@ footer a:hover { color: #FF5A1F; }
 @keyframes qlfloat { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
 @keyframes qlfloatm { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
 .qldot { animation: qlblink 1.1s steps(2) infinite; }
+@keyframes qlspin { to { transform: rotate(360deg) } }
+@keyframes qlscan { from { transform: translateX(-100%) } to { transform: translateX(250%) } }
+.qlspin { animation: qlspin 6s linear infinite; }
+.qlscan { animation: qlscan 1.4s cubic-bezier(.7,0,.2,1) infinite; }
+@media (prefers-reduced-motion: reduce) { .qlspin, .qlscan { animation: none; } }
 .qlfloat { animation: qlfloat 5s ease-in-out infinite; }
 .qlfloatm { animation: qlfloatm 5s ease-in-out infinite; }
 .qlrow { background: linear-gradient(#FF5A1F, #FF5A1F) left center/0% 100% no-repeat; transition: background-size .25s ease, color .25s ease; }
