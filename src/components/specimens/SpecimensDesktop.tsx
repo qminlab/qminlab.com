@@ -7,6 +7,7 @@ import { ACCENT, BODY, BONE, DOTS, KR, LINE, MUTED, EASE_SWAP, pill } from '@/li
 import type { Project } from '@/lib/projects';
 import { Scramble } from '../Scramble';
 import { SpecimenStage } from './SpecimenStage';
+import { ProjectLinks } from '../ProjectLinks';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -123,7 +124,10 @@ export function SpecimensDesktop({ ko, enabled }: { ko: boolean; enabled: boolea
                       </div>
                     ))}
                   </dl>
-                  <a href="#index" tabIndex={on ? 0 : -1} style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', minHeight: 44, fontSize: f(12, 13), letterSpacing: `${f(0.12, 0.06)}em`, textDecoration: 'none', borderBottom: `1px solid ${ACCENT}` }}>{t('link')}</a>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 20 }}>
+                    <ProjectLinks code={p.code} ko={ko} active={on} />
+                    <a href="#index" tabIndex={on ? 0 : -1} style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', minHeight: 44, fontSize: f(12, 13), letterSpacing: `${f(0.12, 0.06)}em`, textDecoration: 'none', borderBottom: `1px solid ${ACCENT}` }}>{t('link')}</a>
+                  </div>
                 </article>
               );
             })}

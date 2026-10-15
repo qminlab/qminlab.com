@@ -39,6 +39,7 @@
     "hintIdle": "길게 눌러 끌면 속이 보여요",
     "hintDrag": "검사 중"
   },
+  "linkKinds": { "github": "GitHub", "appstore": "App Store", "googleplay": "Google Play", "download": "다운로드", "web": "바로가기", "play": "플레이" },
   "specimens": {
     "label": "표본",
     "eyebrow": "01 — 작업대 위",

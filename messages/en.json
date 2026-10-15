@@ -39,6 +39,7 @@
     "hintIdle": "HOLD & DRAG TO INSPECT",
     "hintDrag": "INSPECTING"
   },
+  "linkKinds": { "github": "GitHub", "appstore": "App Store", "googleplay": "Google Play", "download": "Download", "web": "Open", "play": "Play" },
   "specimens": {
     "label": "Specimens",
     "eyebrow": "01 — ON THE TABLE",

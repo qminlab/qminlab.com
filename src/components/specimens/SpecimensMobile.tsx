@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { ACCENT, BODY, BONE, DIM, DOTS_M, INK, KR, LINE, MONO, MUTED, pill } from '@/lib/tokens';
 import type { Project } from '@/lib/projects';
 import { SpecimenStage } from './SpecimenStage';
+import { ProjectLinks } from '../ProjectLinks';
 
 /** Mobile specimens: 400px stage, numbered tabs or swipe; the file below slides sideways in step. */
 export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean }) {
@@ -80,6 +81,7 @@ export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean
                   </div>
                 ))}
               </dl>
+              <ProjectLinks code={p.code} ko={ko} small active={on} />
             </article>
           );
         })}

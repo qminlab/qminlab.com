@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ACCENT, BODY, BONE, DIM, INK, KR, LINE, MONO, MONO_KR, MUTED, pill } from '@/lib/tokens';
 import type { Project } from '@/lib/projects';
+import { ProjectLinks } from './ProjectLinks';
 
 type Filter = 'ALL' | 'APP' | 'PROGRAM' | 'GAME' | 'TOOL';
 const FILTERS: Filter[] = ['ALL', 'APP', 'PROGRAM', 'GAME', 'TOOL'];
@@ -78,6 +79,7 @@ export function RegistryDesktop({ ko }: { ko: boolean }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 560 }}>
                   <p style={ko ? { margin: 0, fontFamily: KR, fontSize: 15, lineHeight: 1.8, color: BODY } : { margin: 0, fontSize: 14, lineHeight: 1.7, color: BODY }}>{p.one}</p>
                   {p.desc && <p style={ko ? { margin: 0, fontFamily: KR, fontSize: 14, lineHeight: 1.8, color: MUTED } : { margin: 0, fontSize: 13, lineHeight: 1.7, color: MUTED }}>{p.desc}</p>}
+                  <ProjectLinks code={p.code} ko={ko} small />
                 </div>
                 <div style={{ fontSize: f(11, 12), letterSpacing: `${f(0.06, 0.04)}em`, color: MUTED, lineHeight: 1.9 }}>{t('stage')} · {p.stageLine}<br />{t('stack')} · {p.stack}</div>
               </div>
@@ -145,6 +147,7 @@ export function RegistryMobile({ ko }: { ko: boolean }) {
                 </span>
               </button>
               {isOpen && <p style={ko ? { margin: 0, padding: '0 4px 18px', fontFamily: KR, fontSize: 14, lineHeight: 1.75, color: fg } : { margin: 0, padding: '0 4px 18px', fontSize: 13, lineHeight: 1.7, color: fg }}>{p.one}{p.desc && <><br /><br />{p.desc}</>}</p>}
+              {isOpen && <div style={{ padding: '0 4px 18px' }}><ProjectLinks code={p.code} ko={ko} small onAccent /></div>}
             </div>
           );
         })}
