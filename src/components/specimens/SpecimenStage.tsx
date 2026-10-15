@@ -10,8 +10,9 @@ import { Loading } from '../Loading';
 const JarvisCore = dynamic(() => import('../objects/JarvisCore').then((m) => m.JarvisCore), { ssr: false });
 const TftBoard = dynamic(() => import('../objects/TftBoard').then((m) => m.TftBoard), { ssr: false });
 const GameCart = dynamic(() => import('../objects/GameCart').then((m) => m.GameCart), { ssr: false });
+const WaitBoard = dynamic(() => import('../objects/WaitBoard').then((m) => m.WaitBoard), { ssr: false });
 
-const SIZES: [number, number][] = [[320, 660], [480, 500], [600, 500], [420, 460]];
+const SIZES: [number, number][] = [[320, 660], [480, 500], [600, 500], [420, 460], [560, 420]];
 type Shape = { x: string; y: string; w: number; h: number; br: string; label: string };
 type Note = { x: string; y: string; text: string; r?: boolean };
 const C = (dx: number) => `calc(50% + ${dx}px)`;
@@ -58,6 +59,15 @@ function xray(step: number, ko: boolean): { shapes: Shape[]; notes: Note[] } {
         { x: '94%', y: '58%', text: ko ? 'eta: 다시 재밌어질 때' : "eta: when it's fun again", r: true },
       ],
     },
+    {
+      shapes: [{ x: '50%', y: '50%', w: 508, h: 348, br: '12px', label: ko ? 'SCREEN · 3칸' : 'SCREEN · 3 LANES' }],
+      notes: [
+        { x: '4%', y: '10%', text: ko ? 'Claude 앱 대화\n/board 이름 → 확장 모드' : 'Claude app chat\n/board name → extension mod' },
+        { x: '4%', y: '80%', text: ko ? 'Claude Code 훅\nPermissionRequest · Stop' : 'Claude Code hooks\nPermissionRequest · Stop' },
+        { x: '96%', y: '10%', text: ko ? '맥 서버: Python 표준 라이브러리\nhttp.server · ssl · launchd' : 'Mac server: Python stdlib\nhttp.server · ssl · launchd', r: true },
+        { x: '96%', y: '80%', text: ko ? '아이패드: 1.5초마다 갱신\nWeb Audio · Wake Lock' : 'iPad: poll every 1.5 s\nWeb Audio · Wake Lock', r: true },
+      ],
+    },
   ][step];
 }
 
@@ -67,7 +77,7 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
   // Desktop fills its panel (which grows with tall windows); mobile keeps the mockup's fixed height.
   const H = mobile ? 400 : '100%';
   const R = 100;
-  const scales = mobile ? [0.5, 0.72, 0.58, 0.8] : [0.8, 1, 0.98, 1];
+  const scales = mobile ? [0.5, 0.72, 0.58, 0.8, 0.6] : [0.8, 1, 0.98, 1, 1];
   const root = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLDivElement>(null);
   const layer = useRef<HTMLDivElement>(null);
@@ -82,8 +92,8 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
   // Load order: nothing until the stage is near the viewport, then the current specimen first, and the
   // other specimens only once that one has drawn its first frame. The phone (step 0) is plain HTML.
   const [near, setNear] = useState(false);
-  const [ready, setReady] = useState([true, false, false, false]);
-  const [seen, setSeen] = useState([false, false, false, false]);
+  const [ready, setReady] = useState([true, false, false, false, false]);
+  const [seen, setSeen] = useState([false, false, false, false, false]);
   const [all, setAll] = useState(false);
   useEffect(() => {
     const el = root.current;
@@ -97,7 +107,7 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
     setSeen((s) => (s[step] ? s : s.map((v, i) => v || i === step)));
     if (ready[step]) setAll(true);
   }, [near, enabled, step, ready]);
-  const markReady = useRef([1, 2, 3].map((i) => () => setReady((r) => (r[i] ? r : r.map((v, j) => v || j === i)))));
+  const markReady = useRef([1, 2, 3, 4].map((i) => () => setReady((r) => (r[i] ? r : r.map((v, j) => v || j === i)))));
   const load = (i: number) => enabled && (all || seen[i]);
 
   useEffect(() => {
@@ -154,6 +164,7 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
             {i === 1 && load(1) && <JarvisCore active={on} ko={ko} pointer={mobile ? undefined : pointer} onReady={markReady.current[0]} />}
             {i === 2 && load(2) && <TftBoard active={on} ko={ko} onReady={markReady.current[1]} />}
             {i === 3 && load(3) && <GameCart active={on} ko={ko} onReady={markReady.current[2]} />}
+            {i === 4 && load(4) && <WaitBoard active={on} ko={ko} onReady={markReady.current[3]} />}
           </div>
         );
       })}

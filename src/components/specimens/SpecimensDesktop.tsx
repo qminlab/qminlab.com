@@ -113,6 +113,7 @@ export function SpecimensDesktop({ ko, enabled }: { ko: boolean; enabled: boolea
                     ? { margin: 0, fontFamily: KR, fontSize: 64, fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.05em', color: p.st === 'paused' ? MUTED : BONE }
                     : { margin: 0, fontSize: 64, fontWeight: 500, lineHeight: 1, letterSpacing: '-0.04em', color: p.st === 'paused' ? MUTED : BONE }}>{p.name}</h3>
                   <p style={ko ? { margin: 0, maxWidth: 520, fontFamily: KR, fontSize: 17, lineHeight: 1.8, color: BODY } : { margin: 0, maxWidth: 520, fontSize: 16, lineHeight: 1.7, color: BODY }}>{p.one}</p>
+                  {p.desc && <p style={ko ? { margin: 0, maxWidth: 520, fontFamily: KR, fontSize: 14, lineHeight: 1.8, color: MUTED } : { margin: 0, maxWidth: 520, fontSize: 13, lineHeight: 1.7, color: MUTED }}>{p.desc}</p>}
                   {p.tip && <span style={{ fontSize: f(11, 12), letterSpacing: `${f(0.12, 0.04)}em`, color: ACCENT }}>{p.tip}</span>}
                   <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', columnGap: 24, borderTop: `1px solid ${LINE}` }}>
                     {(['platform', 'stage', 'stack'] as const).map((k) => (

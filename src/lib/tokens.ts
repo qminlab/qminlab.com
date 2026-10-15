@@ -20,12 +20,14 @@ export const XRAY = (cell: number) =>
 
 export const EASE_SWAP = 'cubic-bezier(.7,0,.2,1)';
 
-export type Status = 'review' | 'dev' | 'live' | 'paused';
+export type Status = 'review' | 'dev' | 'live' | 'use' | 'paused';
 export const pill = (st: Status) =>
   st === 'review'
     ? { bg: ACCENT, fg: INK, bd: ACCENT }
     : st === 'live'
       ? { bg: BONE, fg: INK, bd: BONE }
-      : st === 'paused'
+      : st === 'use'
+        ? { bg: 'transparent', fg: ACCENT, bd: ACCENT }
+        : st === 'paused'
         ? { bg: 'transparent', fg: BODY, bd: MUTED }
         : { bg: 'transparent', fg: BONE, bd: BONE };

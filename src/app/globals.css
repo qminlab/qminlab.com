@@ -38,3 +38,7 @@ footer a:hover { color: #FF5A1F; }
 
 /* Anchor jumps land below the sticky header (desktop 66px, mobile 65px). */
 section[id], footer[id] { scroll-margin-top: 65px; }
+
+@keyframes qlflash4 { 0%, 25%, 50%, 75% { opacity: 0 } 12%, 37%, 62%, 87% { opacity: 0.55 } 100% { opacity: 0 } }
+.qlflash4 { opacity: 0; animation: qlflash4 1.2s linear both; }
+@media (prefers-reduced-motion: reduce) { .qlflash4 { display: none; } }

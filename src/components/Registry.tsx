@@ -4,8 +4,11 @@ import { useTranslations } from 'next-intl';
 import { ACCENT, BODY, BONE, DIM, INK, KR, LINE, MONO, MONO_KR, MUTED, pill } from '@/lib/tokens';
 import type { Project } from '@/lib/projects';
 
-type Filter = 'ALL' | 'APP' | 'PROGRAM' | 'GAME';
-const FILTERS: Filter[] = ['ALL', 'APP', 'PROGRAM', 'GAME'];
+type Filter = 'ALL' | 'APP' | 'PROGRAM' | 'GAME' | 'TOOL';
+const FILTERS: Filter[] = ['ALL', 'APP', 'PROGRAM', 'GAME', 'TOOL'];
+
+/** The dashed placeholder row takes the number after the last specimen. */
+const nextCode = (projects: Project[]) => `QL-${String(projects.length + 1).padStart(3, '0')}`;
 
 function useFilter(projects: Project[]) {
   const [filter, setFilter] = useState<Filter>('ALL');
@@ -72,7 +75,10 @@ export function RegistryDesktop({ ko }: { ko: boolean }) {
             {isOpen && (
               <div style={{ display: 'grid', gridTemplateColumns: '120px minmax(0, 1fr) 360px', gap: 16, padding: '4px 16px 28px' }}>
                 <span />
-                <p style={ko ? { margin: 0, fontFamily: KR, fontSize: 15, lineHeight: 1.8, color: BODY, maxWidth: 560 } : { margin: 0, fontSize: 14, lineHeight: 1.7, color: BODY, maxWidth: 560 }}>{p.one}</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 560 }}>
+                  <p style={ko ? { margin: 0, fontFamily: KR, fontSize: 15, lineHeight: 1.8, color: BODY } : { margin: 0, fontSize: 14, lineHeight: 1.7, color: BODY }}>{p.one}</p>
+                  {p.desc && <p style={ko ? { margin: 0, fontFamily: KR, fontSize: 14, lineHeight: 1.8, color: MUTED } : { margin: 0, fontSize: 13, lineHeight: 1.7, color: MUTED }}>{p.desc}</p>}
+                </div>
                 <div style={{ fontSize: f(11, 12), letterSpacing: `${f(0.06, 0.04)}em`, color: MUTED, lineHeight: 1.9 }}>{t('stage')} · {p.stageLine}<br />{t('stack')} · {p.stack}</div>
               </div>
             )}
@@ -80,7 +86,7 @@ export function RegistryDesktop({ ko }: { ko: boolean }) {
         );
       })}
       <div style={{ display: 'grid', gridTemplateColumns: grid, gap: 16, alignItems: 'center', minHeight: 76, padding: '0 16px', borderBottom: `1px dashed ${LINE}`, color: DIM }}>
-        <span style={{ fontSize: 12, letterSpacing: '0.1em' }}>QL-005</span>
+        <span style={{ fontSize: 12, letterSpacing: '0.1em' }}>{nextCode(projects)}</span>
         <span style={ko ? { fontFamily: KR, fontSize: 26, letterSpacing: '-0.04em' } : { fontSize: 26, letterSpacing: '-0.02em' }}>{t('next')}</span>
         <span style={{ fontSize: f(12, 13), letterSpacing: `${f(0.12, 0.06)}em` }}>{t('nextType')}</span>
         <span style={{ fontSize: f(11, 12), letterSpacing: ko ? undefined : '0.12em' }}>—</span>
@@ -91,6 +97,7 @@ export function RegistryDesktop({ ko }: { ko: boolean }) {
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, background: BONE }} />{keys[0]}</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, background: ACCENT }} />{keys[1]}</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, border: `1px solid ${BONE}`, boxSizing: 'border-box' }} />{keys[2]}</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, border: `1px solid ${ACCENT}`, boxSizing: 'border-box' }} />{keys[4]}</span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, border: `1px dashed ${MUTED}`, boxSizing: 'border-box' }} />{keys[3]}</span>
       </div>
       <div ref={plate} aria-hidden="true" style={{ position: 'fixed', left: 0, top: 0, zIndex: 40, pointerEvents: 'none', width: 168, padding: '10px 12px', background: INK, border: `1px solid ${ACCENT}`, fontSize: 10, letterSpacing: '0.12em', lineHeight: 1.7, color: MUTED, opacity: hp ? 1 : 0, transition: 'opacity 150ms ease' }}>
@@ -137,12 +144,12 @@ export function RegistryMobile({ ko }: { ko: boolean }) {
                   <span style={{ fontSize: 20 }}>{isOpen ? '−' : '+'}</span>
                 </span>
               </button>
-              {isOpen && <p style={ko ? { margin: 0, padding: '0 4px 18px', fontFamily: KR, fontSize: 14, lineHeight: 1.75, color: fg } : { margin: 0, padding: '0 4px 18px', fontSize: 13, lineHeight: 1.7, color: fg }}>{p.one}</p>}
+              {isOpen && <p style={ko ? { margin: 0, padding: '0 4px 18px', fontFamily: KR, fontSize: 14, lineHeight: 1.75, color: fg } : { margin: 0, padding: '0 4px 18px', fontSize: 13, lineHeight: 1.7, color: fg }}>{p.one}{p.desc && <><br /><br />{p.desc}</>}</p>}
             </div>
           );
         })}
         <div style={{ padding: '16px 4px', borderBottom: `1px dashed ${LINE}`, color: DIM }}>
-          <div style={{ fontSize: f(10, 11), letterSpacing: `${f(0.12, 0.1)}em` }}>QL-005</div>
+          <div style={{ fontSize: f(10, 11), letterSpacing: `${f(0.12, 0.1)}em` }}>{nextCode(projects)}</div>
           <div style={ko ? { fontFamily: KR, fontSize: 19, marginTop: 6 } : { fontSize: 20, marginTop: 6 }}>{t('next')}</div>
         </div>
       </div>

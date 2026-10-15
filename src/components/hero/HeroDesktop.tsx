@@ -96,7 +96,7 @@ export function HeroDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }) 
             </div>
           </div>
           <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', borderTop: `1px solid ${LINE}`, borderLeft: `1px solid ${LINE}` }}>
-            {stat(0, 4)}{stat(1, 1, true)}{stat(2, 2)}{stat(3, 1)}
+            {stat(0, 5)}{stat(1, 1, true)}{stat(2, 2)}{stat(3, 1)}
           </dl>
         </div>
 

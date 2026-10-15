@@ -5,7 +5,7 @@ import { ACCENT, BODY, BONE, DIM, DOTS_M, INK, KR, LINE, MONO, MUTED, pill } fro
 import type { Project } from '@/lib/projects';
 import { SpecimenStage } from './SpecimenStage';
 
-/** Mobile specimens: 400px stage, 01–04 tabs or swipe; the file below slides sideways in step. */
+/** Mobile specimens: 400px stage, numbered tabs or swipe; the file below slides sideways in step. */
 export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean }) {
   const t = useTranslations('specimens');
   const tt = useTranslations();
@@ -70,6 +70,7 @@ export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean
                 ? { margin: 0, fontFamily: KR, fontSize: 34, fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.05em', color: p.st === 'paused' ? MUTED : BONE }
                 : { margin: 0, fontSize: 38, fontWeight: 500, lineHeight: 1.05, letterSpacing: '-0.04em', color: p.st === 'paused' ? MUTED : BONE }}>{p.name}</h3>
               <p style={ko ? { margin: 0, fontFamily: KR, fontSize: 15, lineHeight: 1.75, color: BODY } : { margin: 0, fontSize: 14, lineHeight: 1.7, color: BODY }}>{p.one}</p>
+              {p.desc && <p style={ko ? { margin: 0, fontFamily: KR, fontSize: 13, lineHeight: 1.75, color: MUTED } : { margin: 0, fontSize: 12, lineHeight: 1.7, color: MUTED }}>{p.desc}</p>}
               {tip && <span style={{ fontSize: 12, lineHeight: 1.6, color: ACCENT }}>{tip}</span>}
               <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', columnGap: 16, borderTop: `1px solid ${LINE}` }}>
                 {(['platform', 'stage', 'stack'] as const).map((k) => (
