@@ -19,6 +19,9 @@ footer a:hover { color: #FF5A1F; }
 .qlrow { background: linear-gradient(#FF5A1F, #FF5A1F) left center/0% 100% no-repeat; transition: background-size .25s ease, color .25s ease; }
 .qlrow:hover { background-size: 100% 100%; color: #0C0D0B !important; }
 .qlrow:hover .qlmuted { color: #0C0D0B !important; }
+.qllink { transition: background .2s ease, color .2s ease; }
+.qllink:hover, .qllink:focus-visible { background: #FF5A1F; color: #0C0D0B !important; }
+.qllink:hover span, .qllink:focus-visible span { color: #0C0D0B !important; }
 
 /* One layout per range: desktop board ≥1024px, mobile board below. */
 .d-only { display: block; }
