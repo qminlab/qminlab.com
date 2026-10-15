@@ -78,7 +78,7 @@ export function HeroMobile({ ko, enabled }: { ko: boolean; enabled: boolean }) {
 
   const xr = (s: string) => s.split('\n').map((l, i) => <span key={i}>{i > 0 && <br />}{l}</span>);
   const stats = t.raw('stats') as string[];
-  const vals = [4, 1, 2, 1];
+  const vals = [5, 1, 2, 1];
 
   return (
     <section aria-label={t('label')} style={{ padding: '18px 16px 48px', borderBottom: `1px solid ${LINE}` }}>

@@ -49,16 +49,17 @@
     "stepAria": "표본 보기",
     "fields": { "platform": "플랫폼", "stage": "단계", "stack": "기술 스택" },
     "link": "케이스 파일 보기 →",
-    "swipe": "← 옆으로 넘기거나 01–04를 탭하세요 →"
+    "swipe": "← 옆으로 넘기거나 01–05를 탭하세요 →"
   },
-  "types": { "APP": "앱", "PROGRAM": "프로그램", "GAME": "게임", "ALL": "전체", "ANY": "장르 미정" },
-  "status": { "review": "심사 중", "dev": "개발 중", "live": "출시", "paused": "일시정지" },
-  "statusMobile": { "review": "심사 중", "dev": "개발 중", "live": "출시", "paused": "일시정지" },
+  "types": { "APP": "앱", "PROGRAM": "프로그램", "GAME": "게임", "TOOL": "생산성 도구", "ALL": "전체", "ANY": "장르 미정" },
+  "status": { "review": "심사 중", "dev": "개발 중", "live": "출시", "use": "사용 중", "paused": "일시정지" },
+  "statusMobile": { "review": "심사 중", "dev": "개발 중", "live": "출시", "use": "사용 중", "paused": "일시정지" },
   "projects": [
     { "code": "QL-001", "name": "위밍", "type": "APP", "st": "review", "one": "친구가 없는 1인 개발자는 외로워서 친구를 만들기 위해 친구를 찾을 수 있는 앱을 만들었어요.", "tip": "← 왼쪽 폰은 진짜로 움직여요. 탭을 눌러 보고 바로 대화도 해 보세요.", "tipMobile": "↑ 위 폰은 진짜로 움직여요. 탭을 눌러 보고 바로 대화도 해 보세요.", "platform": "iOS\nAndroid", "stage": "App Store 심사 중\nGoogle Play 비공개 테스트 중", "stageLine": "iOS App Store 심사 중 · Android Google Play 비공개 테스트 중", "stack": "React Native, Expo, TypeScript, Firebase (Auth · Firestore · Storage · Cloud Functions), RevenueCat", "form": "아이폰 · 라이브 데모", "dims": "화면 393 × 852 PT" },
     { "code": "QL-002", "name": "자비스", "type": "PROGRAM", "st": "dev", "one": "나의 일상 관리를 위한 AI 비서 겸 감독관.", "platform": "macOS (메인 서버)\nWindows (보조 기기)\niOS 단축어 연동", "stage": "개발 중", "stageLine": "개발 중", "stack": "Python, FastAPI, YOLO (객체 감지), Claude API, Whisper (음성 인식)", "form": "홀로그램 링", "dims": "Ø 400 · 링 7겹" },
     { "code": "QL-003", "name": "TFT 어시스턴트", "type": "PROGRAM", "st": "dev", "one": "LoLCHESS 공략을 바탕으로 TFT 화면 위에 필요한 정보만 띄우는 개인용 도우미.", "platform": "Windows\n(개발은 macOS)", "stage": "개발 중\nv0.1", "stageLine": "개발 중 · v0.1", "stack": "Python, PySide6", "form": "육각 보드 + 오버레이", "formMobile": "헥스 보드 + 오버레이", "dims": "4 × 7 육각 · 패널 3개" },
-    { "code": "QL-004", "name": "Untitled Game", "type": "GAME", "st": "paused", "one": "재설계를 위해 잠시 멈춰 있어요. 다시 재밌어지면 친구들에게 먼저 공개합니다.", "platform": "미정", "stage": "일시정지\n재설계 중", "stageLine": "일시정지 · 재설계 중", "stack": "미정", "form": "카트리지 · 정지", "dims": "200 × 230 × 34" }
+    { "code": "QL-004", "name": "Untitled Game", "type": "GAME", "st": "paused", "one": "재설계를 위해 잠시 멈춰 있어요. 다시 재밌어지면 친구들에게 먼저 공개합니다.", "platform": "미정", "stage": "일시정지\n재설계 중", "stageLine": "일시정지 · 재설계 중", "stack": "미정", "form": "카트리지 · 정지", "dims": "200 × 230 × 34" },
+    { "code": "QL-005", "name": "Claude 대기판", "type": "TOOL", "st": "use", "one": "여러 Claude 작업의 진행 상황을 한눈에 보여주는 아이패드 작업 현황판", "desc": "주문 대기판처럼 작업마다 번호를 붙여 작업중 · 확인 필요 · 완료로 보여줘요. 권한 승인을 기다리며 멈춘 작업은 빨간색으로, 끝난 작업은 초록색으로 화면 전체가 깜빡이고 소리로도 알려줘요. 맥에서 도는 작은 서버가 Claude 앱 대화와 Claude Code의 신호를 실시간으로 모아요.", "platform": "macOS (서버)\n아이패드 (대기판 화면)", "stage": "사용 중\n개인 업무용", "stageLine": "사용 중 · 개인 업무용", "stack": "Python, HTML/JavaScript, Claude 확장 모드, Claude Code 훅", "form": "아이패드 · 대기판", "dims": "3칸 · 1.5초 갱신" }
   ],
   "index": {
     "label": "전체 색인",
@@ -72,7 +73,7 @@
     "next": "다음 표본 배양 중…",
     "nextType": "앱 / 프로그램 / 게임",
     "key": "상태 범례",
-    "keys": ["출시", "심사 중", "개발 중", "일시 중지"]
+    "keys": ["출시", "심사 중", "개발 중", "일시 중지", "사용 중"]
   },
   "lab": {
     "label": "연구실 규칙",
@@ -92,8 +93,8 @@
     "copyright": "© 2026 QMIN LAB. 모든 표본의 권리를 보유합니다."
   },
   "stage": {
-    "hints": ["폰 위에서는 직접 조작 · 바깥에서는 조준경으로 속 보기", "커서를 움직여 속을 들여다보세요", "커서를 움직여 속을 들여다보세요", "커서를 움직여 속을 들여다보세요"],
-    "hintsMobile": ["폰을 직접 눌러 보세요 · 옆으로 밀면 다음 무대", "옆으로 밀거나 01–04를 누르세요", "옆으로 밀거나 01–04를 누르세요", "옆으로 밀거나 01–04를 누르세요"],
+    "hints": ["폰 위에서는 직접 조작 · 바깥에서는 조준경으로 속 보기", "커서를 움직여 속을 들여다보세요", "커서를 움직여 속을 들여다보세요", "커서를 움직여 속을 들여다보세요", "커서를 움직여 속을 들여다보세요"],
+    "hintsMobile": ["폰을 직접 눌러 보세요 · 옆으로 밀면 다음 무대", "옆으로 밀거나 01–05를 누르세요", "옆으로 밀거나 01–05를 누르세요", "옆으로 밀거나 01–05를 누르세요", "옆으로 밀거나 01–05를 누르세요"],
     "parked": "대기 중",
     "loading": "표본 불러오는 중"
   }

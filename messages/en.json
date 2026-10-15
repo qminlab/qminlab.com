@@ -49,16 +49,17 @@
     "stepAria": "Show specimen",
     "fields": { "platform": "PLATFORM", "stage": "STAGE", "stack": "STACK" },
     "link": "READ CASE FILE →",
-    "swipe": "← SWIPE OR TAP 01–04 →"
+    "swipe": "← SWIPE OR TAP 01–05 →"
   },
-  "types": { "APP": "APP", "PROGRAM": "PROGRAM", "GAME": "GAME", "ALL": "ALL", "ANY": "ANY GENRE" },
-  "status": { "review": "IN REVIEW", "dev": "IN DEVELOPMENT", "live": "RELEASED", "paused": "PAUSED" },
-  "statusMobile": { "review": "IN REVIEW", "dev": "IN DEV", "live": "RELEASED", "paused": "PAUSED" },
+  "types": { "APP": "APP", "PROGRAM": "PROGRAM", "GAME": "GAME", "TOOL": "PRODUCTIVITY TOOL", "ALL": "ALL", "ANY": "ANY GENRE" },
+  "status": { "review": "IN REVIEW", "dev": "IN DEVELOPMENT", "live": "RELEASED", "use": "IN USE", "paused": "PAUSED" },
+  "statusMobile": { "review": "IN REVIEW", "dev": "IN DEV", "live": "RELEASED", "use": "IN USE", "paused": "PAUSED" },
   "projects": [
     { "code": "QL-001", "name": "Weming", "type": "APP", "st": "review", "one": "Being a solo developer with no friends got lonely, so I built an app for finding friends. Mostly so I could make some.", "tip": "← THE PHONE IS LIVE. TAP THE TABS, THEN TRY INSTANT CHAT.", "tipMobile": "↑ The phone above actually works. Tap the tabs and try a random chat.", "platform": "iOS\nAndroid", "stage": "App Store review\nGoogle Play closed test", "stageLine": "iOS in App Store review · Android in Google Play closed test", "stack": "React Native, Expo, TypeScript, Firebase (Auth · Firestore · Storage · Cloud Functions), RevenueCat", "form": "IPHONE · LIVE DEMO", "dims": "SCREEN 393 × 852 PT" },
     { "code": "QL-002", "name": "Jarvis", "type": "PROGRAM", "st": "dev", "one": "An AI assistant and supervisor that runs my daily life.", "platform": "macOS (main server)\nWindows (secondary)\niOS Shortcuts", "stage": "In development", "stageLine": "In development", "stack": "Python, FastAPI, YOLO (object detection), Claude API, Whisper (speech recognition)", "form": "HOLO RINGS", "dims": "Ø 400 · 7 RINGS" },
     { "code": "QL-003", "name": "TFT Assistant", "type": "PROGRAM", "st": "dev", "one": "A personal helper that puts only what you need on top of the TFT screen, built on LoLCHESS strategy guides.", "platform": "Windows\n(developed on macOS)", "stage": "In development\nv0.1", "stageLine": "In development · v0.1", "stack": "Python, PySide6", "form": "HEX BOARD + OVERLAY", "dims": "4 × 7 HEX · 3 PANELS" },
-    { "code": "QL-004", "name": "Untitled Game", "type": "GAME", "st": "paused", "one": "On hold while it gets redesigned. It comes back when it is fun again, for friends first.", "platform": "TBD", "stage": "Paused\nRedesign in progress", "stageLine": "Paused · redesign in progress", "stack": "TBD", "form": "CARTRIDGE · FROZEN", "dims": "200 × 230 × 34" }
+    { "code": "QL-004", "name": "Untitled Game", "type": "GAME", "st": "paused", "one": "On hold while it gets redesigned. It comes back when it is fun again, for friends first.", "platform": "TBD", "stage": "Paused\nRedesign in progress", "stageLine": "Paused · redesign in progress", "stack": "TBD", "form": "CARTRIDGE · FROZEN", "dims": "200 × 230 × 34" },
+    { "code": "QL-005", "name": "Claude Wait Board", "type": "TOOL", "st": "use", "one": "An iPad status board that shows every running Claude task at a glance", "desc": "Like a pickup board at a fast-food counter, each task gets a number and moves between Working, Needs attention and Done. Tasks waiting on a permission prompt flash the whole screen red, finished ones flash green, with a chime for each. A small server on the Mac collects live signals from Claude app chats and Claude Code.", "platform": "macOS (server)\niPad (board screen)", "stage": "In use\nPersonal use", "stageLine": "In use · personal use", "stack": "Python, HTML/JavaScript, Claude extension mods, Claude Code hooks", "form": "IPAD · WAIT BOARD", "dims": "3 LANES · POLL 1.5 S" }
   ],
   "index": {
     "label": "Full index",
@@ -72,7 +73,7 @@
     "next": "Next specimen incubating…",
     "nextType": "APP / PROGRAM / GAME",
     "key": "STATUS KEY",
-    "keys": ["RELEASED", "IN REVIEW", "IN DEVELOPMENT", "PAUSED"]
+    "keys": ["RELEASED", "IN REVIEW", "IN DEVELOPMENT", "PAUSED", "IN USE"]
   },
   "lab": {
     "label": "How the lab works",
@@ -92,8 +93,8 @@
     "copyright": "© 2026 QMIN LAB. ALL SPECIMENS RESERVED."
   },
   "stage": {
-    "hints": ["ON THE PHONE: USE IT · AROUND IT: X-RAY", "MOVE TO INSPECT", "MOVE TO INSPECT", "MOVE TO INSPECT"],
-    "hintsMobile": ["TAP THE PHONE TO TRY IT · SWIPE FOR NEXT", "SWIPE OR TAP 01–04", "SWIPE OR TAP 01–04", "SWIPE OR TAP 01–04"],
+    "hints": ["ON THE PHONE: USE IT · AROUND IT: X-RAY", "MOVE TO INSPECT", "MOVE TO INSPECT", "MOVE TO INSPECT", "MOVE TO INSPECT"],
+    "hintsMobile": ["TAP THE PHONE TO TRY IT · SWIPE FOR NEXT", "SWIPE OR TAP 01–05", "SWIPE OR TAP 01–05", "SWIPE OR TAP 01–05", "SWIPE OR TAP 01–05"],
     "parked": "PARKED",
     "loading": "LOADING SPECIMEN"
   }
