@@ -6,7 +6,11 @@
 export type LinkKind = 'github' | 'appstore' | 'googleplay' | 'download' | 'web' | 'play';
 export type ProjectLink = { kind: LinkKind; href: string };
 
+/** The studio's own GitHub profile, shown under the contact email. */
+export const GITHUB = 'https://github.com/starMinK';
+
 export const LINKS: Record<string, ProjectLink[]> = {
+  'QL-001': [{ kind: 'github', href: 'https://github.com/starMinK/weming' }],
   'QL-005': [{ kind: 'github', href: 'https://github.com/starMinK/claude-board' }],
 };
 

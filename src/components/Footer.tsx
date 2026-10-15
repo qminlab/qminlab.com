@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ACCENT, ARCHIVO, INK, KR } from '@/lib/tokens';
+import { GITHUB } from '@/lib/links';
 import { Lens } from '@/lib/lens';
 import { routing } from '@/i18n/routing';
 
@@ -80,6 +81,7 @@ export function FooterDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13, letterSpacing: '0.06em' }}>
           <a href="mailto:hello@qminlab.com" style={{ color: INK, fontSize: 22 }}>hello@qminlab.com</a>
+          <a href={GITHUB} target="_blank" rel="noopener noreferrer" style={{ color: INK, fontSize: 15 }}>github.com/starMinK ↗</a>
         </div>
       </div>
       <div ref={host} aria-hidden="true" onMouseMove={onMove} onMouseLeave={() => lens.current?.hide()}
@@ -113,6 +115,7 @@ export function FooterMobile({ ko, enabled }: { ko: boolean; enabled: boolean })
           ? { margin: 0, fontFamily: KR, fontSize: 25, fontWeight: 700, lineHeight: 1.35, letterSpacing: '-0.05em' }
           : { margin: 0, fontSize: 26, fontWeight: 500, lineHeight: 1.2, letterSpacing: '-0.03em' }}>{t('title')}</p>
         <a href="mailto:hello@qminlab.com" style={{ display: 'flex', alignItems: 'center', minHeight: 44, color: INK, fontSize: 17 }}>hello@qminlab.com</a>
+        <a href={GITHUB} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', minHeight: 44, marginTop: -10, color: INK, fontSize: 14 }}>github.com/starMinK ↗</a>
       </div>
       <div ref={host} aria-hidden="true" style={{ overflow: 'hidden', borderTop: `1px solid ${INK}`, padding: '18px 10px 0', fontFamily: ARCHIVO, fontWeight: 900, fontStretch: '125%', fontSize: 64, lineHeight: 0.85, letterSpacing: '-0.03em', whiteSpace: 'nowrap', clipPath: clip ? 'inset(0)' : undefined }}>{letters(WORD)}</div>
       <div style={{ padding: '18px 16px 0', fontSize: ko ? 11 : 10, letterSpacing: ko ? undefined : '0.1em' }}>© 2026 QMIN LAB · <LangLinks /></div>
