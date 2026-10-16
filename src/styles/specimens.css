@@ -1,0 +1,52 @@
+/* Open Lab redesign: specimens. A frameless reel: one specimen per screen, giant outlined numbers behind. */
+
+/* Outlined specimen number (transparent fill, 1px stroke). Positioned by its wrapper. */
+.sp-nums { position: absolute; pointer-events: none; user-select: none; -webkit-user-select: none; z-index: 0; }
+.sp-num {
+  position: absolute; left: 0; bottom: 0; display: block; white-space: nowrap;
+  font-family: var(--font-archivo), sans-serif; font-weight: 900; font-stretch: 125%;
+  font-variation-settings: 'wdth' 125, 'wght' 900;
+  line-height: 0.8; letter-spacing: -0.02em;
+  color: transparent; -webkit-text-stroke: 1px rgba(236, 232, 222, 0.14);
+  transition: opacity 700ms ease, transform 1100ms var(--ql-ease-out);
+  will-change: transform, opacity;
+}
+.sp-nums-d { left: 40px; bottom: 56px; }
+.sp-nums-d .sp-num { font-size: clamp(160px, 30vw, 460px); }
+.sp-nums-m { left: 0; bottom: 6px; }
+.sp-nums-m .sp-num { font-size: 40vw; }
+
+/* Specimen name: very large, never breaks a Korean word. */
+.sp-name { margin: 0; word-break: keep-all; overflow-wrap: break-word; text-wrap: balance; }
+
+/* Desktop text column: tightens on short windows so a long file never runs under the header or the bar. */
+.sp-art { gap: 20px; }
+.sp-desc { font-size: 15px; line-height: 1.75; }
+@media (max-height: 820px) {
+  .sp-art { gap: 12px; }
+  .sp-desc { font-size: 13px; line-height: 1.6; }
+}
+
+/* Desktop progress segments: each is a full-height button holding a thin line. */
+.sp-seg { flex: 1; min-width: 0; height: 32px; padding: 0; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center; }
+.sp-seg > i { display: block; width: 100%; height: 2px; border-radius: 2px; background: rgba(236, 232, 222, 0.14); transition: background-color 400ms var(--ql-ease-out), height 200ms var(--ql-ease-out); }
+.sp-seg[data-on='true'] > i { background: #FF5A1F; }
+.sp-seg:focus-visible { outline: 2px solid #FF5A1F; outline-offset: 2px; border-radius: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  .sp-seg:hover > i { height: 4px; background: rgba(236, 232, 222, 0.5); }
+  .sp-seg[data-on='true']:hover > i { background: #FF5A1F; }
+}
+
+/* Mobile segmented control. */
+.sp-tab { flex: 1; min-width: 0; min-height: 44px; border: 0; border-radius: 999px; cursor: pointer; transition: background-color 300ms var(--ql-ease-out), color 300ms var(--ql-ease-out), transform 160ms var(--ql-ease-out); }
+.sp-tab:active { transform: scale(0.96); }
+.sp-tab:focus-visible { outline: 2px solid #FF5A1F; outline-offset: 2px; }
+
+/* Case-file link. */
+.sp-case { transition: color 200ms ease, border-color 200ms ease; }
+@media (hover: hover) and (pointer: fine) { .sp-case:hover { color: #FF5A1F !important; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-seg > i, .sp-tab { transition: none; }
+  .sp-tab:active { transform: none; }
+}

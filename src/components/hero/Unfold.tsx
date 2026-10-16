@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { ACCENT, BONE, MONO } from '@/lib/tokens';
+import { useReducedMotion } from '@/lib/useMedia';
 
 const T = 'cubic-bezier(.7,0,.2,1)';
 
@@ -12,10 +13,13 @@ const T = 'cubic-bezier(.7,0,.2,1)';
 export function Unfold({ mobile, aria }: { mobile: boolean; aria: string }) {
   const [unfold, setUnfold] = useState(false);
   const hold = useRef(false);
+  // Reduced motion: no endless auto toggle; it still unfolds on hover/tap.
+  const reduce = useReducedMotion();
   useEffect(() => {
+    if (reduce) return;
     const id = setInterval(() => { if (!hold.current) setUnfold((u) => !u); }, 2600);
     return () => clearInterval(id);
-  }, []);
+  }, [reduce]);
   const w1 = unfold ? 8 : 1, w2 = unfold ? 4 : 3, fy = unfold ? -1.4 : 0;
   const fa = unfold ? 0 : 1, fb = unfold ? 1 : 0;
   const faT = unfold ? 'opacity 250ms ease' : 'opacity 250ms ease 500ms';

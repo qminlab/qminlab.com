@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
 import { Lens } from '@/lib/lens';
-import { ACCENT, BONE, DOTS, INK, LINE, MONO_KR, XRAY, EASE_SWAP } from '@/lib/tokens';
+import { ACCENT, BONE, LINE, MONO_KR, XRAY } from '@/lib/tokens';
 import { WemingPhone } from '../objects/WemingPhone';
 import { Loading } from '../Loading';
 
@@ -89,6 +89,22 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
   const stepRef = useRef(step);
   stepRef.current = step;
 
+  // Desktop: the stage is now one half of a full-height scene, so a narrow window shrinks the object to fit
+  // instead of cropping it. Mobile keeps its fixed per-specimen scales.
+  const [box, setBox] = useState<[number, number]>([0, 0]);
+  useEffect(() => {
+    const el = root.current;
+    if (!el || mobile) return;
+    const ro = new ResizeObserver(([e]) => setBox([e.contentRect.width, e.contentRect.height]));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [mobile]);
+  const fit = (i: number) => {
+    if (mobile || !box[0]) return 1;
+    const [w, h] = SIZES[i];
+    return Math.min(1, (box[0] - 24) / (w * scales[i]), (box[1] - 72) / (h * scales[i]));
+  };
+
   // Load order: nothing until the stage is near the viewport, then the current specimen first, and the
   // other specimens only once that one has drawn its first frame. The phone (step 0) is plain HTML.
   const [near, setNear] = useState(false);
@@ -147,19 +163,22 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
 
   return (
     <div ref={root} data-stage={mobile ? 'mobile' : 'desktop'} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}
-      style={{ position: 'relative', width: '100%', height: H, overflow: 'hidden', cursor: over || mobile ? 'pointer' : 'none', touchAction: mobile ? 'pan-y' : 'auto', userSelect: 'none', WebkitUserSelect: 'none', fontFamily: MONO_KR, color: BONE, background: DOTS }}>
+      style={{ position: 'relative', width: '100%', height: H, overflow: 'hidden', cursor: over || mobile ? 'pointer' : 'none', touchAction: mobile ? 'pan-y' : 'auto', userSelect: 'none', WebkitUserSelect: 'none', fontFamily: MONO_KR, color: BONE, background: 'transparent' }}>
       {SIZES.map(([w, h], i) => {
         const on = i === step;
         const shown = on && ready[i];
-        const sc = scales[i] * (on ? 1 : 0.86);
-        let tf = `scale(${sc})`;
+        const sc = scales[i] * fit(i) * (on ? 1 : 0.86);
+        // The reel: the outgoing specimen slides off to the left, the incoming one arrives from the right
+        // (and the reverse when stepping back). Reduced motion (qlswap) keeps only the crossfade.
+        const dx = on ? 0 : (i < step ? -1 : 1) * (mobile ? 90 : 160);
+        let tf = `translateX(${dx}px) scale(${sc})`;
         // Mobile has no hover, so the phone stands upright from the start, lifted clear of the hint chip.
-        if (i === 0) tf = `${mobile ? 'translateY(-20px) ' : ''}perspective(1400px) rotateY(${over || mobile ? 0 : -16}deg) rotateX(${over || mobile ? 0 : 5}deg) ${tf}`;
+        if (i === 0) tf = `translateX(${dx}px) ${mobile ? 'translateY(-20px) ' : ''}perspective(1400px) rotateY(${over || mobile ? 0 : -16}deg) rotateX(${over || mobile ? 0 : 5}deg) ${tf}`;
         return (
-          <div key={i} data-phone={i === 0 ? 'true' : 'false'}
+          <div key={i} className="qlswap" data-phone={i === 0 ? 'true' : 'false'}
             onPointerDown={i === 0 ? (e) => e.stopPropagation() : undefined}
             aria-hidden={!on}
-            style={{ position: 'absolute', left: '50%', top: '50%', width: w, height: h, marginLeft: -w / 2, marginTop: -h / 2, opacity: shown ? 1 : 0, transform: tf, transition: `opacity 600ms ease, transform 900ms ${EASE_SWAP}`, pointerEvents: on && i === 0 ? 'auto' : 'none', cursor: i === 0 ? 'pointer' : 'auto' }}>
+            style={{ position: 'absolute', left: '50%', top: '50%', width: w, height: h, marginLeft: -w / 2, marginTop: -h / 2, opacity: shown ? 1 : 0, transform: tf, transition: `opacity ${on ? 650 : 400}ms ease ${on ? 100 : 0}ms, transform 1000ms cubic-bezier(.23,1,.32,1)`, pointerEvents: on && i === 0 ? 'auto' : 'none', cursor: i === 0 ? 'pointer' : 'auto' }}>
             {i === 0 && <WemingPhone />}
             {i === 1 && load(1) && <JarvisCore active={on} ko={ko} pointer={mobile ? undefined : pointer} onReady={markReady.current[0]} />}
             {i === 2 && load(2) && <TftBoard active={on} ko={ko} onReady={markReady.current[1]} />}
@@ -174,7 +193,7 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
       {/* Mobile has no x-ray lens on the stage, so nothing covers the phone. */}
       {!mobile && <div ref={layer} aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', clipPath: 'circle(0px at 0 0)', background: XRAY(32) }}>
         {X.shapes.map((s, i) => {
-          const k = mobile ? scales[step] : 1;
+          const k = fit(step);
           const w = s.w * k, h = s.h * k;
           return (
             <div key={`${step}-${i}`} style={{ position: 'absolute', left: s.x, top: s.y, width: w, height: h, marginLeft: -w / 2, marginTop: -h / 2, boxSizing: 'border-box', border: `1.5px dashed ${ACCENT}`, borderRadius: s.br }}>
@@ -193,7 +212,7 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
         <div ref={label} style={{ position: 'absolute', left: '50%', top: '100%', marginTop: 18, transform: 'translateX(-50%)', whiteSpace: 'nowrap', fontSize: 10, letterSpacing: '0.12em', color: ACCENT }} />
       </div>}
 
-      <div style={{ position: 'absolute', left: '50%', bottom: 10, transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', border: `1px solid ${LINE}`, background: INK, fontSize: 10, letterSpacing: '0.08em', whiteSpace: 'nowrap', pointerEvents: 'none' }}>
+      <div style={{ position: 'absolute', left: '50%', bottom: mobile ? 10 : 14, transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 8, padding: '7px 14px', borderRadius: 999, border: `1px solid ${LINE}`, background: 'rgba(12,13,11,0.78)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', fontSize: mobile ? 10 : 11, letterSpacing: '0.06em', whiteSpace: 'nowrap', maxWidth: 'calc(100% - 24px)', overflow: 'hidden', textOverflow: 'ellipsis', pointerEvents: 'none' }}>
         <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.2"><circle cx="6" cy="6" r="4.5" /><path d="M6 0v3M6 9v3M0 6h3M9 6h3" /></svg>{hints[step]}
       </div>
     </div>

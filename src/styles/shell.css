@@ -1,0 +1,27 @@
+/* Open Lab redesign: shell (header, grain, marquee, footer). */
+
+/* The header inverts against what is under it, so it reads on the dark lab and the bone footer alike. */
+.qlbar { mix-blend-mode: difference; }
+.qlnav { position: relative; }
+.qlnav::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform 300ms var(--ql-ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .qlbar a:hover { color: inherit; }
+  .qlnav:hover::after { transform: scaleX(1); transform-origin: left; }
+}
+
+/* Film grain over the whole page: one fixed layer, stepped so it reads as texture, not motion. */
+.qlgrain { position: fixed; inset: -50%; z-index: 40; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: qlgrain 1s steps(4) infinite; }
+@keyframes qlgrain { 0% { transform: translate(0, 0) } 25% { transform: translate(-3%, 2%) } 50% { transform: translate(2%, -3%) } 75% { transform: translate(-2%, -1%) } }
+
+/* Velocity marquee between the hero and the specimens. */
+.qlmarquee { overflow: hidden; padding-block: 28px; border-block: 1px solid rgba(236, 232, 222, .14); }
+.qlmarquee-track { display: flex; width: max-content; gap: 48px; white-space: nowrap; will-change: transform; font-family: var(--font-archivo), sans-serif; font-weight: 300; font-stretch: 62%; font-variation-settings: "wdth" 62, "wght" 300; font-size: clamp(44px, 7vw, 104px); line-height: 1; }
+.qlmarquee-track em { display: flex; align-items: center; color: #FF5A1F; }
+.qlmarquee-track .kr { font-family: var(--font-kr), sans-serif; font-weight: 500; letter-spacing: -.04em; font-size: .82em; align-self: center; }
+@media (max-width: 1023.98px) { .qlmarquee { padding-block: 18px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .qlgrain { animation: none; }
+}

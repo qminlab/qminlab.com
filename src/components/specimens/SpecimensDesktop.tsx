@@ -3,13 +3,17 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ACCENT, BODY, BONE, DOTS, KR, LINE, MUTED, EASE_SWAP, pill } from '@/lib/tokens';
+import { ACCENT, ARCHIVO, BODY, BONE, KR, MONO, MONO_KR, MUTED } from '@/lib/tokens';
 import type { Project } from '@/lib/projects';
+import { scrollToEl } from '@/lib/scroll';
 import { Scramble } from '../Scramble';
 import { SpecimenStage } from './SpecimenStage';
 import { ProjectLinks } from '../ProjectLinks';
+import { OutlineNumbers, StatusPill } from './parts';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const EASE_OUT = 'cubic-bezier(.23,1,.32,1)';
 
 export function SpecimensDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }) {
   const t = useTranslations('specimens');
@@ -22,8 +26,8 @@ export function SpecimensDesktop({ ko, enabled }: { ko: boolean; enabled: boolea
   const lock = useRef(false);
   const idle = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // ScrollTrigger watches the description column; the spacer whose centre is nearest the viewport
-  // middle is the current step (same rule as the mockup). One `step` drives model, text and markers.
+  // ScrollTrigger watches the spacer column; the spacer whose centre is nearest the viewport middle is the
+  // current step. One `step` drives the object, the text, the outlined number and the progress bar.
   useEffect(() => {
     const col = column.current;
     if (!col) return;
@@ -52,89 +56,90 @@ export function SpecimensDesktop({ ko, enabled }: { ko: boolean; enabled: boolea
     lock.current = true;
     clearTimeout(idle.current);
     idle.current = setTimeout(() => { lock.current = false; }, 1200);
-    column.current?.querySelector(`[data-step="${i}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    scrollToEl(column.current?.querySelector(`[data-step="${i}"]`) ?? null, { center: true });
   };
 
+  const n = projects.length;
   const cur = projects[step];
   const f = (en: number, k: number) => (ko ? k : en);
-  const bar = { display: 'flex', justifyContent: 'space-between', padding: '14px 16px', fontSize: f(10, 11), letterSpacing: `${f(0.14, 0.1)}em`, color: MUTED } as const;
+  const label = { fontFamily: ko ? MONO_KR : MONO, fontSize: 12, letterSpacing: `${f(0.1, 0.06)}em`, color: MUTED } as const;
 
   return (
-    // The stage fills the window below the sticky header (never shorter than the mockup's 660px), so a tall
-    // window shows no empty band under it. Scroll distance per specimen grows with it to keep the pacing.
-    <section id="specimens" aria-label={t('label')} style={{ padding: '72px 40px 40px', borderBottom: `1px solid ${LINE}`, ['--stage-h' as string]: 'max(660px, calc(100vh - 104px))' }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: 16, paddingBottom: 28 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <span style={{ fontSize: 11, letterSpacing: `${f(0.16, 0.12)}em`, color: ACCENT }}>{t('eyebrow')}</span>
-          <h2 style={ko ? { margin: 0, fontFamily: KR, fontSize: 44, fontWeight: 700, letterSpacing: '-0.04em' } : { margin: 0, fontSize: 44, fontWeight: 500, letterSpacing: '-0.03em' }}>{t('title')}</h2>
+    // The scene fills the window under the floating header; scroll distance per specimen follows its height.
+    <section id="specimens" aria-label={t('label')} style={{ position: 'relative', padding: '128px 0 48px', ['--stage-h' as string]: 'max(640px, calc(100vh - 64px))' }}>
+      <header style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '24px 48px', padding: '0 40px 24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18, minWidth: 0 }}>
+          <span style={{ ...label, color: ACCENT }}>{t('eyebrow')}</span>
+          <h2 className="sp-name" style={ko
+            ? { fontFamily: KR, fontSize: 'clamp(52px, 6.4vw, 104px)', fontWeight: 700, lineHeight: 1.02, letterSpacing: '-0.05em' }
+            : { fontFamily: ARCHIVO, fontSize: 'clamp(56px, 7vw, 112px)', fontWeight: 800, fontVariationSettings: "'wdth' 112", lineHeight: 0.92, letterSpacing: '-0.035em' }}>{t('title')}</h2>
         </div>
-        <p style={ko ? { margin: 0, maxWidth: 400, fontFamily: KR, fontSize: 14, lineHeight: 1.8, color: MUTED } : { margin: 0, maxWidth: 380, fontSize: 13, lineHeight: 1.7, color: MUTED }}>{t('intro')}</p>
-      </div>
+        <p style={{ margin: 0, maxWidth: 380, fontFamily: KR, fontSize: f(15, 16), lineHeight: 1.75, color: MUTED, textWrap: 'pretty', wordBreak: 'keep-all' }}>{t('intro')}</p>
+      </header>
 
-      <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start' }}>
-        <div style={{ flex: '1 1 520px', minWidth: 0, position: 'sticky', top: 84, height: 'var(--stage-h)', border: `1px solid ${LINE}`, background: DOTS, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ ...bar, borderBottom: `1px solid ${LINE}` }}>
-            <span>{t('stage')} / {cur.code}</span>
-            <span>{t('form')}: <span style={{ color: ACCENT }}><Scramble text={cur.form} trigger={step} duration={500} /></span></span>
-          </div>
-          <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
-            <SpecimenStage step={step} ko={ko} mobile={false} enabled={enabled} />
-          </div>
-          <div style={{ ...bar, alignItems: 'center', borderTop: `1px solid ${LINE}` }}>
-            <span><Scramble text={cur.dims} trigger={step} duration={500} /></span>
-            <div style={{ display: 'flex', gap: 6 }}>
-              {projects.map((p, i) => (
-                <button key={p.code} type="button" onClick={() => goStep(i)} aria-label={`${t('stepAria')} ${p.code}`} aria-current={i === step ? 'step' : undefined}
-                  style={{ width: 44, height: 28, padding: 0, border: `1px solid ${LINE}`, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ display: 'block', width: 28, height: 4, background: i === step ? ACCENT : LINE, transition: 'background 300ms ease' }} />
-                </button>
-              ))}
-            </div>
-            <span>{`0${step + 1} / 0${projects.length}`}</span>
-          </div>
-        </div>
+      <div ref={column} style={{ position: 'relative' }}>
+        {/* The sticky scene lives in a layer exactly as tall as the spacer column, so it stops level with the
+            last spacer instead of sliding into the next section. */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}>
+          <div style={{ position: 'sticky', top: 64, height: 'var(--stage-h)', overflow: 'hidden', pointerEvents: 'auto' }}>
+            <OutlineNumbers count={n} step={step} className="sp-nums sp-nums-d" />
 
-        <div ref={column} style={{ flex: '1 1 480px', minWidth: 0, display: 'flex', flexDirection: 'column', position: 'relative' }}>
-          {/* The sticky panel lives in a layer exactly as tall as the column, so it stops level with the
-              stage instead of sliding 660px into the registry (the mockup's negative margin let it overflow). */}
-          <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}>
-          <div aria-live="polite" style={{ position: 'sticky', top: 84, height: 'var(--stage-h)', overflow: 'hidden' }}>
-            {projects.map((p, i) => {
-              const on = i === step;
-              const pl = pill(p.st);
-              return (
-                <article key={p.code} aria-hidden={!on} style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 22, padding: '40px 0', opacity: on ? 1 : 0, transform: `translateY(${on ? 0 : i < step ? -28 : 28}px)`, pointerEvents: on ? 'auto' : 'none', transition: `opacity 600ms ease, transform 900ms ${EASE_SWAP}` }}>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, fontSize: f(11, 12), letterSpacing: `${f(0.14, 0.1)}em` }}>
-                    <span style={{ color: MUTED }}>{p.code}</span><span style={{ color: MUTED }}>/</span><span style={{ color: MUTED }}>{tt(`types.${p.type}`)}</span>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 10px', border: `1px solid ${pl.bd}`, background: pl.bg, color: pl.fg }}>
-                      <span className={p.st === 'paused' ? undefined : 'qldot'}>{p.st === 'paused' ? '❚❚' : '●'}</span>{tt(`status.${p.st}`)}
-                    </span>
-                  </div>
-                  <h3 style={ko
-                    ? { margin: 0, fontFamily: KR, fontSize: 64, fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.05em', color: p.st === 'paused' ? MUTED : BONE }
-                    : { margin: 0, fontSize: 64, fontWeight: 500, lineHeight: 1, letterSpacing: '-0.04em', color: p.st === 'paused' ? MUTED : BONE }}>{p.name}</h3>
-                  <p style={ko ? { margin: 0, maxWidth: 520, fontFamily: KR, fontSize: 17, lineHeight: 1.8, color: BODY } : { margin: 0, maxWidth: 520, fontSize: 16, lineHeight: 1.7, color: BODY }}>{p.one}</p>
-                  {p.desc && <p style={ko ? { margin: 0, maxWidth: 520, fontFamily: KR, fontSize: 14, lineHeight: 1.8, color: MUTED } : { margin: 0, maxWidth: 520, fontSize: 13, lineHeight: 1.7, color: MUTED }}>{p.desc}</p>}
-                  {p.tip && <span style={{ fontSize: f(11, 12), letterSpacing: `${f(0.12, 0.04)}em`, color: ACCENT }}>{p.tip}</span>}
-                  <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', columnGap: 24, borderTop: `1px solid ${LINE}` }}>
-                    {(['platform', 'stage', 'stack'] as const).map((k) => (
-                      <div key={k} style={{ gridColumn: k === 'stack' ? '1 / -1' : undefined, padding: '12px 0', borderBottom: `1px solid ${LINE}` }}>
-                        <dt style={{ fontSize: f(10, 11), letterSpacing: `${f(0.14, 0.08)}em`, color: MUTED }}>{t(`fields.${k}`)}</dt>
-                        <dd style={{ margin: '4px 0 0', fontSize: f(13, 14), lineHeight: 1.6, whiteSpace: k === 'stack' ? undefined : 'pre-line' }}>{p[k]}</dd>
+            <div style={{ position: 'absolute', inset: '8px 40px 72px', display: 'grid', gridTemplateColumns: 'minmax(0, 1.08fr) minmax(0, 1fr)', gap: 48, zIndex: 1 }}>
+              <div style={{ position: 'relative', minWidth: 0, minHeight: 0 }}>
+                <SpecimenStage step={step} ko={ko} mobile={false} enabled={enabled} />
+              </div>
+
+              <div aria-live="polite" style={{ position: 'relative', minWidth: 0 }}>
+                {projects.map((p, i) => {
+                  const on = i === step;
+                  const x = on ? 0 : i < step ? -64 : 64;
+                  return (
+                    <article key={p.code} className="qlswap sp-art" aria-hidden={!on}
+                      style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', maxWidth: 580, opacity: on ? 1 : 0, transform: `translateX(${x}px)`, pointerEvents: on ? 'auto' : 'none', transition: `opacity ${on ? 600 : 380}ms ease ${on ? 120 : 0}ms, transform 900ms ${EASE_OUT} ${on ? 60 : 0}ms` }}>
+                      <span style={label}>{p.code} · {tt(`types.${p.type}`)}</span>
+                      <h3 className="sp-name" style={ko
+                        ? { fontFamily: KR, fontSize: 'clamp(40px, min(6.4vw, 10.5vh), 96px)', fontWeight: 700, lineHeight: 1.02, letterSpacing: '-0.05em', color: p.st === 'paused' ? MUTED : BONE }
+                        : { fontFamily: ARCHIVO, fontSize: 'clamp(40px, min(6.4vw, 10.5vh), 96px)', fontWeight: 800, fontVariationSettings: "'wdth' 108", lineHeight: 0.92, letterSpacing: '-0.035em', color: p.st === 'paused' ? MUTED : BONE }}>{p.name}</h3>
+                      <StatusPill st={p.st} label={tt(`status.${p.st}`)} ko={ko} />
+                      <p style={{ margin: 0, maxWidth: 520, fontFamily: KR, fontSize: f(17, 18), lineHeight: 1.7, color: BODY, wordBreak: 'keep-all', textWrap: 'pretty' }}>{p.one}</p>
+                      {p.desc && <p className="sp-desc" style={{ margin: 0, maxWidth: 520, fontFamily: KR, color: MUTED, wordBreak: 'keep-all', textWrap: 'pretty' }}>{p.desc}</p>}
+                      {p.tip && <span style={{ fontFamily: KR, fontSize: f(13, 14), lineHeight: 1.6, color: ACCENT, wordBreak: 'keep-all' }}>{p.tip}</span>}
+                      <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'auto minmax(0, 1fr)', gap: '6px 20px', maxWidth: 540 }}>
+                        {(['platform', 'stage', 'stack'] as const).map((k) => (
+                          <div key={k} style={{ display: 'contents' }}>
+                            <dt style={{ ...label, fontSize: 11, paddingTop: 3 }}>{t(`fields.${k}`)}</dt>
+                            <dd style={{ margin: 0, fontFamily: KR, fontSize: f(13, 14), lineHeight: 1.6, color: BONE, wordBreak: 'keep-all' }}>{k === 'stage' ? p.stageLine : k === 'platform' ? p.platform.replace(/\n/g, ' · ') : p.stack}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 24px', paddingTop: 4 }}>
+                        <ProjectLinks code={p.code} ko={ko} active={on} />
+                        <a href="#index" tabIndex={on ? 0 : -1} className="sp-case" style={{ display: 'inline-flex', alignItems: 'center', minHeight: 44, fontFamily: ko ? MONO_KR : MONO, fontSize: f(12, 13), letterSpacing: `${f(0.1, 0.04)}em`, color: BONE, textDecoration: 'none', borderBottom: `1px solid ${ACCENT}` }}>{t('link')}</a>
                       </div>
-                    ))}
-                  </dl>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 20 }}>
-                    <ProjectLinks code={p.code} ko={ko} active={on} />
-                    <a href="#index" tabIndex={on ? 0 : -1} style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', minHeight: 44, fontSize: f(12, 13), letterSpacing: `${f(0.12, 0.06)}em`, textDecoration: 'none', borderBottom: `1px solid ${ACCENT}` }}>{t('link')}</a>
-                  </div>
-                </article>
-              );
-            })}
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Progress: count, five clickable segments, and the current specimen's form. */}
+            <div style={{ position: 'absolute', left: 40, right: 40, bottom: 18, display: 'flex', alignItems: 'center', gap: 20, zIndex: 2 }}>
+              <span style={{ fontFamily: MONO, fontSize: 12, letterSpacing: '0.08em', color: BONE, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                <span style={{ color: ACCENT }}>{`0${step + 1}`}</span>{` / 0${n}`}
+              </span>
+              <div style={{ flex: 1, display: 'flex', gap: 6, minWidth: 0 }}>
+                {projects.map((p, i) => (
+                  <button key={p.code} type="button" className="sp-seg" data-on={i <= step} onClick={() => goStep(i)}
+                    aria-label={`${t('stepAria')} ${p.code}`} aria-current={i === step ? 'step' : undefined}><i /></button>
+                ))}
+              </div>
+              <span style={{ ...label, minWidth: 200, textAlign: 'right', whiteSpace: 'nowrap' }}>{t('form')} · <span style={{ color: ACCENT }}><Scramble text={cur.form} trigger={step} duration={500} /></span></span>
+            </div>
           </div>
-          </div>
-          {projects.map((p, i) => <div key={p.code} data-step={i} aria-hidden="true" style={{ height: 'calc(var(--stage-h) - 20px)' }} />)}
         </div>
+        {projects.map((p, i) => <div key={p.code} data-step={i} aria-hidden="true" style={{ height: 'calc(var(--stage-h) - 20px)' }} />)}
+        {/* Tail: the last specimen holds the full scene while its spacer is centred, then the scene unpins. */}
+        <div aria-hidden="true" style={{ height: 'calc(var(--stage-h) * 0.5 - 40px)' }} />
       </div>
     </section>
   );

@@ -1,9 +1,14 @@
 /* Values from the approved mockup (Concept A · Specimen Lab). */
 html { scroll-behavior: auto; }
 body { margin: 0; background: #0C0D0B; color: #ECE8DE; -webkit-font-smoothing: antialiased; }
-a { color: #ECE8DE; }
-a:hover { color: #FF5A1F; }
-footer a:hover { color: #FF5A1F; }
+/* Motion tokens: strong ease-out for things entering or responding to a press. */
+:root { --ql-ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
+a { color: #ECE8DE; transition: color 150ms ease; }
+/* Hover colours only on real pointers; touch fires a sticky :hover on tap. */
+@media (hover: hover) and (pointer: fine) {
+  a:hover { color: #FF5A1F; }
+  footer a:hover { color: #FF5A1F; }
+}
 
 @keyframes qlblink { 0%, 100% { opacity: 1 } 50% { opacity: .15 } }
 @keyframes qlfloat { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
@@ -17,11 +22,38 @@ footer a:hover { color: #FF5A1F; }
 .qlfloat { animation: qlfloat 5s ease-in-out infinite; }
 .qlfloatm { animation: qlfloatm 5s ease-in-out infinite; }
 .qlrow { background: linear-gradient(#FF5A1F, #FF5A1F) left center/0% 100% no-repeat; transition: background-size .25s ease, color .25s ease; }
-.qlrow:hover { background-size: 100% 100%; color: #0C0D0B !important; }
-.qlrow:hover .qlmuted { color: #0C0D0B !important; }
-.qllink { transition: background .2s ease, color .2s ease; }
-.qllink:hover, .qllink:focus-visible { background: #FF5A1F; color: #0C0D0B !important; }
-.qllink:hover span, .qllink:focus-visible span { color: #0C0D0B !important; }
+.qlrow:focus-visible { background-size: 100% 100%; color: #0C0D0B !important; }
+.qlrow:focus-visible .qlmuted { color: #0C0D0B !important; }
+.qllink { transition: background-color .2s ease, color .2s ease, transform 160ms var(--ql-ease-out); }
+.qllink:focus-visible { background: #FF5A1F; color: #0C0D0B !important; }
+.qllink:focus-visible span { color: #0C0D0B !important; }
+.qlcta { transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform 160ms var(--ql-ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .qlrow:hover { background-size: 100% 100%; color: #0C0D0B !important; }
+  .qlrow:hover .qlmuted { color: #0C0D0B !important; }
+  .qllink:hover { background: #FF5A1F; color: #0C0D0B !important; }
+  .qllink:hover span { color: #0C0D0B !important; }
+  .qlcta-solid:hover { background: #ECE8DE !important; color: #0C0D0B !important; }
+  .qlcta-line:hover { border-color: #FF5A1F !important; }
+}
+
+/* Press feedback: a quick, subtle dip that confirms the tap (no bounce). */
+.qlpress { transition: transform 160ms var(--ql-ease-out); }
+.qlpress:active, .qllink:active, .qlcta:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  .qlpress:active, .qllink:active, .qlcta:active { transform: none; }
+}
+
+/* Content that mounts on demand (mobile menu, registry details) wipes down from its trigger instead of
+   teleporting in. Mount-only, so a keyframe is fine; reduced motion keeps just the fade. */
+@keyframes qlreveal { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+@keyframes qlfade { from { opacity: 0; } to { opacity: 1; } }
+.qlreveal { animation: qlreveal 220ms var(--ql-ease-out) both; }
+@media (prefers-reduced-motion: reduce) { .qlreveal { animation: qlfade 160ms ease both; } }
+
+/* Specimen swaps (stage objects + file text): with reduced motion the slide/scale jumps and only the
+   crossfade remains. Geometry and normal-motion timing are untouched. */
+@media (prefers-reduced-motion: reduce) { .qlswap { transition: opacity 200ms ease !important; } }
 
 /* One layout per range: desktop board ≥1024px, mobile board below. */
 .d-only { display: block; }
@@ -36,11 +68,11 @@ footer a:hover { color: #FF5A1F; }
 }
 
 @keyframes qlwipe { from { clip-path: inset(100% 0 0 0); transform: translateY(18px); } to { clip-path: inset(0 0 0 0); transform: translateY(0); } }
-.qlwipe { animation: qlwipe 400ms cubic-bezier(.7,0,.2,1) both; }
+.qlwipe { animation: qlwipe 400ms var(--ql-ease-out) both; }
 @media (prefers-reduced-motion: reduce) { .qlwipe { animation: none; } }
 
-/* Anchor jumps land below the sticky header (desktop 66px, mobile 65px). */
-section[id], footer[id] { scroll-margin-top: 65px; }
+/* Anchor jumps land below the floating 64px header. */
+section[id], footer[id] { scroll-margin-top: 64px; }
 
 @keyframes qlflash4 { 0%, 25%, 50%, 75% { opacity: 0 } 12%, 37%, 62%, 87% { opacity: 0.55 } 100% { opacity: 0 } }
 .qlflash4 { opacity: 0; animation: qlflash4 1.2s linear both; }

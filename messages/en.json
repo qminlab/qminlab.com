@@ -98,5 +98,6 @@
     "hintsMobile": ["TAP THE PHONE TO TRY IT · SWIPE FOR NEXT", "SWIPE OR TAP 01–05", "SWIPE OR TAP 01–05", "SWIPE OR TAP 01–05", "SWIPE OR TAP 01–05"],
     "parked": "PARKED",
     "loading": "LOADING SPECIMEN"
-  }
+  },
+  "marquee": { "words": ["APPS", "PROGRAMS", "GAMES", "TOOLS", "MADE FOR ONE, SHARED WITH ALL"] }
 }

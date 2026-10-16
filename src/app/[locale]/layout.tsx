@@ -5,7 +5,12 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { archivo, plexKr, plexMono } from '@/lib/fonts';
+import 'lenis/dist/lenis.css';
 import '../globals.css';
+import '@/styles/shell.css';
+import '@/styles/hero.css';
+import '@/styles/specimens.css';
+import '@/styles/index.css';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

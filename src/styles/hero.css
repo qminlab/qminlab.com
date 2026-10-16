@@ -1,0 +1,71 @@
+/* Hero (Open Lab): full-bleed first screen, giant variable "QMIN", unframed cube, lens over the whole hero. */
+.qh {
+  --qh-ease: cubic-bezier(.23,1,.32,1);
+  position: relative; overflow: hidden; min-height: 100svh; box-sizing: border-box;
+  display: grid; grid-template-rows: auto 1fr auto; row-gap: 24px;
+  padding: 84px 40px 40px;
+}
+.qh-d { cursor: none; }
+.qh-d a, .qh-d button { cursor: pointer; }
+.qh-m { min-height: auto; padding: 76px 16px 44px; row-gap: 18px; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+
+.qh-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; font-size: 11px; letter-spacing: .12em; color: #8D8B82; position: relative; z-index: 3; }
+.qh-m .qh-top { font-size: 10px; letter-spacing: .1em; }
+
+/* word row: the cube stage is centred on it */
+.qh-wordrow { position: relative; align-self: center; box-sizing: border-box; }
+.qh-m .qh-wordrow { padding: 52px 0 92px; }
+.qh-word {
+  display: flex; justify-content: space-between; font-family: var(--font-archivo), sans-serif;
+  font-size: clamp(96px, 27vw, 420px); line-height: .8; color: #ECE8DE; user-select: none; white-space: nowrap;
+}
+.qh-m .qh-word { font-size: min(27vw, 240px); }
+.qh-word span { display: inline-block; font-weight: 800; font-variation-settings: "wdth" 100, "wght" 800; transition: font-variation-settings 600ms var(--qh-ease); }
+.qh-word-x span { color: transparent; -webkit-text-stroke: 1.5px #FF5A1F; }
+
+.qh-cube { position: absolute; left: 50%; top: 50%; width: 440px; height: 440px; margin: -220px 0 0 -220px; pointer-events: none; z-index: 2; transform: scale(var(--qh-s, 1)); }
+.qh-d .qh-cube { --qh-s: .92; }
+@media (min-width: 1360px) { .qh-d .qh-cube { --qh-s: 1.04; } }
+@media (min-width: 1760px) { .qh-d .qh-cube { --qh-s: 1.24; } }
+.qh-m .qh-cube { width: 420px; height: 420px; margin: -210px 0 0 -210px; --qh-s: .48; }
+.qh-cube > .qh-fade { position: absolute; inset: 0; transition: opacity 600ms ease; }
+
+/* foot: brand headline + side column */
+.qh-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 32px 48px; position: relative; z-index: 3; }
+.qh-brand { margin: 0; max-width: 14em; }
+.qh-side { display: flex; flex-direction: column; gap: 14px; width: min(360px, 100%); container-type: inline-size; }
+.qh-m .qh-foot { flex-direction: column; align-items: stretch; gap: 26px; }
+.qh-m .qh-side { width: 100%; }
+.qh-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 4px; }
+.qh-cta {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 24px; border-radius: 999px;
+  background: #FF5A1F; color: #0C0D0B !important; text-decoration: none; font-weight: 600;
+  transition: transform 160ms var(--qh-ease), background-color .2s ease;
+}
+.qh-cta:active { transform: scale(.97); }
+.qh-sec { display: inline-flex; align-items: center; min-height: 44px; color: #ECE8DE; text-decoration: underline; text-underline-offset: 5px; text-decoration-color: rgba(236,232,222,.35); transition: color .2s ease, text-decoration-color .2s ease; }
+.qh-sec:active { opacity: .7; }
+@media (hover: hover) and (pointer: fine) {
+  .qh-cta:hover { background: #ECE8DE; }
+  .qh-sec:hover { color: #FF5A1F; text-decoration-color: #FF5A1F; }
+}
+
+/* x-ray layer: covers the whole hero, clipped to the lens circle by src/lib/lens.ts */
+.qh-xray { position: absolute; inset: 0; pointer-events: none; z-index: 4; clip-path: circle(0px at 0 0); }
+.qh-xray .qh-wordrow { position: absolute; margin: 0; }
+.qh-note { position: absolute; font-size: 12px; line-height: 1.7; color: #FF5A1F; white-space: pre; }
+.qh-m .qh-note { font-size: 11px; line-height: 1.6; }
+
+.qh-ring { position: absolute; left: 0; top: 0; border: 1.5px solid #FF5A1F; border-radius: 50%; pointer-events: none; box-sizing: border-box; visibility: hidden; will-change: transform; z-index: 5; }
+.qh-ring > i { position: absolute; background: #FF5A1F; }
+
+.qh-hint {
+  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); z-index: 3; display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(236,232,222,.14); background: rgba(12,13,11,.72);
+  font-size: 10px; letter-spacing: .1em; white-space: nowrap; pointer-events: none; color: #ECE8DE;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qh-word span { transition: none; }
+  .qh-cta { transition: none; }
+}

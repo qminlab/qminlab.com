@@ -14,7 +14,7 @@ export function ProjectLinks({ code, ko, small, active = true, onAccent }: { cod
       {links.map((l) => (
         <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" tabIndex={active ? 0 : -1} className="qllink"
           onClick={(e) => e.stopPropagation()}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, minHeight: 44, padding: '0 14px', border: `1px solid ${bd}`, color: onAccent ? INK : BONE, fontFamily: ko ? MONO_KR : MONO, fontSize: small ? 12 : ko ? 13 : 12, letterSpacing: ko ? '0.04em' : '0.12em', textDecoration: 'none' }}>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, minHeight: 44, padding: '0 18px', borderRadius: 999, border: `1px solid ${bd}`, color: onAccent ? INK : BONE, fontFamily: ko ? MONO_KR : MONO, fontSize: small ? 12 : ko ? 13 : 12, letterSpacing: ko ? '0.04em' : '0.12em', textDecoration: 'none' }}>
           {t(l.kind)} <span aria-hidden="true" style={{ color: onAccent ? INK : ACCENT }}>↗</span>
         </a>
       ))}

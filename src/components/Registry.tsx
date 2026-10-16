@@ -1,12 +1,18 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { ACCENT, BODY, BONE, DIM, INK, KR, LINE, MONO, MONO_KR, MUTED, pill } from '@/lib/tokens';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Project } from '@/lib/projects';
 import { ProjectLinks } from './ProjectLinks';
+import { IndexThumb } from './IndexThumbs';
+import '@/styles/index.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 type Filter = 'ALL' | 'APP' | 'PROGRAM' | 'GAME' | 'TOOL';
 const FILTERS: Filter[] = ['ALL', 'APP', 'PROGRAM', 'GAME', 'TOOL'];
+const HANGUL = /[ㄱ-ㆎ가-힣]/;
 
 /** The dashed placeholder row takes the number after the last specimen. */
 const nextCode = (projects: Project[]) => `QL-${String(projects.length + 1).padStart(3, '0')}`;
@@ -20,90 +26,134 @@ function useFilter(projects: Project[]) {
   return { filter, setFilter: (f: Filter) => { setFilter(f); setOpen(-1); }, open, setOpen, counts, rows };
 }
 
+/** Rows rise in with a short stagger the first time the list scrolls into view. Content stays visible without JS. */
+function useRiseIn(list: React.RefObject<HTMLUListElement | null>, query: string) {
+  useEffect(() => {
+    const el = list.current;
+    if (!el) return;
+    const mm = gsap.matchMedia();
+    mm.add(`${query} and (prefers-reduced-motion: no-preference)`, () => {
+      gsap.from(el.querySelectorAll(':scope > li'), {
+        yPercent: 40, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.07, clearProps: 'transform,opacity',
+        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+      });
+    });
+    return () => mm.revert();
+  }, [list, query]);
+}
+
+function Filters({ filter, setFilter, counts, label }: { filter: Filter; setFilter: (f: Filter) => void; counts: Record<string, number>; label: string }) {
+  const tt = useTranslations();
+  return (
+    <div role="group" aria-label={label} className="ix-filters">
+      {FILTERS.map((k) => (
+        <button key={k} type="button" className="ix-filter qlpress" onClick={() => setFilter(k)} aria-pressed={filter === k}>
+          {tt(`types.${k}`)}<sup>{String(counts[k] || 0).padStart(2, '0')}</sup>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const Name = ({ name }: { name: string }) => (
+  <span className={HANGUL.test(name) ? 'ix-nm ix-nm--kr' : 'ix-nm'}>{name}</span>
+);
+
 export function RegistryDesktop({ ko }: { ko: boolean }) {
   const t = useTranslations('index');
   const tt = useTranslations();
   const projects = tt.raw('projects') as Project[];
   const { filter, setFilter, open, setOpen, counts, rows } = useFilter(projects);
-  const f = (en: number, k: number) => (ko ? k : en);
-  const grid = '120px minmax(0, 1fr) 160px 200px 56px';
-  const keys = t.raw('keys') as string[];
-  // Mockup note ④: a small preview plate follows the cursor over a row.
-  const plate = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLUListElement>(null);
+  useRiseIn(list, '(min-width: 1024px)');
+
+  // Cursor-follow preview: target set on pointer move, position eased toward it each frame (lerp).
+  const pv = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState(-1);
-  const movePlate = (e: React.MouseEvent) => {
-    const el = plate.current;
-    if (el) el.style.transform = `translate3d(${e.clientX + 18}px, ${e.clientY + 18}px, 0)`;
+  const [shown, setShown] = useState(-1); // keeps the last thumbnail while the preview fades out
+  const st = useRef({ x: 0, y: 0, qx: 0, qy: 0, raf: 0, on: false, placed: false });
+  const fine = useRef(false);
+  useEffect(() => {
+    fine.current = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const s = st.current;
+    return () => cancelAnimationFrame(s.raf);
+  }, []);
+  const loop = () => {
+    const s = st.current, el = pv.current;
+    s.qx += (s.x - s.qx) * 0.16; s.qy += (s.y - s.qy) * 0.16;
+    if (el) el.style.transform = `translate3d(${s.qx}px, ${s.qy}px, 0)`;
+    const settled = Math.abs(s.x - s.qx) < 0.3 && Math.abs(s.y - s.qy) < 0.3;
+    s.raf = s.on || !settled ? requestAnimationFrame(loop) : 0;
   };
-  const hp = hover >= 0 ? projects[hover] : null;
+  const enter = (i: number, e: React.PointerEvent) => {
+    if (!fine.current || e.pointerType !== 'mouse') return;
+    const s = st.current;
+    s.x = e.clientX; s.y = e.clientY;
+    if (!s.placed) { s.qx = s.x; s.qy = s.y; s.placed = true; }
+    s.on = true; setHover(i); setShown(i);
+    if (!s.raf) s.raf = requestAnimationFrame(loop);
+  };
+  const move = (e: React.PointerEvent) => { st.current.x = e.clientX; st.current.y = e.clientY; };
+  const leave = () => { st.current.on = false; setHover(-1); };
 
   return (
-    <section id="index" aria-label={t('label')} style={{ padding: '72px 40px', borderBottom: `1px solid ${LINE}` }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: 20, paddingBottom: 28 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <span style={{ fontSize: 11, letterSpacing: `${f(0.16, 0.12)}em`, color: ACCENT }}>{t('eyebrow')}</span>
-          <h2 style={ko ? { margin: 0, fontFamily: KR, fontSize: 44, fontWeight: 700, letterSpacing: '-0.04em' } : { margin: 0, fontSize: 44, fontWeight: 500, letterSpacing: '-0.03em' }}>{t('title')}</h2>
+    <section id="index" aria-label={t('label')} className="ix" data-ko={ko || undefined}>
+      <div className="ix-head">
+        <div className="ix-head-txt">
+          <span className="ix-eyebrow">{t('eyebrow')}</span>
+          <h2 className="ix-title">{t('title')}</h2>
         </div>
-        <div role="group" aria-label={t('filterLabel')} style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {FILTERS.map((k) => {
-            const on = filter === k;
-            return (
-              <button key={k} type="button" onClick={() => setFilter(k)} aria-pressed={on} style={{ minHeight: 44, padding: '0 16px', border: `1px solid ${on ? BONE : LINE}`, background: on ? BONE : 'transparent', color: on ? INK : BONE, fontFamily: ko ? MONO_KR : MONO, fontSize: f(12, 13), letterSpacing: `${f(0.1, 0.06)}em`, cursor: 'pointer' }}>
-                {tt(`types.${k}`)} <span style={{ opacity: 0.6 }}>{String(counts[k] || 0).padStart(2, '0')}</span>
-              </button>
-            );
-          })}
-        </div>
+        <Filters filter={filter} setFilter={setFilter} counts={counts} label={t('filterLabel')} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: grid, gap: 16, padding: '10px 16px', fontSize: f(10, 11), letterSpacing: `${f(0.16, 0.1)}em`, color: MUTED, borderTop: `1px solid ${BONE}`, borderBottom: `1px solid ${LINE}` }}>
-        {(t.raw('cols') as string[]).map((c) => <span key={c}>{c}</span>)}<span />
-      </div>
-      {rows.map(({ p, i }) => {
-        const isOpen = open === i;
-        const pl = pill(p.st);
-        return (
-          <div key={p.code} style={{ borderBottom: `1px solid ${LINE}` }}>
-            <button type="button" className="qlrow" onClick={() => setOpen(isOpen ? -1 : i)} aria-expanded={isOpen}
-              onMouseEnter={(e) => { setHover(i); movePlate(e); }} onMouseMove={movePlate} onMouseLeave={() => setHover(-1)}
-              style={{ width: '100%', display: 'grid', gridTemplateColumns: grid, gap: 16, alignItems: 'center', minHeight: 76, padding: '0 16px', border: 0, color: BONE, fontFamily: ko ? MONO_KR : MONO, textAlign: 'left', cursor: 'pointer' }}>
-              <span className="qlmuted" style={{ fontSize: 12, letterSpacing: '0.1em', color: MUTED }}>{p.code}</span>
-              <span style={ko ? { fontFamily: KR, fontSize: 26, fontWeight: 700, letterSpacing: '-0.04em' } : { fontSize: 26, fontWeight: 500, letterSpacing: '-0.02em' }}>{p.name}</span>
-              <span className="qlmuted" style={{ fontSize: f(12, 13), letterSpacing: `${f(0.12, 0.06)}em`, color: MUTED }}>{tt(`types.${p.type}`)}</span>
-              <span style={{ justifySelf: 'start', display: 'inline-flex', alignItems: 'center', gap: 8, padding: '5px 10px', fontSize: f(11, 12), letterSpacing: `${f(0.12, 0.06)}em`, border: `1px solid ${pl.bd}`, background: pl.bg, color: pl.fg }}>{tt(`status.${p.st}`)}</span>
-              <span style={{ fontSize: 22, textAlign: 'right' }}>{isOpen ? '−' : '+'}</span>
-            </button>
-            {isOpen && (
-              <div style={{ display: 'grid', gridTemplateColumns: '120px minmax(0, 1fr) 360px', gap: 16, padding: '4px 16px 28px' }}>
-                <span />
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 560 }}>
-                  <p style={ko ? { margin: 0, fontFamily: KR, fontSize: 15, lineHeight: 1.8, color: BODY } : { margin: 0, fontSize: 14, lineHeight: 1.7, color: BODY }}>{p.one}</p>
-                  {p.desc && <p style={ko ? { margin: 0, fontFamily: KR, fontSize: 14, lineHeight: 1.8, color: MUTED } : { margin: 0, fontSize: 13, lineHeight: 1.7, color: MUTED }}>{p.desc}</p>}
-                  <ProjectLinks code={p.code} ko={ko} small />
+      <ul ref={list} className="ix-rows" onPointerLeave={leave}>
+        {rows.map(({ p, i }) => {
+          const isOpen = open === i;
+          return (
+            <li key={p.code} className="ix-item" data-open={isOpen || undefined}>
+              <button type="button" className="ix-row" onClick={() => setOpen(isOpen ? -1 : i)} aria-expanded={isOpen}
+                onPointerEnter={(e) => enter(i, e)} onPointerMove={move} onPointerLeave={leave}>
+                <span className="ix-code">{p.code}</span>
+                <Name name={p.name} />
+                <span className="ix-meta">
+                  <span className="ix-type">{tt(`types.${p.type}`)}</span>
+                  <span className={`ix-pill ix-pill--${p.st}`}>{tt(`status.${p.st}`)}</span>
+                </span>
+                <span className="ix-pm" aria-hidden="true">{isOpen ? '−' : '+'}</span>
+              </button>
+              {isOpen && (
+                <div className="ix-detail">
+                  <div className="ix-detail-txt">
+                    <p className="ix-one">{p.one}</p>
+                    {p.desc && <p className="ix-desc">{p.desc}</p>}
+                    <ProjectLinks code={p.code} ko={ko} small />
+                  </div>
+                  <dl className="ix-facts">
+                    <dt>{t('stage')}</dt><dd>{p.stageLine}</dd>
+                    <dt>{t('stack')}</dt><dd>{p.stack}</dd>
+                  </dl>
                 </div>
-                <div style={{ fontSize: f(11, 12), letterSpacing: `${f(0.06, 0.04)}em`, color: MUTED, lineHeight: 1.9 }}>{t('stage')} · {p.stageLine}<br />{t('stack')} · {p.stack}</div>
-              </div>
-            )}
+              )}
+            </li>
+          );
+        })}
+        <li className="ix-item ix-item--next" aria-label={`${nextCode(projects)} ${t('next')}`}>
+          <div className="ix-row ix-row--next">
+            <span className="ix-code">{nextCode(projects)}</span>
+            <span className="ix-nm ix-nm--ghost">{t('next')}</span>
+            <span className="ix-meta"><span className="ix-type">{t('nextType')}</span></span>
+            <span />
           </div>
-        );
-      })}
-      <div style={{ display: 'grid', gridTemplateColumns: grid, gap: 16, alignItems: 'center', minHeight: 76, padding: '0 16px', borderBottom: `1px dashed ${LINE}`, color: DIM }}>
-        <span style={{ fontSize: 12, letterSpacing: '0.1em' }}>{nextCode(projects)}</span>
-        <span style={ko ? { fontFamily: KR, fontSize: 26, letterSpacing: '-0.04em' } : { fontSize: 26, letterSpacing: '-0.02em' }}>{t('next')}</span>
-        <span style={{ fontSize: f(12, 13), letterSpacing: `${f(0.12, 0.06)}em` }}>{t('nextType')}</span>
-        <span style={{ fontSize: f(11, 12), letterSpacing: ko ? undefined : '0.12em' }}>—</span>
-        <span />
-      </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, paddingTop: 20, fontSize: f(11, 12), letterSpacing: `${f(0.12, 0.06)}em`, color: MUTED }}>
-        <span>{t('key')}</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, background: BONE }} />{keys[0]}</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, background: ACCENT }} />{keys[1]}</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, border: `1px solid ${BONE}`, boxSizing: 'border-box' }} />{keys[2]}</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, border: `1px solid ${ACCENT}`, boxSizing: 'border-box' }} />{keys[4]}</span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, border: `1px dashed ${MUTED}`, boxSizing: 'border-box' }} />{keys[3]}</span>
-      </div>
-      <div ref={plate} aria-hidden="true" style={{ position: 'fixed', left: 0, top: 0, zIndex: 40, pointerEvents: 'none', width: 168, padding: '10px 12px', background: INK, border: `1px solid ${ACCENT}`, fontSize: 10, letterSpacing: '0.12em', lineHeight: 1.7, color: MUTED, opacity: hp ? 1 : 0, transition: 'opacity 150ms ease' }}>
-        {hp && <><span style={{ color: ACCENT }}>{hp.code}</span><br />{hp.form}<br /><span style={{ color: BONE }}>{hp.dims}</span></>}
+        </li>
+      </ul>
+
+      <div ref={pv} className="ix-preview" aria-hidden="true" data-on={hover >= 0 || undefined}>
+        <div className="ix-preview-in">
+          {shown >= 0 && <>
+            <div className="ix-preview-obj"><IndexThumb code={projects[shown].code} /></div>
+            <span className="ix-preview-cap">{projects[shown].code} · {projects[shown].form}</span>
+          </>}
+        </div>
       </div>
     </section>
   );
@@ -114,48 +164,49 @@ export function RegistryMobile({ ko }: { ko: boolean }) {
   const tt = useTranslations();
   const projects = tt.raw('projects') as Project[];
   const { filter, setFilter, open, setOpen, counts, rows } = useFilter(projects);
-  const f = (en: number, k: number) => (ko ? k : en);
+  const list = useRef<HTMLUListElement>(null);
+  useRiseIn(list, '(max-width: 1023.98px)');
   return (
-    <section id="m-index" aria-label={t('label')} style={{ padding: '48px 16px', borderBottom: `1px solid ${LINE}` }}>
-      <span style={{ fontSize: f(10, 11), letterSpacing: `${f(0.14, 0.1)}em`, color: ACCENT }}>{t('eyebrow')}</span>
-      <h2 style={ko ? { margin: '10px 0 18px', fontFamily: KR, fontSize: 28, fontWeight: 700, letterSpacing: '-0.05em' } : { margin: '10px 0 18px', fontSize: 30, fontWeight: 500, letterSpacing: '-0.03em' }}>{t('titleMobile')}</h2>
-      <div role="group" aria-label={t('filterLabel')} style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 16 }}>
-        {FILTERS.map((k) => {
-          const on = filter === k;
-          return (
-            <button key={k} type="button" onClick={() => setFilter(k)} aria-pressed={on} style={{ flex: 'none', minHeight: 44, padding: '0 12px', border: `1px solid ${on ? BONE : LINE}`, background: on ? BONE : 'transparent', color: on ? INK : BONE, fontFamily: ko ? MONO_KR : MONO, fontSize: f(11, 12), letterSpacing: ko ? undefined : '0.08em', cursor: 'pointer' }}>
-              {tt(`types.${k}`)} {String(counts[k] || 0).padStart(2, '0')}
-            </button>
-          );
-        })}
+    <section id="m-index" aria-label={t('label')} className="ix ix--m" data-ko={ko || undefined}>
+      <div className="ix-head">
+        <div className="ix-head-txt">
+          <span className="ix-eyebrow">{t('eyebrow')}</span>
+          <h2 className="ix-title">{t('titleMobile')}</h2>
+        </div>
+        <Filters filter={filter} setFilter={setFilter} counts={counts} label={t('filterLabel')} />
       </div>
-      <div style={{ borderTop: `1px solid ${BONE}` }}>
+      <ul ref={list} className="ix-rows">
         {rows.map(({ p, i }) => {
           const isOpen = open === i;
-          const pl = pill(p.st);
-          const fg = isOpen ? INK : BONE;
           return (
-            <div key={p.code} style={{ borderBottom: `1px solid ${LINE}`, background: isOpen ? ACCENT : 'transparent', transition: 'background 250ms ease' }}>
-              <button type="button" onClick={() => setOpen(isOpen ? -1 : i)} aria-expanded={isOpen} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, padding: '16px 4px', border: 0, background: 'transparent', color: fg, fontFamily: ko ? MONO_KR : MONO, textAlign: 'left', cursor: 'pointer' }}>
-                <span style={{ display: 'flex', justifyContent: 'space-between', width: '100%', fontSize: f(10, 11), letterSpacing: `${f(0.12, 0.06)}em` }}>
-                  <span>{p.code} · {tt(`types.${p.type}`)}</span>
-                  <span style={{ padding: '3px 7px', border: `1px solid ${isOpen ? INK : pl.bd}`, background: isOpen ? INK : pl.bg, color: isOpen ? ACCENT : pl.fg }}>{tt(`statusMobile.${p.st}`)}</span>
+            <li key={p.code} className="ix-item" data-open={isOpen || undefined}>
+              <button type="button" className="ix-row" onClick={() => setOpen(isOpen ? -1 : i)} aria-expanded={isOpen}>
+                <span className="ix-mtop">
+                  <span className="ix-code">{p.code} · {tt(`types.${p.type}`)}</span>
+                  <span className={`ix-pill ix-pill--${p.st}`}>{tt(`statusMobile.${p.st}`)}</span>
                 </span>
-                <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                  <span style={ko ? { fontFamily: KR, fontSize: 21, fontWeight: 700, letterSpacing: '-0.04em' } : { fontSize: 22, fontWeight: 500, letterSpacing: '-0.02em' }}>{p.name}</span>
-                  <span style={{ fontSize: 20 }}>{isOpen ? '−' : '+'}</span>
+                <span className="ix-mname">
+                  <Name name={p.name} />
+                  <span className="ix-pm" aria-hidden="true">{isOpen ? '−' : '+'}</span>
                 </span>
               </button>
-              {isOpen && <p style={ko ? { margin: 0, padding: '0 4px 18px', fontFamily: KR, fontSize: 14, lineHeight: 1.75, color: fg } : { margin: 0, padding: '0 4px 18px', fontSize: 13, lineHeight: 1.7, color: fg }}>{p.one}{p.desc && <><br /><br />{p.desc}</>}</p>}
-              {isOpen && <div style={{ padding: '0 4px 18px' }}><ProjectLinks code={p.code} ko={ko} small onAccent /></div>}
-            </div>
+              {isOpen && (
+                <div className="ix-detail">
+                  <p className="ix-one">{p.one}</p>
+                  {p.desc && <p className="ix-desc">{p.desc}</p>}
+                  <ProjectLinks code={p.code} ko={ko} small />
+                </div>
+              )}
+            </li>
           );
         })}
-        <div style={{ padding: '16px 4px', borderBottom: `1px dashed ${LINE}`, color: DIM }}>
-          <div style={{ fontSize: f(10, 11), letterSpacing: `${f(0.12, 0.1)}em` }}>{nextCode(projects)}</div>
-          <div style={ko ? { fontFamily: KR, fontSize: 19, marginTop: 6 } : { fontSize: 20, marginTop: 6 }}>{t('next')}</div>
-        </div>
-      </div>
+        <li className="ix-item ix-item--next">
+          <div className="ix-row ix-row--next">
+            <span className="ix-code">{nextCode(projects)}</span>
+            <span className="ix-nm ix-nm--ghost">{t('next')}</span>
+          </div>
+        </li>
+      </ul>
     </section>
   );
 }
