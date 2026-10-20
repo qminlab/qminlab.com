@@ -19,6 +19,7 @@ export function SpecimensDesktop({ ko, enabled }: { ko: boolean; enabled: boolea
   const t = useTranslations('specimens');
   const tt = useTranslations();
   const projects = tt.raw('projects') as Project[];
+  const order = projects.map((p) => p.code);
   const [step, setStep] = useState(0);
   const stepRef = useRef(0);
   stepRef.current = step;
@@ -86,7 +87,7 @@ export function SpecimensDesktop({ ko, enabled }: { ko: boolean; enabled: boolea
 
             <div style={{ position: 'absolute', inset: '8px 40px 72px', display: 'grid', gridTemplateColumns: 'minmax(0, 1.08fr) minmax(0, 1fr)', gap: 48, zIndex: 1 }}>
               <div style={{ position: 'relative', minWidth: 0, minHeight: 0 }}>
-                <SpecimenStage step={step} ko={ko} mobile={false} enabled={enabled} />
+                <SpecimenStage code={cur.code} order={order} ko={ko} mobile={false} enabled={enabled} />
               </div>
 
               <div aria-live="polite" style={{ position: 'relative', minWidth: 0 }}>

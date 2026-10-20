@@ -13,6 +13,7 @@ export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean
   const t = useTranslations('specimens');
   const tt = useTranslations();
   const projects = tt.raw('projects') as Project[];
+  const order = projects.map((p) => p.code);
   const [step, setStep] = useState(0);
   const n = projects.length;
   const cur = projects[step];
@@ -44,7 +45,7 @@ export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean
       <div {...swipe} style={{ position: 'relative', margin: '0 -16px', height: 400, overflow: 'hidden', touchAction: 'pan-y' }}>
         <OutlineNumbers count={n} step={step} className="sp-nums sp-nums-m" shift={30} />
         <div style={{ position: 'relative', zIndex: 1, height: '100%' }}>
-          <SpecimenStage step={step} ko={ko} mobile enabled={enabled} />
+          <SpecimenStage code={cur.code} order={order} ko={ko} mobile enabled={enabled} />
         </div>
       </div>
 

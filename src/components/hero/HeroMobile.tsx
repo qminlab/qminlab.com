@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { heroCounts, type Project } from '@/lib/projects';
 import dynamic from 'next/dynamic';
 import { Lens } from '@/lib/lens';
 import { ACCENT, BODY, KR, MONO, MONO_KR, MUTED, XRAY } from '@/lib/tokens';
@@ -22,6 +23,7 @@ const LIFT = 90;
 export function HeroMobile({ ko, enabled }: { ko: boolean; enabled: boolean }) {
   const t = useTranslations('hero');
   const ts = useTranslations('stage');
+  const tr = useTranslations();
   const hero = useRef<HTMLElement>(null);
   const row = useRef<HTMLDivElement>(null);
   const xrow = useRef<HTMLDivElement>(null);
@@ -95,7 +97,7 @@ export function HeroMobile({ ko, enabled }: { ko: boolean; enabled: boolean }) {
   };
 
   const stats = t.raw('stats') as string[];
-  const vals = [5, 1, 2, 1];
+  const vals = heroCounts(tr.raw('projects') as Project[]);
 
   return (
     <section ref={hero} aria-label={t('label')} className="qh qh-m"

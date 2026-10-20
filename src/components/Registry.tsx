@@ -10,8 +10,8 @@ import '@/styles/index.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Filter = 'ALL' | 'APP' | 'PROGRAM' | 'GAME' | 'TOOL';
-const FILTERS: Filter[] = ['ALL', 'APP', 'PROGRAM', 'GAME', 'TOOL'];
+type Filter = 'ALL' | 'APP' | 'PROGRAM' | 'GAME' | 'ANIME' | 'TOOL';
+const FILTERS: Filter[] = ['ALL', 'APP', 'PROGRAM', 'GAME', 'ANIME', 'TOOL'];
 const HANGUL = /[ㄱ-ㆎ가-힣]/;
 
 /** The dashed placeholder row takes the number after the last specimen. */

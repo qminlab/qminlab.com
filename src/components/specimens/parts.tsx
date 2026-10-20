@@ -2,7 +2,7 @@
 import type { CSSProperties } from 'react';
 import { ACCENT, BONE, INK, MONO, MONO_KR, MUTED, type Status } from '@/lib/tokens';
 
-/** Rounded status pill (shared Open Lab rule): review = accent fill, dev = bone outline, use = accent outline,
+/** Rounded status pill (shared Open Lab rule): review = accent fill, dev/making = bone outline, use = accent outline,
  *  paused = muted dashed outline, live = bone fill. */
 export function StatusPill({ st, label, ko, small }: { st: Status; label: string; ko: boolean; small?: boolean }) {
   const s: CSSProperties =

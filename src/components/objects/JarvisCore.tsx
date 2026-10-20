@@ -119,7 +119,7 @@ export function JarvisCore({ active, ko, pointer, onReady }: { active: boolean; 
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, fontSize: 22, fontWeight: 600, letterSpacing: '0.06em' }}>
           <span>JARVIS</span><span style={{ color: '#5E5C55' }}>/</span><span style={{ fontFamily: KR, fontWeight: 700, letterSpacing: '-0.02em' }}>자비스</span>
         </div>
-        <div style={{ fontSize: 10, letterSpacing: '0.18em', color: MUTED }}>{ko ? 'AI 비서 겸 감독관 · 개발 중' : 'AI ASSISTANT + SUPERVISOR · IN DEVELOPMENT'}</div>
+        <div style={{ fontSize: 10, letterSpacing: '0.18em', color: MUTED }}>{ko ? 'AI 비서 겸 감독관 · 일시정지' : 'AI ASSISTANT + SUPERVISOR · PAUSED'}</div>
       </div>
     </div>
   );

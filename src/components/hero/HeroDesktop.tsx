@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { heroCounts, type Project } from '@/lib/projects';
 import dynamic from 'next/dynamic';
 import { Lens } from '@/lib/lens';
 import { ACCENT, BODY, KR, MONO, MONO_KR, MUTED, XRAY } from '@/lib/tokens';
@@ -21,6 +22,7 @@ const R = 120;
 export function HeroDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }) {
   const t = useTranslations('hero');
   const ts = useTranslations('stage');
+  const tr = useTranslations();
   const hero = useRef<HTMLElement>(null);
   const row = useRef<HTMLDivElement>(null);
   const xrow = useRef<HTMLDivElement>(null);
@@ -66,7 +68,9 @@ export function HeroDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }) 
     const r = e.currentTarget.getBoundingClientRect();
     const mx = e.clientX - r.left, my = e.clientY - r.top;
     hovering.current = true;
-    lens.current?.move(mx, my, `X ${String(Math.round(mx)).padStart(4, '0')} · Y ${String(Math.round(my)).padStart(4, '0')}`);
+    // Over the buttons the scope steps aside so the real cursor can click them.
+    if ((e.target as HTMLElement).closest?.('a, button')) lens.current?.hide();
+    else lens.current?.move(mx, my, `X ${String(Math.round(mx)).padStart(4, '0')} · Y ${String(Math.round(my)).padStart(4, '0')}`);
     tilt.current = { tx: (mx / r.width - 0.5) * 16, ty: -(my / r.height - 0.5) * 12 };
     point(e.clientX);
     clearTimeout(idle.current);
@@ -83,7 +87,7 @@ export function HeroDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }) 
 
   const ls = (en: number, k: number) => `${ko ? k : en}em`;
   const stats = t.raw('stats') as string[];
-  const vals = [5, 1, 2, 1];
+  const vals = heroCounts(tr.raw('projects') as Project[]);
 
   return (
     <section ref={hero} aria-label={t('label')} className="qh qh-d" onMouseMove={onMove} onMouseLeave={onLeave} style={{ fontFamily: ko ? MONO_KR : MONO }}>

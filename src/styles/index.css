@@ -56,7 +56,7 @@
 /* status pills (shared look across the site) */
 .ix-pill { display: inline-flex; align-items: center; padding: 7px 14px; border-radius: 999px; border: 1px solid currentColor; font-family: var(--ix-mono); font-size: 12px; letter-spacing: .06em; white-space: nowrap; line-height: 1.2; }
 .ix-pill--review { background: var(--ix-accent); border-color: var(--ix-accent); color: var(--ix-ink); }
-.ix-pill--dev { color: var(--ix-bone); }
+.ix-pill--dev, .ix-pill--making { color: var(--ix-bone); }
 .ix-pill--use { color: var(--ix-accent); }
 .ix-pill--paused { color: var(--ix-muted); border-style: dashed; }
 .ix-pill--live { background: var(--ix-bone); border-color: var(--ix-bone); color: var(--ix-ink); }
@@ -150,10 +150,11 @@
 .ixt-rot--fast { animation-duration: 16s; }
 @keyframes ixtspin { to { transform: rotate(360deg); } }
 
-.ixt-cart { width: 170px; height: 196px; border-radius: 12px 12px 22px 22px; background: #3A3D36; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; filter: saturate(.3); box-shadow: inset 0 0 0 8px #2E312B, 0 24px 48px rgba(0,0,0,.5); }
-.ixt-cart-label { width: 116px; height: 84px; border-radius: 5px; background: repeating-linear-gradient(135deg, #5E5C55 0 7px, #4A4943 7px 14px); display: grid; place-items: center; font-family: var(--ix-mono); font-size: 18px; color: var(--ix-bone); letter-spacing: .1em; }
-.ixt-cart-ribs { display: flex; gap: 6px; }
-.ixt-cart-ribs i { width: 10px; height: 22px; border-radius: 2px; background: #2E312B; }
+.ixt-dh { position: relative; width: 240px; height: 240px; }
+.ixt-dh-slab { position: absolute; left: 50%; top: 92px; width: 120px; height: 120px; margin-left: -60px; background: url(/specimens/deephold/floor0.png) 0 0/30px 30px; image-rendering: pixelated; transform: rotateX(58deg) rotateZ(45deg); box-shadow: 0 0 0 1px rgba(236,232,222,.15), 0 14px 0 #1C2017; }
+.ixt-dh-slab--1 { top: 132px; opacity: .45; background-image: url(/specimens/deephold/floor1.png); }
+.ixt-dh-slab--2 { top: 172px; opacity: .2; background-image: url(/specimens/deephold/floor2.png); }
+.ixt-dh-hero { position: absolute; left: 50%; top: 70px; width: 64px; height: 64px; margin-left: -38px; background: url(/specimens/deephold/hero.png) 0 0/384px 384px; image-rendering: pixelated; }
 
 .ixt-ipad { width: 248px; aspect-ratio: 4 / 3; border-radius: 18px; background: #0a0a0a; padding: 9px; box-shadow: 0 0 0 2px #2a2a2a, 0 30px 60px rgba(0,0,0,.55); }
 .ixt-ipad-scr { height: 100%; border-radius: 10px; background: #101210; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px; }

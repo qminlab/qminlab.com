@@ -9,10 +9,11 @@ import { Loading } from '../Loading';
 
 const JarvisCore = dynamic(() => import('../objects/JarvisCore').then((m) => m.JarvisCore), { ssr: false });
 const TftBoard = dynamic(() => import('../objects/TftBoard').then((m) => m.TftBoard), { ssr: false });
-const GameCart = dynamic(() => import('../objects/GameCart').then((m) => m.GameCart), { ssr: false });
+const DeepHold = dynamic(() => import('../objects/DeepHold').then((m) => m.DeepHold), { ssr: false });
 const WaitBoard = dynamic(() => import('../objects/WaitBoard').then((m) => m.WaitBoard), { ssr: false });
+const StarKnight = dynamic(() => import('../objects/StarKnight').then((m) => m.StarKnight), { ssr: false });
 
-const SIZES: [number, number][] = [[320, 660], [480, 500], [600, 500], [420, 460], [560, 420]];
+const SIZES: [number, number][] = [[320, 660], [480, 500], [600, 500], [420, 460], [560, 420], [560, 420]];
 type Shape = { x: string; y: string; w: number; h: number; br: string; label: string };
 type Note = { x: string; y: string; text: string; r?: boolean };
 const C = (dx: number) => `calc(50% + ${dx}px)`;
@@ -51,12 +52,12 @@ function xray(step: number, ko: boolean): { shapes: Shape[]; notes: Note[] } {
       ],
     },
     {
-      shapes: [{ x: '50%', y: '43%', w: 200, h: 230, br: '0', label: 'build/ — paused' }],
+      shapes: [{ x: '50%', y: '51%', w: 250, h: 250, br: '0', label: ko ? 'FLOOR · 무작위 생성' : 'FLOOR · PROCEDURAL' }, { x: C(-18), y: C(-20), w: 60, h: 70, br: '50%', label: 'hitbox r=10' }],
       notes: [
-        { x: '6%', y: '16%', text: 'design_v2.md\n' + (ko ? '핵심 루프 다시 쓰는 중' : 'rewriting the core loop') },
-        { x: '6%', y: '56%', text: 'save_00.sav\nframe 0412 · frozen' },
-        { x: '94%', y: '20%', text: ko ? '공개 범위: 친구들 먼저' : 'audience: friends first', r: true },
-        { x: '94%', y: '58%', text: ko ? 'eta: 다시 재밌어질 때' : "eta: when it's fun again", r: true },
+        { x: '6%', y: '16%', text: 'src/core/ · pure TS\n' + (ko ? '60Hz 고정 틱 · 시드 Rng' : '60 Hz fixed tick · seeded Rng') },
+        { x: '6%', y: '56%', text: 'balance.ts\n' + (ko ? '체력 3칸 · 성장 없음' : '3 hearts · no progression') },
+        { x: '94%', y: '20%', text: ko ? '서버가 같은 코드로\n리플레이 검증' : 'server replays runs\nwith the same core', r: true },
+        { x: '94%', y: '58%', text: 'Phaser 3 · Electron\nTypeScript', r: true },
       ],
     },
     {
@@ -68,16 +69,30 @@ function xray(step: number, ko: boolean): { shapes: Shape[]; notes: Note[] } {
         { x: '96%', y: '80%', text: ko ? '아이패드: 1.5초마다 갱신\nWeb Audio · Wake Lock' : 'iPad: poll every 1.5 s\nWeb Audio · Wake Lock', r: true },
       ],
     },
+    {
+      shapes: [{ x: C(0), y: C(-58), w: 400, h: 225, br: '0', label: ko ? 'CUT 2-05 · 실제 자료' : 'CUT 2-05 · REAL FILES' }, { x: '50%', y: C(130), w: 480, h: 30, br: '0', label: ko ? '파이프라인 5단계' : 'PIPELINE · 5 STAGES' }],
+      notes: [
+        { x: '4%', y: '8%', text: ko ? '각본 · 콘티 266컷\n14분 21초 · 24fps' : 'script · 266-cut board\n14:21 · 24 fps' },
+        { x: '96%', y: '8%', text: ko ? '대사 먼저 녹음\nElevenLabs → 입모양' : 'voices first\nElevenLabs → lip sync', r: true },
+        { x: '4%', y: '88%', text: ko ? 'Seedance 2.5\n시퀀스 단위로 생성' : 'Seedance 2.5\nwhole sequences per take' },
+        { x: '96%', y: '88%', text: ko ? '컷 리듬 진단 → 보정 패스 0–9\nffmpeg' : 'cut-rhythm check → passes 0–9\nffmpeg', r: true },
+      ],
+    },
   ][step];
 }
 
 
-export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko: boolean; mobile: boolean; enabled: boolean }) {
+// Each object keeps a fixed slot; the page's reel order comes from `order` (project codes in list order).
+const SLOTS = ['QL-001', 'QL-002', 'QL-003', 'QL-004', 'QL-005', 'QL-006'];
+
+export function SpecimenStage({ code, order, ko, mobile, enabled }: { code: string; order: string[]; ko: boolean; mobile: boolean; enabled: boolean }) {
+  const step = Math.max(0, SLOTS.indexOf(code));
+  const pos = (i: number) => order.indexOf(SLOTS[i]);
   const t = useTranslations('stage');
   // Desktop fills its panel (which grows with tall windows); mobile keeps the mockup's fixed height.
   const H = mobile ? 400 : '100%';
   const R = 100;
-  const scales = mobile ? [0.5, 0.72, 0.58, 0.8, 0.6] : [0.8, 1, 0.98, 1, 1];
+  const scales = mobile ? [0.5, 0.72, 0.58, 0.8, 0.6, 0.6] : [0.8, 1, 0.98, 1, 1, 1];
   const root = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLDivElement>(null);
   const layer = useRef<HTMLDivElement>(null);
@@ -108,8 +123,8 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
   // Load order: nothing until the stage is near the viewport, then the current specimen first, and the
   // other specimens only once that one has drawn its first frame. The phone (step 0) is plain HTML.
   const [near, setNear] = useState(false);
-  const [ready, setReady] = useState([true, false, false, false, false]);
-  const [seen, setSeen] = useState([false, false, false, false, false]);
+  const [ready, setReady] = useState([true, false, false, false, false, false]);
+  const [seen, setSeen] = useState([false, false, false, false, false, false]);
   const [all, setAll] = useState(false);
   useEffect(() => {
     const el = root.current;
@@ -123,7 +138,7 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
     setSeen((s) => (s[step] ? s : s.map((v, i) => v || i === step)));
     if (ready[step]) setAll(true);
   }, [near, enabled, step, ready]);
-  const markReady = useRef([1, 2, 3, 4].map((i) => () => setReady((r) => (r[i] ? r : r.map((v, j) => v || j === i)))));
+  const markReady = useRef([1, 2, 3, 4, 5].map((i) => () => setReady((r) => (r[i] ? r : r.map((v, j) => v || j === i)))));
   const load = (i: number) => enabled && (all || seen[i]);
 
   useEffect(() => {
@@ -170,7 +185,7 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
         const sc = scales[i] * fit(i) * (on ? 1 : 0.86);
         // The reel: the outgoing specimen slides off to the left, the incoming one arrives from the right
         // (and the reverse when stepping back). Reduced motion (qlswap) keeps only the crossfade.
-        const dx = on ? 0 : (i < step ? -1 : 1) * (mobile ? 90 : 160);
+        const dx = on ? 0 : (pos(i) < pos(step) ? -1 : 1) * (mobile ? 90 : 160);
         let tf = `translateX(${dx}px) scale(${sc})`;
         // Mobile has no hover, so the phone stands upright from the start, lifted clear of the hint chip.
         if (i === 0) tf = `translateX(${dx}px) ${mobile ? 'translateY(-20px) ' : ''}perspective(1400px) rotateY(${over || mobile ? 0 : -16}deg) rotateX(${over || mobile ? 0 : 5}deg) ${tf}`;
@@ -182,13 +197,14 @@ export function SpecimenStage({ step, ko, mobile, enabled }: { step: number; ko:
             {i === 0 && <WemingPhone />}
             {i === 1 && load(1) && <JarvisCore active={on} ko={ko} pointer={mobile ? undefined : pointer} onReady={markReady.current[0]} />}
             {i === 2 && load(2) && <TftBoard active={on} ko={ko} onReady={markReady.current[1]} />}
-            {i === 3 && load(3) && <GameCart active={on} ko={ko} onReady={markReady.current[2]} />}
+            {i === 3 && load(3) && <DeepHold active={on} ko={ko} mobile={mobile} pointer={mobile ? undefined : pointer} onReady={markReady.current[2]} />}
             {i === 4 && load(4) && <WaitBoard active={on} ko={ko} onReady={markReady.current[3]} />}
+            {i === 5 && load(5) && <StarKnight active={on} ko={ko} pointer={mobile ? undefined : pointer} onReady={markReady.current[4]} />}
           </div>
         );
       })}
 
-      <Loading show={!ready[step]} code={`QL-00${step + 1}`} label={t('loading')} />
+      <Loading show={!ready[step]} code={code} label={t('loading')} />
 
       {/* Mobile has no x-ray lens on the stage, so nothing covers the phone. */}
       {!mobile && <div ref={layer} aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', clipPath: 'circle(0px at 0 0)', background: XRAY(32) }}>

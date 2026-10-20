@@ -75,12 +75,31 @@ function Tft() {
   );
 }
 
-function Cartridge() {
+function Dungeon() {
   return (
-    <div className="ixt-cart">
-      <span className="ixt-cart-label">❚❚</span>
-      <span className="ixt-cart-ribs"><i /><i /><i /><i /><i /></span>
+    <div className="ixt-dh">
+      <span className="ixt-dh-slab ixt-dh-slab--2" />
+      <span className="ixt-dh-slab ixt-dh-slab--1" />
+      <span className="ixt-dh-slab" />
+      <span className="ixt-dh-hero" />
     </div>
+  );
+}
+
+function Reel() {
+  const frames = [0, 1, 2, 3];
+  return (
+    <svg width="250" height="200" viewBox="0 0 250 200" aria-hidden="true" style={{ transform: 'perspective(600px) rotateY(-16deg)' }}>
+      <rect x="40" y="6" width="170" height="96" fill="#141512" stroke="rgba(236,232,222,.25)" />
+      <path d="M118 30l5 14 14 5-14 5-5 14-5-14-14-5 14-5z" fill="none" stroke={A} strokeWidth="1.6" />
+      <path d="M70 102V72c0-10 8-10 8 0v-14c0-5 7-5 7 0v44" fill="none" stroke={B} strokeOpacity=".6" />
+      <rect x="0" y="122" width="250" height="66" fill="#0F100E" />
+      <path d="M0 128h250M0 182h250" stroke="#2A2C26" strokeWidth="5" strokeDasharray="7 7" />
+      {frames.map((i) => (
+        <rect key={i} x={8 + i * 62} y="136" width="54" height="40" fill="#141512" stroke={i === 1 ? A : 'rgba(236,232,222,.25)'} />
+      ))}
+      <line x1="89" y1="114" x2="89" y2="196" stroke={A} />
+    </svg>
   );
 }
 
@@ -107,8 +126,9 @@ export function IndexThumb({ code }: { code: string }) {
     case 'QL-001': return <Phone />;
     case 'QL-002': return <Jarvis />;
     case 'QL-003': return <Tft />;
-    case 'QL-004': return <Cartridge />;
+    case 'QL-004': return <Dungeon />;
     case 'QL-005': return <WaitBoard />;
+    case 'QL-006': return <Reel />;
     default: return null;
   }
 }

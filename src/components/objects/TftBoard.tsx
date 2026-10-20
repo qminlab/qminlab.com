@@ -156,7 +156,7 @@ export function TftBoard({ active, ko, onReady }: { active: boolean; ko: boolean
       </CssCanvas>
       <div aria-hidden="true" style={{ position: 'absolute', inset: 14, border: '1px dashed #3A3D35' }} />
       <div style={{ position: 'absolute', left: 22, top: 6, padding: '0 6px', background: 'transparent', fontSize: 9, letterSpacing: '0.14em', color: MUTED }}>{T.win}</div>
-      <div style={{ position: 'absolute', right: 22, top: 6, padding: '0 6px', fontSize: 9, letterSpacing: '0.14em', color: A }}>● OVERLAY ON · v0.1</div>
+      <div style={{ position: 'absolute', right: 22, top: 6, padding: '0 6px', fontSize: 9, letterSpacing: '0.14em', color: A }}>❚❚ PAUSED · v0.1</div>
 
       <section ref={pRef(0)} style={{ position: 'absolute', left: 28, top: 28, width: 214, boxSizing: 'border-box', padding: 12, background: 'rgba(12,13,11,0.86)', border: `1px solid ${A}`, opacity: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 9, letterSpacing: '0.14em', color: MUTED }}>
