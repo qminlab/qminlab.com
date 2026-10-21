@@ -1,0 +1,4 @@
+# Private production notes: keep every file out of search results and archives.
+/notes/*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex
+  Referrer-Policy: no-referrer
