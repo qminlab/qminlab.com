@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { Project } from '@/lib/projects';
-import { ProjectLinks } from './ProjectLinks';
+import { CaseLink, ProjectLinks } from './ProjectLinks';
 import { IndexThumb } from './IndexThumbs';
 import '@/styles/index.css';
 
@@ -127,6 +127,7 @@ export function RegistryDesktop({ ko }: { ko: boolean }) {
                     <p className="ix-one">{p.one}</p>
                     {p.desc && <p className="ix-desc">{p.desc}</p>}
                     <ProjectLinks code={p.code} ko={ko} small />
+                    <CaseLink code={p.code} ko={ko} />
                   </div>
                   <dl className="ix-facts">
                     <dt>{t('stage')}</dt><dd>{p.stageLine}</dd>
@@ -195,6 +196,7 @@ export function RegistryMobile({ ko }: { ko: boolean }) {
                   <p className="ix-one">{p.one}</p>
                   {p.desc && <p className="ix-desc">{p.desc}</p>}
                   <ProjectLinks code={p.code} ko={ko} small />
+                    <CaseLink code={p.code} ko={ko} />
                 </div>
               )}
             </li>

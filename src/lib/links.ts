@@ -11,7 +11,17 @@ export const GITHUB = 'https://github.com/starMinK';
 
 export const LINKS: Record<string, ProjectLink[]> = {
   'QL-001': [{ kind: 'github', href: 'https://github.com/starMinK/weming' }],
+  'QL-004': [{ kind: 'download', href: 'https://github.com/starMinK/deephold-releases/releases/latest' }],
   'QL-005': [{ kind: 'github', href: 'https://github.com/starMinK/claude-board' }],
 };
+
+/**
+ * Projects with their own case-file page on this site (/<locale>/<path>/), keyed by project code.
+ * Others fall back to the registry on the same page.
+ */
+export const CASES: Record<string, string> = {
+  'QL-004': 'deephold/',
+};
+export const caseHref = (code: string, fallback: string) => CASES[code] ?? fallback;
 
 export const linksFor = (code: string) => LINKS[code] ?? [];

@@ -49,7 +49,7 @@
     "form": "FORM",
     "stepAria": "Show specimen",
     "fields": { "platform": "PLATFORM", "stage": "STAGE", "stack": "STACK" },
-    "link": "READ CASE FILE →",
+    "link": "READ CASE FILE →", "siteLink": "OPEN THE DEEPHOLD SITE →",
     "swipe": "← SWIPE OR TAP 01–06 →"
   },
   "types": { "APP": "APP", "PROGRAM": "PROGRAM", "GAME": "GAME", "ANIME": "ANIMATION", "TOOL": "PRODUCTIVITY TOOL", "ALL": "ALL", "ANY": "ANY GENRE" },

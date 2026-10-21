@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { ACCENT, ARCHIVO, BODY, BONE, DIM, INK, KR, LINE, MONO, MONO_KR, MUTED } from '@/lib/tokens';
 import type { Project } from '@/lib/projects';
 import { SpecimenStage } from './SpecimenStage';
-import { ProjectLinks } from '../ProjectLinks';
+import { CaseLink, ProjectLinks } from '../ProjectLinks';
 import { OutlineNumbers, StatusPill } from './parts';
 
 /** Mobile specimens: a frameless 400px stage over a giant outlined number, a pill segmented control and swipe;
@@ -87,6 +87,7 @@ export function SpecimensMobile({ ko, enabled }: { ko: boolean; enabled: boolean
                 ))}
               </dl>
               <ProjectLinks code={p.code} ko={ko} small active={on} />
+              <CaseLink code={p.code} ko={ko} active={on} />
             </article>
           );
         })}

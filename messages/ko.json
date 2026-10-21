@@ -49,7 +49,7 @@
     "form": "형태",
     "stepAria": "표본 보기",
     "fields": { "platform": "플랫폼", "stage": "단계", "stack": "기술 스택" },
-    "link": "케이스 파일 보기 →",
+    "link": "케이스 파일 보기 →", "siteLink": "딥홀드 사이트 열기 →",
     "swipe": "← 옆으로 넘기거나 01–06를 탭하세요 →"
   },
   "types": { "APP": "앱", "PROGRAM": "프로그램", "GAME": "게임", "ANIME": "애니메이션", "TOOL": "생산성 도구", "ALL": "전체", "ANY": "장르 미정" },
