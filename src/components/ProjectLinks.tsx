@@ -30,7 +30,7 @@ export function CaseLink({ code, ko, active = true }: { code: string; ko: boolea
   return (
     <a href={href} tabIndex={active ? 0 : -1} className="sp-case" onClick={(e) => e.stopPropagation()}
       style={{ display: 'inline-flex', alignItems: 'center', minHeight: 44, fontFamily: ko ? MONO_KR : MONO, fontSize: ko ? 13 : 12, letterSpacing: ko ? '0.04em' : '0.1em', color: BONE, textDecoration: 'none', borderBottom: `1px solid ${ACCENT}`, alignSelf: 'flex-start' }}>
-      {t('siteLink')}
+      {t(code === 'QL-004' ? 'siteLink' : 'link')}
     </a>
   );
 }

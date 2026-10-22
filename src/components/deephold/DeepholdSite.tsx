@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import type { CaseFile } from '@/content/deephold';
 import { LanternFog } from './LanternFog';
+import { GITHUB } from '@/lib/identity';
 
 const IMG = '/deephold/';
 type TabId = 'intro' | 'world' | 'making' | 'trials' | 'tools' | 'now';
@@ -9,12 +10,12 @@ const TABS: TabId[] = ['intro', 'world', 'making', 'trials', 'tools', 'now'];
 const CODES: Record<TabId, string> = { intro: 'GAME', world: 'WORLD', making: 'MAKING', trials: 'TRIALS', tools: 'TOOLS', now: 'NEXT' };
 
 const UI = {
-  ko: { home: 'QMIN LAB', scroll: '아래로', play: '최신 버전 받기', notes: '패치 노트', tabs: '딥홀드 안내', depth: '깊이', boss: '주인', lang: '언어', before: '처음', broke: '어긋남', after: '바꿈', total: '첫 달 추정', est: '추정', issues: '의견 남기기', prev: '이전', next: '다음', press: '눌러 보세요' },
-  en: { home: 'QMIN LAB', scroll: 'Scroll', play: 'Get the latest build', notes: 'Patch notes', tabs: 'DeepHold sections', depth: 'Depth', boss: 'Master', lang: 'Language', before: 'First', broke: 'Broke', after: 'Fixed', total: 'First month (est.)', est: 'est.', issues: 'Send feedback', prev: 'Previous', next: 'Next', press: 'Try a key' },
+  ko: { home: 'QMINLAB', scroll: '아래로', play: '최신 버전 받기', notes: '패치 노트', tabs: '딥홀드 안내', depth: '깊이', boss: '주인', lang: '언어', before: '처음', broke: '어긋남', after: '바꿈', total: '첫 달 추정', est: '추정', issues: '의견 남기기', prev: '이전', next: '다음', press: '눌러 보세요' },
+  en: { home: 'QMINLAB', scroll: 'Scroll', play: 'Get the latest build', notes: 'Patch notes', tabs: 'DeepHold sections', depth: 'Depth', boss: 'Master', lang: 'Language', before: 'First', broke: 'Broke', after: 'Fixed', total: 'First month (est.)', est: 'est.', issues: 'Send feedback', prev: 'Previous', next: 'Next', press: 'Try a key' },
 };
-const RELEASES = 'https://github.com/starMinK/deephold-releases/releases/latest';
-const NOTES = 'https://github.com/starMinK/deephold-releases/blob/main/%ED%8C%A8%EC%B9%98%EB%85%B8%ED%8A%B8/README.md';
-const ISSUES = 'https://github.com/starMinK/deephold-releases/issues';
+const RELEASES = `${GITHUB}/deephold-releases/releases/latest`;
+const NOTES = `${GITHUB}/deephold-releases/blob/main/%ED%8C%A8%EC%B9%98%EB%85%B8%ED%8A%B8/README.md`;
+const ISSUES = `${GITHUB}/deephold-releases/issues`;
 
 const useReduced = () => {
   const [r, setR] = useState(false);

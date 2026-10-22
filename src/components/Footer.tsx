@@ -11,7 +11,7 @@ import { useLiquidWord } from './LiquidWord';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const WORD = 'QMIN LAB';
+const WORD = 'QMINLAB';
 const R = 110;
 
 /**
@@ -41,6 +41,18 @@ function useReveal(enabled: boolean) {
     <span key={i} style={{ display: 'inline-block', transform: phase === 'rising' ? 'translateY(0)' : 'translateY(105%)', transition: phase === 'rising' ? `transform 700ms cubic-bezier(.2,.7,.2,1) ${i * 60}ms` : 'none' }}>{c === ' ' ? ' ' : c}</span>
   ));
   return { host, letters, clip: phase !== 'static' };
+}
+
+/** Text links to the profile and FAQ pages: the pages AI search reads to answer "who is this". */
+function InfoLinks({ size, end }: { size: number; end?: boolean }) {
+  const t = useTranslations('nav2');
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, fontSize: size, alignSelf: end ? 'flex-end' : undefined }}>
+      {(['about', 'faq'] as const).map((k) => (
+        <a key={k} href={`${k}/`} style={{ display: 'inline-flex', alignItems: 'center', minHeight: 44, color: INK }}>{t(k)} →</a>
+      ))}
+    </div>
+  );
 }
 
 function LangLinks() {
@@ -85,7 +97,8 @@ export function FooterDesktop({ ko, enabled }: { ko: boolean; enabled: boolean }
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13, letterSpacing: '0.06em' }}>
           <a href="mailto:hello@qminlab.com" className="qlpress" style={{ display: 'inline-flex', alignItems: 'center', minHeight: 56, padding: '0 26px', borderRadius: 999, background: INK, color: '#ECE8DE', fontSize: 18, textDecoration: 'none' }}>hello@qminlab.com ↗</a>
-          <a href={GITHUB} target="_blank" rel="noopener noreferrer" style={{ color: INK, fontSize: 15, alignSelf: 'flex-end' }}>github.com/starMinK ↗</a>
+          <a href={GITHUB} target="_blank" rel="noopener noreferrer" style={{ color: INK, fontSize: 15, alignSelf: 'flex-end' }}>{GITHUB.replace('https://', '')} ↗</a>
+          <InfoLinks size={15} end />
         </div>
       </div>
       <div ref={host} aria-hidden="true" onMouseMove={onMove} onMouseLeave={() => { lens.current?.hide(); metal.setActive(false); }}
@@ -123,13 +136,14 @@ export function FooterMobile({ ko, enabled }: { ko: boolean; enabled: boolean })
           ? { margin: 0, fontFamily: KR, fontSize: 34, fontWeight: 700, lineHeight: 1.22, letterSpacing: '-0.05em', wordBreak: 'keep-all' }
           : { margin: 0, fontSize: 34, fontWeight: 500, lineHeight: 1.1, letterSpacing: '-0.04em' }}>{t('title')}</p>
         <a href="mailto:hello@qminlab.com" className="qlpress" style={{ display: 'inline-flex', alignSelf: 'flex-start', alignItems: 'center', minHeight: 52, padding: '0 22px', borderRadius: 999, background: INK, color: '#ECE8DE', fontSize: 16, textDecoration: 'none', marginTop: 8 }}>hello@qminlab.com ↗</a>
-        <a href={GITHUB} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', minHeight: 44, color: INK, fontSize: 14 }}>github.com/starMinK ↗</a>
+        <a href={GITHUB} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', minHeight: 44, color: INK, fontSize: 14 }}>{GITHUB.replace('https://', '')} ↗</a>
+        <InfoLinks size={14} />
       </div>
       <div ref={host} aria-hidden="true" style={{ position: 'relative', overflow: 'hidden', borderTop: `1px solid ${INK}`, padding: '18px 10px 0', fontFamily: ARCHIVO, fontWeight: 900, fontStretch: '125%', fontSize: 'calc(15.2vw - 2px)', lineHeight: 0.85, letterSpacing: '-0.03em', whiteSpace: 'nowrap', clipPath: clip ? 'inset(0)' : undefined }}>
         {letters(WORD)}
         <div ref={metal.mount} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />
       </div>
-      <div style={{ padding: '18px 16px 0', fontSize: ko ? 11 : 10, letterSpacing: ko ? undefined : '0.1em' }}>© 2026 QMIN LAB · <LangLinks /></div>
+      <div style={{ padding: '18px 16px 0', fontSize: ko ? 11 : 10, letterSpacing: ko ? undefined : '0.1em' }}>© 2026 QMINLAB · <LangLinks /></div>
     </footer>
   );
 }

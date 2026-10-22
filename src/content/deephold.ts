@@ -3,6 +3,8 @@
  * Figures come from the game repo and release history as of v0.6.0 (2026-10-21). Costs are estimates from
  * public list prices, not receipts, and the page says so.
  */
+import { GITHUB } from '@/lib/identity';
+
 export type Stat = { n: string; l: string };
 export type Row = string[];
 export type Step = { date: string; ver: string; title: string; body: string };
@@ -28,16 +30,16 @@ export type CaseFile = {
   footer: { copy: string; home: string };
 };
 
-const RELEASES = 'https://github.com/starMinK/deephold-releases/releases/latest';
-const NOTES = 'https://github.com/starMinK/deephold-releases/blob/main/%ED%8C%A8%EC%B9%98%EB%85%B8%ED%8A%B8/README.md';
+const RELEASES = `${GITHUB}/deephold-releases/releases/latest`;
+const NOTES = `${GITHUB}/deephold-releases/blob/main/%ED%8C%A8%EC%B9%98%EB%85%B8%ED%8A%B8/README.md`;
 export const DEEPHOLD_LINKS = { RELEASES, NOTES };
 
 const ko: CaseFile = {
   meta: {
-    title: '딥홀드 — 케이스 파일 QL-004 · Qmin Lab',
+    title: '딥홀드 — 케이스 파일 QL-004 · qminlab',
     description: '랜턴 하나 들고 내려가는 하드코어 2.5D 도트 액션 게임 딥홀드. 게임 소개, 세계관, AI로 만든 제작 과정, 시행착오, 쓴 도구와 비용을 모두 공개합니다.',
   },
-  back: '← Qmin Lab',
+  back: '← qminlab',
   file: 'FILE QL-004 / 게임 / 케이스 파일',
   status: '개발 중 · v0.6.0 · 친구 테스트',
   title: '딥홀드',
@@ -244,15 +246,15 @@ const ko: CaseFile = {
     ],
     outro: '직접 해 보고 싶다면 최신 버전을 받아 보세요. 의견은 GitHub Issues로 받아요.',
   },
-  footer: { copy: '© 2026 QMIN LAB. 딥홀드의 코드와 에셋은 무단으로 복제 · 재배포할 수 없어요. 플레이 영상과 스크린샷은 자유롭게 올려도 돼요.', home: 'Qmin Lab 처음으로' },
+  footer: { copy: '© 2026 QMINLAB. 딥홀드의 코드와 에셋은 무단으로 복제 · 재배포할 수 없어요. 플레이 영상과 스크린샷은 자유롭게 올려도 돼요.', home: 'qminlab 처음으로' },
 };
 
 const en: CaseFile = {
   meta: {
-    title: 'DeepHold — Case file QL-004 · Qmin Lab',
+    title: 'DeepHold — Case file QL-004 · qminlab',
     description: 'DeepHold is a hardcore 2.5D pixel action game where you go down with a single lantern. The game, its world, how it was made with AI, what went wrong, and every tool and cost.',
   },
-  back: '← Qmin Lab',
+  back: '← qminlab',
   file: 'FILE QL-004 / GAME / CASE FILE',
   status: 'In development · v0.6.0 · friend test',
   title: 'DeepHold',
@@ -459,7 +461,7 @@ const en: CaseFile = {
     ],
     outro: 'Want to try it? Grab the latest build. Feedback goes to GitHub Issues.',
   },
-  footer: { copy: '© 2026 QMIN LAB. DeepHold’s code and assets may not be copied or redistributed. Gameplay videos and screenshots are welcome.', home: 'Back to Qmin Lab' },
+  footer: { copy: '© 2026 QMINLAB. DeepHold’s code and assets may not be copied or redistributed. Gameplay videos and screenshots are welcome.', home: 'Back to qminlab' },
 };
 
 export const DEEPHOLD: Record<'ko' | 'en', CaseFile> = { ko, en };

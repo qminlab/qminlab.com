@@ -29,7 +29,7 @@ function LangSwitch({ mobile }: { mobile: boolean }) {
 const Logo = ({ mobile }: { mobile: boolean }) => (
   <a href={mobile ? '#mtop' : '#top'} style={{ display: 'flex', alignItems: 'center', gap: mobile ? 10 : 12, textDecoration: 'none', color: BONE }}>
     <span style={{ width: mobile ? 28 : 30, height: mobile ? 28 : 30, background: BONE, color: INK, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: ARCHIVO, fontWeight: 900, fontStretch: '125%', fontSize: mobile ? 17 : 19 }}>Q</span>
-    <span style={{ fontFamily: ARCHIVO, fontWeight: 800, fontStretch: '125%', fontSize: mobile ? 14 : 15, letterSpacing: '0.06em' }}>QMIN LAB</span>
+    <span style={{ fontFamily: ARCHIVO, fontWeight: 800, fontStretch: '125%', fontSize: mobile ? 14 : 15, letterSpacing: '0.06em' }}>QMINLAB</span>
   </a>
 );
 

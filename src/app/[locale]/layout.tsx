@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: t('title'),
     description: t('description'),
     metadataBase: new URL('https://qminlab.com'),
-    alternates: { languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}/`])) },
+    alternates: { canonical: `/${locale}/`, languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}/`])) },
     icons: { icon: '/icon.svg' },
   };
 }

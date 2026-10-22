@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: c.meta.title,
     description: c.meta.description,
-    alternates: { languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}/deephold/`])) },
+    alternates: { canonical: `/${locale}/deephold/`, languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}/deephold/`])) },
     openGraph: { title: c.meta.title, description: c.meta.description, images: ['/deephold/banner.webp'] },
   };
 }

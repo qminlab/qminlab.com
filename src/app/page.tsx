@@ -8,7 +8,7 @@ export default function RootPage() {
         <script dangerouslySetInnerHTML={{ __html: script }} />
         {/* Only without JavaScript, so it never races the language check above. */}
         <noscript><meta httpEquiv="refresh" content="0; url=/en/" /></noscript>
-        <title>Qmin Lab</title>
+        <title>qminlab</title>
       </head>
       <body style={{ background: '#0C0D0B' }} />
     </html>

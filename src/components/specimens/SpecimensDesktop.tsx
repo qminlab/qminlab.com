@@ -9,7 +9,7 @@ import { scrollToEl } from '@/lib/scroll';
 import { Scramble } from '../Scramble';
 import { SpecimenStage } from './SpecimenStage';
 import { ProjectLinks } from '../ProjectLinks';
-import { CASES, caseHref } from '@/lib/links';
+import { caseHref } from '@/lib/links';
 import { OutlineNumbers, StatusPill } from './parts';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -117,7 +117,7 @@ export function SpecimensDesktop({ ko, enabled }: { ko: boolean; enabled: boolea
                       </dl>
                       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 24px', paddingTop: 4 }}>
                         <ProjectLinks code={p.code} ko={ko} active={on} />
-                        <a href={caseHref(p.code, '#index')} tabIndex={on ? 0 : -1} className="sp-case" style={{ display: 'inline-flex', alignItems: 'center', minHeight: 44, fontFamily: ko ? MONO_KR : MONO, fontSize: f(12, 13), letterSpacing: `${f(0.1, 0.04)}em`, color: BONE, textDecoration: 'none', borderBottom: `1px solid ${ACCENT}` }}>{t(CASES[p.code] ? 'siteLink' : 'link')}</a>
+                        <a href={caseHref(p.code, '#index')} tabIndex={on ? 0 : -1} className="sp-case" style={{ display: 'inline-flex', alignItems: 'center', minHeight: 44, fontFamily: ko ? MONO_KR : MONO, fontSize: f(12, 13), letterSpacing: `${f(0.1, 0.04)}em`, color: BONE, textDecoration: 'none', borderBottom: `1px solid ${ACCENT}` }}>{t(p.code === 'QL-004' ? 'siteLink' : 'link')}</a>
                       </div>
                     </article>
                   );
