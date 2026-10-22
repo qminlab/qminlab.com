@@ -12,6 +12,9 @@ export const GH_USER = 'qminlab';
 export const GITHUB = `https://github.com/${GH_USER}`;
 export const gh = (repo: string) => `${GITHUB}/${repo}`;
 
+/** Naver Search Advisor ownership check. Must stay in <head> of `/` and every page. */
+export const NAVER_VERIFY = 'b0bc7b52249b189ee77b3211fd147baecdccc672';
+
 /** Date the facts on the profile, FAQ and case pages were last checked by hand (shown on those pages). */
 export const UPDATED = '2026-10-22';
 

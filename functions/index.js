@@ -23,7 +23,9 @@ function fromAcceptLanguage(header) {
   return hit ? hit.lang : null;
 }
 
-export function onRequest({ request }) {
+export function onRequest({ request, next }) {
+  // Naver's crawler (Yeti) gets the static page itself, which carries the naver-site-verification tag.
+  if (/yeti|naver/i.test(request.headers.get('User-Agent') || '')) return next();
   const country = request.cf && request.cf.country;
   const locale =
     fromCookie(request.headers.get('Cookie')) ||

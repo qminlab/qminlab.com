@@ -5,6 +5,7 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { archivo, plexKr, plexMono } from '@/lib/fonts';
+import { NAVER_VERIFY } from '@/lib/identity';
 import 'lenis/dist/lenis.css';
 import '../globals.css';
 import '@/styles/shell.css';
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     metadataBase: new URL('https://qminlab.com'),
     alternates: { canonical: `/${locale}/`, languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}/`])) },
     icons: { icon: '/icon.svg' },
+    verification: { other: { 'naver-site-verification': NAVER_VERIFY } },
   };
 }
 
