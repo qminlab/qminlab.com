@@ -7,8 +7,8 @@ export const SITE = 'https://qminlab.com';
 export const BRAND = 'qminlab';
 export const EMAIL = 'hello@qminlab.com';
 
-/** GitHub account. Change GH_USER here once the account is renamed to `qminlab`; every link follows. */
-export const GH_USER = 'starMinK';
+/** GitHub account. Every GitHub link on the site is built from GH_USER. */
+export const GH_USER = 'qminlab';
 export const GITHUB = `https://github.com/${GH_USER}`;
 export const gh = (repo: string) => `${GITHUB}/${repo}`;
 
