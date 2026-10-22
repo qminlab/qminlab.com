@@ -101,7 +101,8 @@ export function SpecimensDesktop({ ko, enabled }: { ko: boolean; enabled: boolea
                       <span style={label}>{p.code} · {tt(`types.${p.type}`)}</span>
                       <h3 className="sp-name" style={ko
                         ? { fontFamily: KR, fontSize: 'clamp(40px, min(6.4vw, 10.5vh), 96px)', fontWeight: 700, lineHeight: 1.02, letterSpacing: '-0.05em', color: p.st === 'paused' ? MUTED : BONE }
-                        : { fontFamily: ARCHIVO, fontSize: 'clamp(40px, min(6.4vw, 10.5vh), 96px)', fontWeight: 800, fontVariationSettings: "'wdth' 108", lineHeight: 0.92, letterSpacing: '-0.035em', color: p.st === 'paused' ? MUTED : BONE }}>{p.name}</h3>
+                        // Long English titles drop a size so a four-line name still fits the stage height.
+                        : { fontFamily: ARCHIVO, fontSize: p.name.length > 20 ? 'clamp(36px, min(5.4vw, 8.8vh), 80px)' : 'clamp(40px, min(6.4vw, 10.5vh), 96px)', fontWeight: 800, fontVariationSettings: "'wdth' 108", lineHeight: 0.92, letterSpacing: '-0.035em', color: p.st === 'paused' ? MUTED : BONE }}>{p.name}</h3>
                       <StatusPill st={p.st} label={tt(`status.${p.st}`)} ko={ko} />
                       <p style={{ margin: 0, maxWidth: 520, fontFamily: KR, fontSize: f(17, 18), lineHeight: 1.7, color: BODY, wordBreak: 'keep-all', textWrap: 'pretty' }}>{p.one}</p>
                       {p.desc && <p className="sp-desc" style={{ margin: 0, maxWidth: 520, fontFamily: KR, color: MUTED, wordBreak: 'keep-all', textWrap: 'pretty' }}>{p.desc}</p>}
