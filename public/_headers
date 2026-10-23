@@ -2,3 +2,7 @@
 /notes/*
   X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex
   Referrer-Policy: no-referrer
+
+# Past homepages kept for the "Version history" window: viewable, but not search results of their own.
+/archive/*
+  X-Robots-Tag: noindex

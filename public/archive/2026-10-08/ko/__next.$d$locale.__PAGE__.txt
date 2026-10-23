@@ -1,0 +1,25 @@
+3:"$Sreact.fragment"
+4:"/archive/2026-10-08/_next/static/chunks/0umf92h1sb77c.js"
+5:"/archive/2026-10-08/_next/static/chunks/3-3jc4cqytds3.js"
+6:"/archive/2026-10-08/_next/static/chunks/0er9dc_qscrpf.js"
+7:"/archive/2026-10-08/_next/static/chunks/39s8xx1sk0_ir.js"
+8:"/archive/2026-10-08/_next/static/chunks/3x9dpuzmvmna6.js"
+9:I[92021,["$4","$5","$6","$7","$8"],"Site"]
+a:I[97367,["$4"],"OutletBoundary"]
+b:"$Sreact.suspense"
+f:"ViewportBoundary"
+10:I[97367,["$4"],"$f"]
+11:"MetadataBoundary"
+12:I[97367,["$4"],"$11"]
+13:I[27201,["$4"],"IconMark"]
+e:X
+2:[["children",{"s":"__PAGE__","h":128,"d":{"r":["$","$3","c",{"children":[["$","$L9",null,{}],[["$","script","script-0",{"src":"/archive/2026-10-08/_next/static/chunks/39s8xx1sk0_ir.js","async":true}],["$","script","script-1",{"src":"/archive/2026-10-08/_next/static/chunks/3x9dpuzmvmna6.js","async":true}]],["$","$La",null,{"children":["$","$b",null,{"name":"Next.MetadataOutlet","children":"$@c"}]}]]}],"p":"$@d","v":null,"s":"$e"}}]]
+1:[["children",{"s":{"n":"locale","t":"d","k":"ko","s":[]},"h":32,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L10",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#0C0D0B"}]]}],["$","$L12",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$b",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Qmin Lab — 궁금함과 의미"}],["$","meta","1",{"name":"description","content":"Qmin Lab은 앱, 프로그램, 게임을 만드는 1인 스튜디오입니다."}],["$","link","2",{"rel":"alternate","hrefLang":"en","href":"https://qminlab.com/en/"}],["$","link","3",{"rel":"alternate","hrefLang":"ko","href":"https://qminlab.com/ko/"}],["$","link","4",{"rel":"icon","href":"/icon.svg"}],["$","$L13","5",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@14","v":null,"s":"$e"}},"a":"$@15","u":"$@16","b":"ZpfiqtG1WTbEsix1TaJKA"}
+c:null
+16:true
+e:300
+e:C
+15:0
+14:"$undefined"
+d:"$undefined"

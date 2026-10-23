@@ -50,7 +50,8 @@ const av = (f: boolean) => ({ ring: f ? '#FF6FB5' : '#5CA8FF', fill: f ? '#2A1E3
 const btn: CSSProperties = { fontFamily: KR, cursor: 'pointer' };
 const backBtn: CSSProperties = { ...btn, height: 30, padding: '0 12px', borderRadius: 999, border: '1px solid #2B2337', background: CARD, color: TXT, fontSize: 12 };
 
-export function WemingPhone() {
+/** `screen`: only the app's screen, filling its container (a Mac window or a full-screen iPhone app), no bezel or status bar. */
+export function WemingPhone({ screen = false }: { screen?: boolean } = {}) {
   const [tab, setTab] = useState<Tab>('feed');
   const [sub, setSub] = useState<null | 'room' | 'random'>(null);
   const [rp, setRp] = useState<'home' | 'searching' | 'proposal' | 'chat'>('home');
@@ -97,18 +98,18 @@ export function WemingPhone() {
   const side = (s: CSSProperties) => <div aria-hidden="true" style={{ position: 'absolute', width: 4, borderRadius: 2, background: '#5A5660', ...s }} />;
 
   return (
-    <div style={{ position: 'relative', width: 320, height: 660, fontFamily: KR, color: TXT }}>
-      {side({ left: 6, top: 120, height: 30 })}{side({ left: 6, top: 166, height: 52 })}{side({ left: 6, top: 228, height: 52 })}{side({ right: 6, top: 190, height: 80 })}
-      <div style={{ position: 'absolute', left: 10, top: 10, width: 300, height: 640, boxSizing: 'border-box', borderRadius: 52, padding: 9, background: '#18161C', border: '1.5px solid #77737E', boxShadow: '0 0 0 1px #2C2A31 inset, 0 30px 60px rgba(0,0,0,0.55)' }}>
-        <div role="application" aria-label="위밍 데모" style={{ position: 'relative', width: '100%', height: '100%', borderRadius: 43, overflow: 'hidden', background: '#0D0A13', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ position: 'relative', flex: 'none', height: 44, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 26px 0 30px', fontSize: 13, fontWeight: 600 }}>
+    <div style={screen ? { position: 'relative', width: '100%', height: '100%', fontFamily: KR, color: TXT } : { position: 'relative', width: 320, height: 660, fontFamily: KR, color: TXT }}>
+      {!screen && <>{side({ left: 6, top: 120, height: 30 })}{side({ left: 6, top: 166, height: 52 })}{side({ left: 6, top: 228, height: 52 })}{side({ right: 6, top: 190, height: 80 })}</>}
+      <div style={screen ? { position: 'absolute', inset: 0 } : { position: 'absolute', left: 10, top: 10, width: 300, height: 640, boxSizing: 'border-box', borderRadius: 52, padding: 9, background: '#18161C', border: '1.5px solid #77737E', boxShadow: '0 0 0 1px #2C2A31 inset, 0 30px 60px rgba(0,0,0,0.55)' }}>
+        <div role="application" aria-label="위밍 데모" style={{ position: 'relative', width: '100%', height: '100%', borderRadius: screen ? 0 : 43, overflow: 'hidden', background: '#0D0A13', display: 'flex', flexDirection: 'column' }}>
+          {screen ? <div style={{ flex: 'none', height: 8 }} /> : <div style={{ position: 'relative', flex: 'none', height: 44, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 26px 0 30px', fontSize: 13, fontWeight: 600 }}>
             <span>10:19</span>
             <div aria-hidden="true" style={{ position: 'absolute', left: '50%', top: 9, width: 86, height: 25, marginLeft: -43, borderRadius: 13, background: '#000' }} />
             <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               <svg width="15" height="10" viewBox="0 0 15 10" fill={TXT}><rect x="0" y="7" width="2.6" height="3" rx="0.6" /><rect x="4" y="5" width="2.6" height="5" rx="0.6" /><rect x="8" y="2.5" width="2.6" height="7.5" rx="0.6" /><rect x="12" y="0" width="2.6" height="10" rx="0.6" /></svg>
               <svg width="21" height="10" viewBox="0 0 21 10" fill="none"><rect x="0.5" y="0.5" width="17" height="9" rx="2.5" stroke={TXT} opacity="0.5" /><rect x="2" y="2" width="11" height="6" rx="1.2" fill="#3DDC97" /><rect x="18.8" y="3.2" width="1.4" height="3.6" rx="0.6" fill={TXT} opacity="0.5" /></svg>
             </span>
-          </div>
+          </div>}
 
           {!sub && (
             <div style={{ flex: 'none', height: 46, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px' }}>
@@ -357,7 +358,7 @@ export function WemingPhone() {
           )}
 
           {is.feed && <span aria-hidden="true" style={{ position: 'absolute', right: 14, bottom: 76, width: 48, height: 48, borderRadius: '50%', background: G135, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, fontWeight: 300, boxShadow: '0 8px 20px rgba(177,92,255,0.45)' }}>+</span>}
-          <div aria-hidden="true" style={{ position: 'absolute', left: '50%', bottom: 6, width: 96, height: 4, marginLeft: -48, borderRadius: 2, background: TXT, opacity: 0.6 }} />
+          {!screen && <div aria-hidden="true" style={{ position: 'absolute', left: '50%', bottom: 6, width: 96, height: 4, marginLeft: -48, borderRadius: 2, background: TXT, opacity: 0.6 }} />}
         </div>
       </div>
     </div>

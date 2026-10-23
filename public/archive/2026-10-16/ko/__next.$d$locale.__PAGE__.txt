@@ -1,0 +1,25 @@
+3:"$Sreact.fragment"
+4:"/archive/2026-10-16/_next/static/chunks/0umf92h1sb77c.js"
+5:"/archive/2026-10-16/_next/static/chunks/3-3jc4cqytds3.js"
+6:"/archive/2026-10-16/_next/static/chunks/0er9dc_qscrpf.js"
+7:"/archive/2026-10-16/_next/static/chunks/0hs_2bwwb_3x0.js"
+8:"/archive/2026-10-16/_next/static/chunks/1aomxpgdvbbil.js"
+9:I[92021,["$4","$5","$6","$7","$8"],"Site"]
+a:I[97367,["$4"],"OutletBoundary"]
+b:"$Sreact.suspense"
+f:"ViewportBoundary"
+10:I[97367,["$4"],"$f"]
+11:"MetadataBoundary"
+12:I[97367,["$4"],"$11"]
+13:I[27201,["$4"],"IconMark"]
+e:X
+2:[["children",{"s":"__PAGE__","h":128,"d":{"r":["$","$3","c",{"children":[[["$","script",null,{"type":"application/ld+json","dangerouslySetInnerHTML":{"__html":"{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"WebSite\",\"@id\":\"https://qminlab.com/#site\",\"url\":\"https://qminlab.com\",\"name\":\"qminlab\",\"inLanguage\":\"ko\",\"publisher\":{\"@id\":\"https://qminlab.com/#org\"}},{\"@type\":\"Organization\",\"@id\":\"https://qminlab.com/#org\",\"name\":\"qminlab\",\"url\":\"https://qminlab.com\",\"email\":\"mailto:hello@qminlab.com\",\"founder\":{\"@id\":\"https://qminlab.com/#person\"},\"sameAs\":[\"https://github.com/qminlab\"]},{\"@type\":\"Person\",\"@id\":\"https://qminlab.com/#person\",\"name\":\"김규민\",\"alternateName\":[\"Gyumin Kim\",\"qminlab\"],\"jobTitle\":\"AI 크리에이터\",\"email\":\"mailto:hello@qminlab.com\",\"url\":\"https://qminlab.com/ko/about/\",\"homeLocation\":{\"@type\":\"Place\",\"name\":\"대구\"},\"knowsAbout\":[\"Claude Code\",\"Claude API\",\"AI agents\",\"Generative AI\",\"React Native\",\"Phaser\",\"Seedance\",\"ElevenLabs\"],\"sameAs\":[\"https://github.com/qminlab\"],\"worksFor\":{\"@id\":\"https://qminlab.com/#org\"}}]}"}}],["$","$L9",null,{}]],[["$","script","script-0",{"src":"/archive/2026-10-16/_next/static/chunks/0hs_2bwwb_3x0.js","async":true}],["$","script","script-1",{"src":"/archive/2026-10-16/_next/static/chunks/1aomxpgdvbbil.js","async":true}]],["$","$La",null,{"children":["$","$b",null,{"name":"Next.MetadataOutlet","children":"$@c"}]}]]}],"p":"$@d","v":null,"s":"$e"}}]]
+1:[["children",{"s":{"n":"locale","t":"d","k":"ko","s":[]},"h":32,"c":"$Q2"}]]
+0:{"t":{"t":{"s":"","h":80,"c":"$Q1"},"h":{"r":["$","$3","h",{"children":[null,["$","$L10",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#0C0D0B"}]]}],["$","$L12",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$b",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"김규민 (Gyumin Kim) · qminlab — 1인 AI 제작 스튜디오"}],["$","meta","1",{"name":"description","content":"김규민(Gyumin Kim)의 1인 AI 제작 스튜디오 qminlab. Claude Code·Claude API·Seedance·ElevenLabs로 만든 앱 위밍, PC 게임 딥홀드, AI 애니메이션, Claude 대기판의 케이스 파일과 링크."}],["$","link","2",{"rel":"canonical","href":"https://qminlab.com/ko/"}],["$","link","3",{"rel":"alternate","hrefLang":"en","href":"https://qminlab.com/en/"}],["$","link","4",{"rel":"alternate","hrefLang":"ko","href":"https://qminlab.com/ko/"}],["$","meta","5",{"name":"naver-site-verification","content":"b0bc7b52249b189ee77b3211fd147baecdccc672"}],["$","link","6",{"rel":"icon","href":"/icon.svg"}],["$","$L13","7",{}]]}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":"$@14","v":null,"s":"$e"}},"a":"$@15","u":"$@16","b":"NkmxFtGyyKtPt9WjfQUmw"}
+c:null
+16:true
+e:300
+e:C
+15:0
+14:"$undefined"
+d:"$undefined"
