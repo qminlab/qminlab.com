@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="600" viewBox="0 0 1280 600" role="img" aria-label="Q MIN: qminlab, AI creator. 궁금함으로 시작해, 의미 있게 만듭니다.">
+<title>Q MIN: qminlab, AI creator. 궁금함으로 시작해, 의미 있게 만듭니다.</title>
+
+<defs>
+  <clipPath id="frame"><rect width="1280" height="600" rx="28"/></clipPath>
+  <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8EEE6"/><stop offset=".55" stop-color="#EEF0EC"/><stop offset="1" stop-color="#DDEBF0"/></linearGradient>
+  <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="70"/></filter>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#5A4A3A" flood-opacity=".16"/></filter>
+  <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".62"/><stop offset="1" stop-color="#FFFFFF" stop-opacity=".38"/></linearGradient>
+</defs>
+<g clip-path="url(#frame)">
+  <rect width="1280" height="600" fill="url(#sky)"/>
+  <g filter="url(#blur)">
+    <circle cx="250" cy="170" r="230" fill="#FFB48F" opacity="0.75"><animate attributeName="cx" values="250;310;250" dur="16s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="cy" values="170;210;170" dur="20.8s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></circle>
+    <circle cx="1040" cy="140" r="210" fill="#7FD8C0" opacity="0.6"><animate attributeName="cx" values="1040;990;1040" dur="19s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="cy" values="140;190;140" dur="24.7s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></circle>
+    <circle cx="980" cy="470" r="240" fill="#8FB0F5" opacity="0.55"><animate attributeName="cx" values="980;910;980" dur="22s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="cy" values="470;440;470" dur="28.6s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></circle>
+    <circle cx="640" cy="330" r="120" fill="#FF7A45" opacity="0.55"><animate attributeName="cx" values="640;680;640" dur="13s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="cy" values="330;310;330" dur="16.900000000000002s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></circle>
+    <circle cx="130" cy="520" r="170" fill="#C9B8FF" opacity="0.45"><animate attributeName="cx" values="130;180;130" dur="18s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/><animate attributeName="cy" values="520;480;520" dur="23.400000000000002s" repeatCount="indefinite" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"/></circle>
+  </g>
+  <path d="M-200 120 C 100 94, 300 146, 600 120 S 1100 94, 1480 135.6" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.2"><animateTransform attributeName="transform" type="translate" values="0 0;-60 -6;0 0" dur="18s" repeatCount="indefinite"/></path>
+<path d="M-200 172 C 100 136, 300 208, 600 172 S 1100 136, 1480 193.6" fill="none" stroke="#FF5A1F" stroke-opacity="0.28" stroke-width="1.2"><animateTransform attributeName="transform" type="translate" values="0 0;60 6;0 0" dur="20s" repeatCount="indefinite"/></path>
+<path d="M-200 224 C 100 178, 300 270, 600 224 S 1100 178, 1480 251.6" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.2"><animateTransform attributeName="transform" type="translate" values="0 0;-60 -6;0 0" dur="22s" repeatCount="indefinite"/></path>
+<path d="M-200 276 C 100 250, 300 302, 600 276 S 1100 250, 1480 291.6" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.2"><animateTransform attributeName="transform" type="translate" values="0 0;60 6;0 0" dur="24s" repeatCount="indefinite"/></path>
+<path d="M-200 328 C 100 292, 300 364, 600 328 S 1100 292, 1480 349.6" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.2"><animateTransform attributeName="transform" type="translate" values="0 0;-60 -6;0 0" dur="26s" repeatCount="indefinite"/></path>
+<path d="M-200 380 C 100 334, 300 426, 600 380 S 1100 334, 1480 407.6" fill="none" stroke="#FF5A1F" stroke-opacity="0.28" stroke-width="1.2"><animateTransform attributeName="transform" type="translate" values="0 0;60 6;0 0" dur="28s" repeatCount="indefinite"/></path>
+<path d="M-200 432 C 100 406, 300 458, 600 432 S 1100 406, 1480 447.6" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.2"><animateTransform attributeName="transform" type="translate" values="0 0;-60 -6;0 0" dur="30s" repeatCount="indefinite"/></path>
+<path d="M-200 484 C 100 448, 300 520, 600 484 S 1100 448, 1480 505.6" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.2"><animateTransform attributeName="transform" type="translate" values="0 0;60 6;0 0" dur="32s" repeatCount="indefinite"/></path>
+<path d="M-200 536 C 100 490, 300 582, 600 536 S 1100 490, 1480 563.6" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="1.2"><animateTransform attributeName="transform" type="translate" values="0 0;-60 -6;0 0" dur="34s" repeatCount="indefinite"/></path>
+  <!-- menu bar -->
+  <rect width="1280" height="34" fill="#FFFFFF" fill-opacity=".5"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="14" fill="#1D1D1F">
+    <text x="22" y="22" font-weight="900" font-size="15">Q<tspan fill="#FF5A1F">·</tspan></text>
+    <text x="52" y="22" font-weight="700">Finder</text>
+    <text x="112" y="22" fill="#3A3A3C">File   Edit   View   Go   Window   Help</text>
+    <text x="1258" y="22" text-anchor="end" fill="#3A3A3C">EN  한국어    Daegu, Korea · since 2026</text>
+  </g>
+  <!-- QMIN, unfolding into CURIOUS-MEAN and back -->
+  <g text-anchor="middle" fill="#0C0D0B">
+    <text x="640" y="292" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-weight="900" font-size="200" letter-spacing="-6">
+      <tspan fill="#FF5A1F">Q</tspan> MIN
+      <animate attributeName="opacity" values="1;1;0;0;1;1" keyTimes="0;.4;.46;.9;.96;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="640" y="268" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-weight="900" font-size="108" letter-spacing="-3" opacity="0">
+      <tspan fill="#FF5A1F">CURIOUS</tspan>-MEAN
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.42;.48;.88;.94;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="640" y="318" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Noto Sans Mono',monospace" font-size="15" letter-spacing="3" fill="#6E6A63" opacity="0">Q = CURIOUS · MIN = MEAN
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.44;.5;.88;.94;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text x="640" y="374" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="31" font-weight="700" fill="#1D1D1F">궁금함으로 시작해, 의미 있게 만듭니다.</text>
+    <text x="640" y="410" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="17" fill="#55524C">AI creator · apps, games and animation, built end to end with Claude Code</text>
+  </g>
+  <!-- Dock -->
+  <rect x="395" y="488" width="490" height="92" rx="26" fill="url(#glass)" stroke="#FFFFFF" stroke-opacity=".7" filter="url(#soft)"/>
+  <g><g transform="translate(413 502)">
+  <defs><linearGradient id="ic0" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E9E6DD"/></linearGradient></defs>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="url(#ic0)"/>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="1"/>
+  <g transform="translate(11.52 11.52) scale(1.7066666666666668)"><text x="11.5" y="17.5" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-weight="900" font-size="15" fill="#0C0D0B">Q</text><circle cx="18" cy="17" r="2" fill="#FF5A1F"/></g>
+</g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -22;0 0;0 -10;0 0;0 0" keyTimes="0;0.000;0.035;0.070;0.095;0.120;1" dur="12s" repeatCount="indefinite"/></g>
+<g><g transform="translate(491 502)">
+  <defs><linearGradient id="ic1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6A5CFF"/><stop offset="1" stop-color="#FF4FA3"/></linearGradient></defs>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="url(#ic1)"/>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="1"/>
+  <g transform="translate(11.52 11.52) scale(1.7066666666666668)"><path d="M3 6l4 12 5-9 5 9 4-12" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+</g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -22;0 0;0 -10;0 0;0 0" keyTimes="0;0.167;0.202;0.237;0.262;0.287;1" dur="12s" repeatCount="indefinite"/></g>
+<g><g transform="translate(569 502)">
+  <defs><linearGradient id="ic2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#221911"/><stop offset="1" stop-color="#110C08"/></linearGradient></defs>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="url(#ic2)"/>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="1"/>
+  <g transform="translate(11.52 11.52) scale(1.7066666666666668)"><g shape-rendering="crispEdges" transform="scale(1.5)"><rect x="3" y="2" width="10" height="2" fill="#E9A23B"/><rect x="2" y="4" width="2" height="10" fill="#E9A23B"/><rect x="12" y="4" width="2" height="10" fill="#E9A23B"/><rect x="5" y="6" width="6" height="8" fill="#2A1C12"/><rect x="7" y="9" width="2" height="2" fill="#FF5A1F"/></g></g>
+</g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -22;0 0;0 -10;0 0;0 0" keyTimes="0;0.333;0.368;0.403;0.428;0.453;1" dur="12s" repeatCount="indefinite"/></g>
+<g><g transform="translate(647 502)">
+  <defs><linearGradient id="ic3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B3A66"/><stop offset="1" stop-color="#0B0F1E"/></linearGradient></defs>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="url(#ic3)"/>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="1"/>
+  <g transform="translate(11.52 11.52) scale(1.7066666666666668)"><path d="M12 2v15" stroke="#E8F0FF" stroke-width="2" stroke-linecap="round"/><path d="M8 17h8M12 17v4" stroke="#C9A35C" stroke-width="2" stroke-linecap="round"/><circle cx="18" cy="5" r="1.4" fill="#FFE9A8"/><circle cx="6" cy="8" r=".9" fill="#FFE9A8"/></g>
+</g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -22;0 0;0 -10;0 0;0 0" keyTimes="0;0.500;0.535;0.570;0.595;0.620;1" dur="12s" repeatCount="indefinite"/></g>
+<g><g transform="translate(725 502)">
+  <defs><linearGradient id="ic4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#ECEAE4"/></linearGradient></defs>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="url(#ic4)"/>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="1"/>
+  <g transform="translate(11.52 11.52) scale(1.7066666666666668)"><rect x="3" y="5" width="5" height="14" rx="1.5" fill="#5B6FD8"/><rect x="9.5" y="5" width="5" height="14" rx="1.5" fill="#E2574C"/><rect x="16" y="5" width="5" height="14" rx="1.5" fill="#3DB36B"/></g>
+</g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -22;0 0;0 -10;0 0;0 0" keyTimes="0;0.667;0.702;0.737;0.762;0.787;1" dur="12s" repeatCount="indefinite"/></g>
+<g><g transform="translate(803 502)">
+  <defs><linearGradient id="ic5" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2A2A2C"/><stop offset="1" stop-color="#141415"/></linearGradient></defs>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="url(#ic5)"/>
+  <path d="M14.4 0H49.6C57.52 0 64 6.4799999999999995 64 14.4V49.6C64 57.52 57.52 64 49.6 64H14.4C6.4799999999999995 64 0 57.52 0 49.6V14.4C0 6.4799999999999995 6.4799999999999995 0 14.4 0Z" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="1"/>
+  <g transform="translate(11.52 11.52) scale(1.7066666666666668)"><rect x="3" y="4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.2"/><rect x="6.8" y="4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.9"/><rect x="10.6" y="4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.7"/><rect x="14.399999999999999" y="4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.5"/><rect x="18.2" y="4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.35"/><rect x="3" y="8.2" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.2"/><rect x="6.8" y="8.2" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.9"/><rect x="10.6" y="8.2" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.7"/><rect x="14.399999999999999" y="8.2" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.5"/><rect x="18.2" y="8.2" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.35"/><rect x="3" y="12.4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.2"/><rect x="6.8" y="12.4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.9"/><rect x="10.6" y="12.4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.7"/><rect x="14.399999999999999" y="12.4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.5"/><rect x="18.2" y="12.4" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.35"/><rect x="3" y="16.6" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.2"/><rect x="6.8" y="16.6" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.9"/><rect x="10.6" y="16.6" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.7"/><rect x="14.399999999999999" y="16.6" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.5"/><rect x="18.2" y="16.6" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="0.35"/></g>
+</g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -22;0 0;0 -10;0 0;0 0" keyTimes="0;0.833;0.868;0.903;0.928;0.953;1" dur="12s" repeatCount="indefinite"/></g>
+</g>
+<rect x=".5" y=".5" width="1279" height="599" rx="28" fill="none" stroke="#000" stroke-opacity=".06"/>
+</svg>

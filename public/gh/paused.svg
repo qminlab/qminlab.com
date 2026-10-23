@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="120" viewBox="0 0 1280 120" role="img" aria-label="일시정지: 자비스(AI 비서 겸 감독관), TFT 어시스턴트(게임 오버레이)">
+<title>일시정지: 자비스(AI 비서 겸 감독관), TFT 어시스턴트(게임 오버레이)</title>
+
+<rect width="1280" height="120" rx="24" fill="#16171A"/>
+<text x="1244" y="66" text-anchor="end" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Noto Sans Mono',monospace" font-size="14" letter-spacing="2" fill="#6E6A63">PAUSED · 게임과 애니메이션에 집중하는 중</text>
+<g transform="translate(28 24)">
+  <defs><linearGradient id="ic10" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0E2733"/><stop offset="1" stop-color="#05090C"/></linearGradient></defs>
+  <path d="M16.2 0H55.8C64.71 0 72 7.289999999999999 72 16.2V55.8C72 64.71 64.71 72 55.8 72H16.2C7.289999999999999 72 0 64.71 0 55.8V16.2C0 7.289999999999999 7.289999999999999 0 16.2 0Z" fill="url(#ic10)"/>
+  <path d="M16.2 0H55.8C64.71 0 72 7.289999999999999 72 16.2V55.8C72 64.71 64.71 72 55.8 72H16.2C7.289999999999999 72 0 64.71 0 55.8V16.2C0 7.289999999999999 7.289999999999999 0 16.2 0Z" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="1"/>
+  <g transform="translate(12.959999999999999 12.959999999999999) scale(1.92)"><g fill="none" stroke="#5FE0FF" stroke-width="1.4"><circle cx="12" cy="12" r="8.5" opacity=".6"/><circle cx="12" cy="12" r="5.5" stroke-dasharray="3 2"/></g><circle cx="12" cy="12" r="2" fill="#5FE0FF"/></g>
+</g>
+  <text x="120" y="56" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="24" font-weight="800" fill="#ECE8DE">자비스<tspan font-size="15" font-weight="600" fill="#9A968E" dx="10">Jarvis</tspan></text>
+  <text x="120" y="86" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="16" fill="#9A968E">AI 비서 겸 감독관 · 일시정지</text>
+<g transform="translate(400 24)">
+  <defs><linearGradient id="ic11" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1A2B2A"/><stop offset="1" stop-color="#0C1514"/></linearGradient></defs>
+  <path d="M16.2 0H55.8C64.71 0 72 7.289999999999999 72 16.2V55.8C72 64.71 64.71 72 55.8 72H16.2C7.289999999999999 72 0 64.71 0 55.8V16.2C0 7.289999999999999 7.289999999999999 0 16.2 0Z" fill="url(#ic11)"/>
+  <path d="M16.2 0H55.8C64.71 0 72 7.289999999999999 72 16.2V55.8C72 64.71 64.71 72 55.8 72H16.2C7.289999999999999 72 0 64.71 0 55.8V16.2C0 7.289999999999999 7.289999999999999 0 16.2 0Z" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="1"/>
+  <g transform="translate(12.959999999999999 12.959999999999999) scale(1.92)"><g fill="none" stroke="#6FE3C8" stroke-width="1.5"><path d="M12 3l7 4v8l-7 4-7-4V7z"/><path d="M12 8l3.5 2v4L12 16l-3.5-2v-4z" fill="#6FE3C8" fill-opacity=".3"/></g></g>
+</g>
+  <text x="492" y="56" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="24" font-weight="800" fill="#ECE8DE">TFT 어시스턴트<tspan font-size="15" font-weight="600" fill="#9A968E" dx="10">Overlay</tspan></text>
+  <text x="492" y="86" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="16" fill="#9A968E">게임 화면 위 공략 도우미 · v0.1</text>
+</svg>
