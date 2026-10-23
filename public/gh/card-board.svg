@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="340" viewBox="0 0 620 340" role="img" aria-label="QL-005 Claude 대기판 (Wait Board): 여러 Claude 작업의 진행 상황을 한눈에 보여주는 아이패드 현황판 · 사용 중 · 오픈소스">
+<title>QL-005 Claude 대기판 (Wait Board): 여러 Claude 작업의 진행 상황을 한눈에 보여주는 아이패드 현황판 · 사용 중 · 오픈소스</title>
+
+<defs>
+  <linearGradient id="bg-board" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#EEEBE4"/></linearGradient>
+  <clipPath id="cc"><rect width="620" height="340" rx="26"/></clipPath>
+</defs>
+<g clip-path="url(#cc)">
+  <rect width="620" height="340" fill="url(#bg-board)"/>
+  <rect x="370" y="84" width="66" height="8" rx="4" fill="#5B6FD8"/><rect x="370" y="100" width="66" height="38" rx="8" fill="#5B6FD8" fill-opacity="0.18"/><rect x="370" y="144" width="66" height="38" rx="8" fill="#5B6FD8" fill-opacity="0.13999999999999999"/><rect x="370" y="188" width="66" height="38" rx="8" fill="#5B6FD8" fill-opacity="0.09999999999999999"/><rect x="446" y="84" width="66" height="8" rx="4" fill="#E2574C"/><rect x="446" y="100" width="66" height="38" rx="8" fill="#E2574C" fill-opacity="0.18"/><rect x="446" y="144" width="66" height="38" rx="8" fill="#E2574C" fill-opacity="0.13999999999999999"/><rect x="446" y="188" width="66" height="38" rx="8" fill="#E2574C" fill-opacity="0.09999999999999999"/><rect x="446" y="100" width="66" height="38" rx="8" fill="#E2574C"><animate attributeName="opacity" values="0;.85;0" dur="1.6s" repeatCount="indefinite"/></rect><rect x="522" y="84" width="66" height="8" rx="4" fill="#3DB36B"/><rect x="522" y="100" width="66" height="38" rx="8" fill="#3DB36B" fill-opacity="0.18"/><rect x="522" y="144" width="66" height="38" rx="8" fill="#3DB36B" fill-opacity="0.13999999999999999"/><rect x="522" y="188" width="66" height="38" rx="8" fill="#3DB36B" fill-opacity="0.09999999999999999"/>
+  <g transform="translate(40 38)">
+  <defs><linearGradient id="ic9" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#ECEAE4"/></linearGradient></defs>
+  <path d="M18.900000000000002 0H65.1C75.49499999999999 0 84 8.505 84 18.900000000000002V65.1C84 75.49499999999999 75.49499999999999 84 65.1 84H18.900000000000002C8.505 84 0 75.49499999999999 0 65.1V18.900000000000002C0 8.505 8.505 0 18.900000000000002 0Z" fill="url(#ic9)"/>
+  <path d="M18.900000000000002 0H65.1C75.49499999999999 0 84 8.505 84 18.900000000000002V65.1C84 75.49499999999999 75.49499999999999 84 65.1 84H18.900000000000002C8.505 84 0 75.49499999999999 0 65.1V18.900000000000002C0 8.505 8.505 0 18.900000000000002 0Z" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="1"/>
+  <g transform="translate(15.12 15.12) scale(2.2399999999999998)"><rect x="3" y="5" width="5" height="14" rx="1.5" fill="#5B6FD8"/><rect x="9.5" y="5" width="5" height="14" rx="1.5" fill="#E2574C"/><rect x="16" y="5" width="5" height="14" rx="1.5" fill="#3DB36B"/></g>
+</g>
+  <g font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Noto Sans Mono',monospace" font-size="14" letter-spacing="2" fill="rgba(29,29,31,.5)"><text x="580" y="58" text-anchor="end">QL-005 · TOOL</text></g>
+  <text x="40" y="174" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="40" font-weight="800" fill="#1D1D1F" letter-spacing="-.5">Claude 대기판<tspan font-size="20" font-weight="600" fill="rgba(29,29,31,.5)" dx="12">Wait Board</tspan></text>
+  <text x="40" y="214" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="20" fill="#1D1D1F" fill-opacity=".86"><tspan x="40" dy="0">여러 Claude 작업의 진행 상황을</tspan><tspan x="40" dy="30">한눈에 보여주는 아이패드 현황판</tspan></text>
+  <g transform="translate(40 274)">
+    <rect width="190" height="34" rx="17" fill="#1D1D1F" fill-opacity=".1"/>
+    <circle cx="20" cy="17" r="5" fill="#3DDC84"><animate attributeName="opacity" values="1;.25;1" dur="1.8s" repeatCount="indefinite"/></circle>
+    <circle cx="20" cy="17" r="5" fill="none" stroke="#3DDC84"><animate attributeName="r" values="5;12" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1.8s" repeatCount="indefinite"/></circle>
+    <text x="36" y="23" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="16" font-weight="600" fill="#1D1D1F">사용 중 · 오픈소스</text>
+  </g>
+  <g transform="translate(546 274)"><circle cx="17" cy="17" r="17" fill="#1D1D1F" fill-opacity=".1"/><path d="M11 17h12M18 12l5 5-5 5" fill="none" stroke="#1D1D1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+</g>
+</svg>
