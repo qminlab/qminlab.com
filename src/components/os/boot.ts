@@ -550,12 +550,12 @@ function iSheet(html,title,src,onReady,cls){
   el.innerHTML=`<div class="ihead"></div><div class="ibody">${html}</div><button class="hbar" aria-label="${T.toHome}"></button>`;ios.appendChild(el);
   home.classList.add('behind');
   wire(el,'ios');const stop=onReady?onReady(el):null;
-  // iOS 26 opens and closes apps with a Genie-style warp from the icon (fast, with a light settle).
-  const s0=ios.getBoundingClientRect(),iconBox=x=>({left:s0.left+x.x,top:s0.top+x.y,width:x.w,height:x.h});
-  if(!RM){el.style.visibility='hidden';genie(el,boxOf(el),iconBox(r),'out',root,{duration:430,lag:.08,strips:32}).then(()=>{el.style.visibility='';
-    el.animate([{transform:'scale(.985)'},{transform:'none'}],{duration:SP2.d,easing:SP2.e})})}
+  // Apps zoom out of their icon and back into it. The Genie warp copies the whole app into 32 full-screen layers,
+  // which runs iPhone browsers out of memory (the tab dies with "can't open this page"), so phones animate the app itself.
+  const atIcon=x=>({transform:`translate(${x.x}px,${x.y}px) scale(${x.w/W},${x.h/H})`,borderRadius:'90px',opacity:.35});
+  if(!RM)el.animate([atIcon(r),{transform:'none',borderRadius:'0',opacity:1}],{duration:430,easing:'cubic-bezier(.2,.75,.3,1)'});
   const close=()=>{if(el.classList.contains('closing'))return;el.classList.add('closing');typeof stop==='function'&&stop();const still=src&&src.isConnected&&!src.closest('.fov')?irect(src):r;
-    if(RM)el.remove();else{const b=boxOf(el);genie(el,b,iconBox(still),'in',root,{duration:380,lag:.08,strips:32});el.remove()}
+    if(RM)el.remove();else{el.style.pointerEvents='none';el.animate([{transform:getComputedStyle(el).transform,opacity:1},atIcon(still)],{duration:380,easing:'cubic-bezier(.45,0,.75,.95)',fill:'forwards'}).finished.then(()=>el.remove(),()=>el.remove())}
     if(!ios.querySelector('.iappwin:not(.closing)')&&!ios.querySelector('.fov'))home.classList.remove('behind')};
   const hb=el.querySelector('.hbar');let sy=null;
   hb.addEventListener('pointerdown',e=>{sy=e.clientY;hb.setPointerCapture(e.pointerId)});
