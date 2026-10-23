@@ -3,10 +3,10 @@
  * language, so they live here rather than in messages/*.json; the button labels come from `linkKinds`.
  * Add a line when a project ships somewhere (App Store, Google Play, a download, a playable build).
  */
-export type LinkKind = 'github' | 'appstore' | 'googleplay' | 'download' | 'web' | 'play';
+export type LinkKind = 'github' | 'appstore' | 'googleplay' | 'download' | 'web' | 'play' | 'notes';
 export type ProjectLink = { kind: LinkKind; href: string };
 
-import { gh } from './identity';
+import { gh, SITE } from './identity';
 
 /** The studio's own GitHub profile, shown under the contact email. */
 export { GITHUB, GH_USER } from './identity';
@@ -15,6 +15,7 @@ export const LINKS: Record<string, ProjectLink[]> = {
   'QL-001': [{ kind: 'github', href: gh('weming') }],
   'QL-004': [{ kind: 'download', href: gh('deephold-releases/releases/latest') }],
   'QL-005': [{ kind: 'github', href: gh('claude-board') }],
+  'QL-006': [{ kind: 'notes', href: `${SITE}/notes/sword-master-rsa5m/` }],
 };
 
 /**

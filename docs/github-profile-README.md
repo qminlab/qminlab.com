@@ -20,7 +20,7 @@
 <a href="https://github.com/qminlab/weming"><img src="https://qminlab.com/gh/card-weming.svg" width="49%" alt="위밍 Weming: 친구 찾기 앱, App Store 심사 중"></a>
 </p>
 <p>
-<a href="https://qminlab.com/ko/work/ql-006/"><img src="https://qminlab.com/gh/card-sword.svg" width="49%" alt="별을 품은 소드마스터: AI 애니메이션, 제작 중"></a>
+<a href="https://qminlab.com/notes/sword-master-rsa5m/"><img src="https://qminlab.com/gh/card-sword.svg" width="49%" alt="별을 품은 소드마스터: AI 애니메이션, 제작 중, 제작노트 보기"></a>
 <a href="https://github.com/qminlab/claude-board"><img src="https://qminlab.com/gh/card-board.svg" width="49%" alt="Claude 대기판: 아이패드 작업 현황판, 사용 중"></a>
 </p>
 

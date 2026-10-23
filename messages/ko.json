@@ -64,7 +64,8 @@
     "googleplay": "Google Play",
     "download": "다운로드",
     "web": "바로가기",
-    "play": "플레이"
+    "play": "플레이",
+    "notes": "제작노트"
   },
   "specimens": {
     "label": "표본",
