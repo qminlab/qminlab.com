@@ -15,3 +15,7 @@ The site is a static export, so Cloudflare Pages serves it as plain files.
 - Build output directory: `out`
 
 `/` is redirected at the edge by a Pages Function (`functions/index.js`, picked up automatically from the repo root): the language last chosen in the header, else the browser language (Korean → `/ko/`, others → `/en/`), else country (KR → `/ko/`). `src/app/page.tsx` does the same in the browser as a fallback.
+
+## Rights
+
+The code is here to read and learn from. Images, text, game sprites and other content are © qminlab, all rights reserved. `public/deephold/fonts/` is Galmuri (SIL Open Font License, see `OFL.md`).
