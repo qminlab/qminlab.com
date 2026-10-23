@@ -24,7 +24,9 @@ export const PERSON = {
 };
 
 /** Profiles of the same person elsewhere, for `sameAs`. Add LinkedIn, YouTube and so on as they go up. */
-export const SAME_AS = [GITHUB];
+export const INSTAGRAM = 'https://www.instagram.com/qminlab/';
+export const THREADS = 'https://www.threads.com/@qminlab';
+export const SAME_AS = [GITHUB, INSTAGRAM, THREADS];
 
 /** schema.org Person, shared by every page that names the creator. */
 export function personLd(locale: 'ko' | 'en') {
@@ -38,7 +40,7 @@ export function personLd(locale: 'ko' | 'en') {
     email: `mailto:${EMAIL}`,
     url: `${SITE}/${locale}/about/`,
     homeLocation: { '@type': 'Place', name: p.city },
-    knowsAbout: ['Claude Code', 'Claude API', 'AI agents', 'Generative AI', 'React Native', 'Phaser', 'Seedance', 'ElevenLabs'],
+    knowsAbout: ['Claude Code', 'Claude Code hooks', 'Claude API', 'AI agents', 'Multi-agent workflows', 'Generative AI', 'AI animation', 'Indie game development', 'React Native', 'Expo', 'Firebase', 'Phaser', 'Electron', 'Seedance', 'ElevenLabs'],
     sameAs: SAME_AS,
     worksFor: { '@id': `${SITE}/#org` },
   };

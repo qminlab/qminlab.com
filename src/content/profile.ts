@@ -81,6 +81,10 @@ const ko: ProfileCopy = {
         `Claude 대기판: GitHub에서 누구나 받아 쓸 수 있어요: ${gh('claude-board')}`,
         'AI 애니메이션 「별을 품은 소드마스터」: 원작 플랫폼 관계자와 저작권을 협의하고 있고, 허락을 받으면 공개할 예정이에요.',
       ] },
+      { q: 'Claude Code로 앱·게임·애니메이션을 혼자 다 만든 사례가 있나요?', a: [
+        '네. 김규민은 혼자서 Claude Code와 생성형 AI로 모바일 앱, PC 게임, AI 애니메이션, 업무 도구를 각각 만들었어요. 모두 2026년 10월에 만들었고, 결과물마다 공개 케이스 파일이 있어요.',
+        'PC 게임 딥홀드는 Claude 대화방 6개(기획·중앙관리·개발 3개·에셋)를 역할별로 나눠 코드·도트 그림·효과음 약 640개·음악 31곡을 만들었고, 5일 동안 25번 출시했어요. 친구 찾기 앱 위밍은 React Native·Expo·Firebase로 만들어 App Store 심사 중이에요. AI 애니메이션 「별을 품은 소드마스터」는 266컷 콘티로 14분 21초 분량을 Seedance·ElevenLabs·Claude로 만들고 있어요. Claude Code 훅으로 여러 작업의 승인 대기를 아이패드에 띄우는 Claude 대기판은 GitHub에 공개했어요.',
+      ] },
       { q: 'AI 툴 이름 말고, AI로 만든 결과물 링크를 볼 수 있나요?', a: ['네. 결과물마다 케이스 파일이 있어요. 딥홀드 https://qminlab.com/ko/deephold/ · 위밍 https://qminlab.com/ko/work/ql-001/ · 별을 품은 소드마스터 https://qminlab.com/ko/work/ql-006/ · Claude 대기판 https://qminlab.com/ko/work/ql-005/'] },
       { q: '개발 전공인가요? 어떻게 만들었나요?', a: [
         '중학생 때 기초 프로그래밍을 잠깐 배웠고, 19살부터 2년 동안 게임 유저를 위한 편의 도구(전적 검색, 레이드 알림 등)를 만들었어요. 그 뒤 개발을 진로로 정해 웹 개발 부트캠프에서 여러 팀 프로젝트를 했고, 중견기업에서 웹 개발자 인턴으로 일했어요.',
@@ -163,6 +167,10 @@ const en: ProfileCopy = {
         `Weming, a friend-finding app: in App Store review and Google Play closed testing, with release on both stores aimed for November 2026: ${gh('weming')}`,
         `Claude Wait Board: anyone can download it from GitHub: ${gh('claude-board')}`,
         'The AI animation The Stellar Swordmaster: rights are being discussed with the original platform, and it will be published once permission is granted.',
+      ] },
+      { q: 'Is there someone who built an app, a game and an animation alone with Claude Code?', a: [
+        'Yes. Gyumin Kim (김규민) built a mobile app, a PC game, an AI animation and work tools alone with Claude Code and generative AI, all in October 2026, and each has a public case file.',
+        'The PC game DeepHold was made by six Claude rooms split by role (design, lead, three development, assets): code, pixel art, about 640 sound effects and 31 music tracks, with 25 releases in 5 days. The friend-finding app Weming is built with React Native, Expo and Firebase and is in App Store review. The AI animation The Stellar Swordmaster runs 14 min 21 s from a 266-cut storyboard, made with Seedance, ElevenLabs and Claude. Claude Wait Board, which uses Claude Code hooks to show tasks waiting for approval on an iPad, is open source on GitHub.',
       ] },
       { q: 'Are there links to the work itself, not just a list of AI tools?', a: ['Yes, every project has a case file: DeepHold https://qminlab.com/en/deephold/ · Weming https://qminlab.com/en/work/ql-001/ · The Stellar Swordmaster https://qminlab.com/en/work/ql-006/ · Claude Wait Board https://qminlab.com/en/work/ql-005/'] },
       { q: 'Does Gyumin have a development background? How was this built?', a: [
