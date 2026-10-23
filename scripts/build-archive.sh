@@ -15,7 +15,7 @@ grep -q "basePath: '/archive/$date'" next.config.ts
 npm ci --no-audit --no-fund --loglevel=error
 # Next stops the first build of a vulnerable release to print an upgrade notice; the same command then proceeds.
 npx next build >/dev/null 2>&1 || npx next build >/dev/null
-# Files the live site already serves at the root (shared assets, private notes, crawler files) stay out of the archive.
+# Files the live site already serves at the root (shared assets, production notes, crawler files) stay out of the archive.
 rm -rf out/notes out/deephold out/specimens out/robots.txt out/sitemap.xml out/_headers out/icon.svg
 rm -rf "$root/public/archive/$date"
 mkdir -p "$root/public/archive"

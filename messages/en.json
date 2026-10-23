@@ -64,7 +64,8 @@
     "googleplay": "Google Play",
     "download": "Download",
     "web": "Open",
-    "play": "Play"
+    "play": "Play",
+    "notes": "Production notes (KR)"
   },
   "specimens": {
     "label": "Specimens",
