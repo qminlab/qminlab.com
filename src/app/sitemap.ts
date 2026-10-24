@@ -5,7 +5,7 @@ import { SITE, UPDATED } from '@/lib/identity';
 // Static export: written once to out/sitemap.xml at build time.
 export const dynamic = 'force-static';
 
-const PAGES = ['', 'about/', 'faq/', 'deephold/', 'work/ql-001/', 'work/ql-002/', 'work/ql-003/', 'work/ql-005/', 'work/ql-006/'];
+const PAGES = ['', 'about/', 'faq/', 'deephold/', 'work/ql-001/', 'work/ql-002/', 'work/ql-003/', 'work/ql-005/', 'work/ql-006/', 'trials/weming/', 'trials/deephold/', 'trials/claude-board/'];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const localized = PAGES.flatMap((path) => routing.locales.map((l) => ({

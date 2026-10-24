@@ -65,7 +65,8 @@
     "download": "Download",
     "web": "Open",
     "play": "Play",
-    "notes": "Production notes (KR)"
+    "notes": "Production notes (KR)",
+    "trials": "Trial and error"
   },
   "specimens": {
     "label": "Specimens",

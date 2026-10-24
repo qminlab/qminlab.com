@@ -65,7 +65,8 @@
     "download": "다운로드",
     "web": "바로가기",
     "play": "플레이",
-    "notes": "제작노트"
+    "notes": "제작노트",
+    "trials": "시행착오"
   },
   "specimens": {
     "label": "표본",
