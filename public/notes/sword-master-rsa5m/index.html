@@ -200,6 +200,28 @@ tfoot td{font-weight:600;background:var(--soft);border-top:1px solid var(--line)
 .aud p b{font-size:15px}
 @media (max-width:640px){.aud{grid-template-columns:1fr}}
 
+/* versions: 버전마다 영상 + 시도 / 아쉬운 점, 다음 버전으로 넘어가는 이유를 화살표로 */
+.vers{display:grid;gap:0}
+.ver{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px 32px;align-items:start;padding:32px 0;border-top:1px solid var(--line)}
+.ver:first-child{border-top:0;padding-top:8px}
+.ver-head{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.ver-head .v{font-family:var(--latin);font-weight:600;font-size:clamp(26px,1.6vw + 18px,36px);color:var(--ember);line-height:1}
+.ver-head .when{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.ver .screen video{aspect-ratio:16/9}
+.ver .txt{display:grid;gap:14px;min-width:0}
+.ver .txt h4{margin:0 0 2px;font-size:13px;font-weight:600;color:var(--muted)}
+.ver .txt p{font-size:15px}
+.ver .txt .why{border-left:3px solid var(--star);padding:2px 0 2px 14px}
+.ver .next{grid-column:1/-1;display:flex;gap:10px;align-items:baseline;font-size:15px;font-weight:600;color:var(--ember)}
+.ver .next span[aria-hidden]{font-family:var(--mono)}
+.soon{aspect-ratio:16/9;border-radius:10px;border:2px dashed color-mix(in srgb,var(--wip) 70%,transparent);background:
+  radial-gradient(circle at 70% 30%,color-mix(in srgb,var(--star) 14%,transparent),transparent 55%),var(--night);
+  color:var(--night-ink);display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;padding:16px}
+.soon .star-mark{color:#f6d68a;width:22px;height:22px;animation:twinkle 3.4s ease-in-out infinite}
+.soon b{font-family:var(--display);font-size:clamp(19px,1vw + 14px,24px)}
+.soon span{font-size:13px;color:var(--night-muted)}
+@media (max-width:760px){.ver{grid-template-columns:1fr}}
+
 /* trial timeline */
 .trial{display:grid}
 .trial article{display:grid;grid-template-columns:120px minmax(0,1fr);gap:4px 20px;padding:20px 0;border-top:1px solid var(--line)}
@@ -248,6 +270,7 @@ footer .star-mark{color:var(--star);flex:none}
     <button role="tab" id="tab-process" aria-controls="process" aria-selected="false" data-view="process"><span class="n" aria-hidden="true">II</span>제작 과정</button>
     <button role="tab" id="tab-cost" aria-controls="cost" aria-selected="false" data-view="cost"><span class="n" aria-hidden="true">III</span>도구와 비용</button>
     <button role="tab" id="tab-trial" aria-controls="trial" aria-selected="false" data-view="trial"><span class="n" aria-hidden="true">IV</span>시행착오</button>
+    <button role="tab" id="tab-versions" aria-controls="versions" aria-selected="false" data-view="versions"><span class="n" aria-hidden="true">V</span>버전 변화</button>
   </div>
 </nav>
 
@@ -265,7 +288,7 @@ footer .star-mark{color:var(--star);flex:none}
       </video>
     </div>
     <p class="muted meta">2분 24초 · 일본어 더빙 · 한국어 자막(초안) · 보정 완료본. 소리는 아직 작업 중인 임시 버전이고, 도입부 15초(도시 원경)는 이번 보정본에 포함되지 않았습니다.</p>
-    <p class="goto"><span>이 장면을 어떤 순서와 도구로 만들었는지는 <a href="#process" data-goto="process">제작 과정 <span aria-hidden="true">→</span></a>에서 단계별로 보실 수 있습니다.</span></p>
+    <p class="goto"><span>이 장면을 어떤 순서와 도구로 만들었는지는 <a href="#process" data-goto="process">제작 과정 <span aria-hidden="true">→</span></a>에서 단계별로 보실 수 있습니다. 첫 시도부터 지금까지 영상이 어떻게 바뀌었는지는 <a href="#versions" data-goto="versions">버전 변화 <span aria-hidden="true">→</span></a>에 정리했습니다.</span></p>
   </div>
 </section>
 
@@ -514,6 +537,63 @@ footer .star-mark{color:var(--star);flex:none}
   </div>
 </section>
 
+<!-- ===================== 버전 변화 ===================== -->
+<section class="view" id="versions" role="tabpanel" aria-labelledby="tab-versions" hidden>
+  <div class="stage">
+    <div class="section-head"><span class="label">Versions</span><h2>버전 변화</h2></div>
+    <p class="prose">같은 작품을 지금까지 세 번 새로 시작했습니다. 버전마다 무엇을 시도했고, 무엇이 부족해서 다시 만들기로 했는지 순서대로 적었습니다.</p>
+    <div class="vers">
+
+      <article class="ver" id="v1">
+        <div class="ver-head"><span class="v">v1</span><h3>웹툰 그림체 그대로</h3><span class="when">2026.10 · 첫 시도</span></div>
+        <div>
+          <div class="screen">
+            <video controls playsinline preload="none" poster="m/poster_v1.jpg">
+              <source src="m/v1.mp4" type="video/mp4">
+            </video>
+          </div>
+          <p class="muted meta" style="margin-top:10px">1분 3초 · 한국어 나레이션 · 첫 시도 영상</p>
+        </div>
+        <div class="txt">
+          <div><h4>시도</h4><p>웹툰의 그림체를 그대로 살려서, 웹툰을 바로 애니메이션으로 만들었습니다.</p></div>
+          <div class="why"><h4>아쉬운 점</h4><p>스케치와 손그림 특유의 난잡한 선, 세로로 그려진 구도가 움직이는 애니메이션과 맞지 않았습니다. 또 각색·각본, 콘티, 애니매틱 같은 애니메이션 제작 과정을 거치지 않고 웹툰을 바로 영상으로 옮겨서 부족한 부분이 많았습니다.</p></div>
+        </div>
+        <p class="next"><span aria-hidden="true">↓</span><span>그래서 v2는 그림체를 애니메이션에 맞게 다시 그리고, 제작 과정을 처음부터 밟기로 했습니다.</span></p>
+      </article>
+
+      <article class="ver" id="v2">
+        <div class="ver-head"><span class="v">v2</span><h3>애니메이션 그림체와 제작 과정</h3><span class="when">2026.10 · 장면 2 「대장간 앞의 별」</span></div>
+        <div>
+          <div class="screen">
+            <video controls playsinline preload="none" poster="m/poster.jpg">
+              <source src="m/result.mp4" type="video/mp4">
+              <track id="subtrack2" kind="subtitles" srclang="ko" label="한국어" default>
+            </video>
+          </div>
+          <p class="muted meta" style="margin-top:10px">2분 24초 · 일본어 더빙 · 한국어 자막. 이 페이지의 <a href="#process" data-goto="process">제작 과정</a>이 이 버전입니다.</p>
+        </div>
+        <div class="txt">
+          <div><h4>시도</h4><p>다른 애니메이션의 그림체를 참고해 캐릭터를 애니메이션에 맞게 다시 그렸습니다. 그리고 애니메이션 회사가 작품을 만들 때처럼 각색·각본, 콘티, 애니매틱 과정을 거쳐 만들었습니다.</p></div>
+          <div class="why"><h4>아쉬운 점</h4><p>컷 리듬과 연출 기획이 부족했습니다. 나중에 컷 수를 늘리려고 사이사이에 새 컷을 만들어 넣으니 컷 연결이 어색해졌고, 최신 애니메이션에 비해 퀄리티가 떨어진다고 느꼈습니다. 또 더빙 길이를 미리 생각하지 않고 짠 콘티라 영상 길이와 컷 수를 제대로 잡지 못했습니다.</p></div>
+        </div>
+        <p class="next"><span aria-hidden="true">↓</span><span>그래서 v3는 콘티를 짜기 전에 컷 리듬과 더빙 길이부터 정하기로 했습니다.</span></p>
+      </article>
+
+      <article class="ver" id="v3">
+        <div class="ver-head"><span class="v">v3</span><h3>컷 리듬과 더빙 길이부터</h3><span class="status wip">제작 중</span><span class="when">2026.10 · 콜드 오픈</span></div>
+        <div>
+          <div class="soon" role="img" aria-label="v3 영상 제작 중"><span class="star-mark" aria-hidden="true"></span><b>콜드 오픈 제작 중</b><span>완성되면 이 자리에 영상을 올립니다.</span></div>
+        </div>
+        <div class="txt">
+          <div><h4>시도</h4><p>처음부터 컷 리듬과 더빙 길이를 생각해서 콘티를 만들고 시작합니다. 그림체도 일반적인 애니메이션보다 더 좋게 바꿔, 호평받는 최신 애니메이션과 비슷하거나 그 이상의 퀄리티를 내 보려고 합니다.</p></div>
+          <div class="why"><h4>지금</h4><p>작품의 첫 장면인 콜드 오픈을 만들고 있습니다.</p></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
 </div>
 </main>
 
@@ -523,6 +603,7 @@ footer .star-mark{color:var(--star);flex:none}
 (function(){
   var vtt="WEBVTT\n\n1\n00:00:00.542 --> 00:00:03.208\n또또또. 정신 못 차리고 있네.\n\n2\n00:00:03.875 --> 00:00:06.250\n…방해할 거면 좀 꺼져.\n\n3\n00:00:09.458 --> 00:00:13.167\n…그래서, 아직도 막대기 같은 것만\n붙잡으면 목소리가 들려?\n\n4\n00:00:20.500 --> 00:00:22.292\n<i>검은 벼락이래…</i>\n\n5\n00:00:22.458 --> 00:00:24.458\n<i>악마에 붙들린 거야…</i>\n\n6\n00:00:26.708 --> 00:00:31.708\n하필이면 검은색 벼락을 맞아서는…\n다들 뒤에서 수군거려.\n\n7\n00:00:32.000 --> 00:00:36.667\n주교가 사특한 징조만 보이면\n툭하면 화형시키는 거 알잖아.\n\n8\n00:00:36.958 --> 00:00:40.667\n찍혀서 교회에라도 끌려가면\n어쩔 생각이야?\n\n9\n00:00:42.583 --> 00:00:46.250\n…검 좀 본다고 안 끌려가.\n\n10\n00:00:46.333 --> 00:00:48.458\n진짜 답답하네!\n\n11\n00:00:48.542 --> 00:00:50.458\n그냥 외상으로 확 사 버려!\n\n12\n00:00:50.542 --> 00:00:52.167\n저게 얼만데!\n\n13\n00:00:53.792 --> 00:00:55.083\n…5골드.\n\n14\n00:00:55.333 --> 00:00:59.250\n…헐. …저거 하나면\n일 년은 놀고먹겠네.\n\n15\n00:00:59.333 --> 00:01:04.458\n이놈들이 장사 안 되게\n남의 가게 앞을 틀어막고!\n\n16\n00:01:04.917 --> 00:01:08.958\n이건 너희 같은 뒷골목 놈들이\n노릴 물건이 아니야!\n\n17\n00:01:09.500 --> 00:01:14.708\n허. …뒷골목에서 장사하면서\n뒷골목 놈들한텐 안 판다고?\n\n18\n00:01:15.000 --> 00:01:19.500\n우리 둘 합쳐도 영감보다는\n여기 오래 안 있었거든요!\n\n19\n00:01:19.667 --> 00:01:23.917\n뒷골목 놈이란 말은\n오히려 영감한테 더 어울리지!\n\n20\n00:01:24.125 --> 00:01:27.375\n뒷골목에 걸어 놓고\n뒷골목 놈한텐 안 판다니,\n\n21\n00:01:27.458 --> 00:01:29.417\n영감 노망났어?\n\n22\n00:01:29.708 --> 00:01:32.750\n이… 이…!\n…이 되다 만 것이!\n\n23\n00:01:32.833 --> 00:01:35.833\n되다 만 것?\n다 큰 숙녀한테!\n\n24\n00:01:35.917 --> 00:01:39.625\n내년엔 나도 큰돈 벌거든!\n\n25\n00:01:39.750 --> 00:01:43.875\n그땐 저딴 칼, 사서\n소시지나 썰어 버릴 거야!\n\n26\n00:01:44.167 --> 00:01:46.292\n아이 진짜 왜들 이래.\n\n27\n00:01:46.375 --> 00:01:49.125\n…영감, 우리 갈게요.\n\n28\n00:01:49.208 --> 00:01:51.917\n영감, 죽을 때가 다 됐나 봐!\n\n29\n00:01:52.000 --> 00:01:55.250\n그래! 죽을 때가 다 됐다!\n\n30\n00:01:57.208 --> 00:01:58.875\n멍청한 놈.\n\n31\n00:01:59.000 --> 00:02:01.667\n그냥 먹고 살 생각이나 하지…\n\n32\n00:02:01.750 --> 00:02:07.083\n…애송아. 괜히 이런 곳에서\n꿈을 가지면 고달퍼.\n\n33\n00:02:07.500 --> 00:02:10.083\n…내가 잘 알지.\n\n34\n00:02:12.625 --> 00:02:17.917\n내 마지막 작품을\n이런 곳에서 썩힐 수는 없지.\n\n35\n00:02:18.250 --> 00:02:22.708\n…이건 여기서 나갈 수 있는\n녀석한테만 팔 거다.\n\n";
   try{var tr=document.getElementById('subtrack');tr.src=URL.createObjectURL(new Blob([vtt],{type:'text/vtt'}));tr.track.mode='showing';}catch(e){}
+  try{var tr2=document.getElementById('subtrack2');tr2.src=tr.src;tr2.track.mode='showing';}catch(e){}
 
   // 테마: 시스템 설정을 따르고, 버튼으로 바꾼 값은 이 브라우저에만 기억
   var root=document.documentElement, KEY='sm-notes-theme';
@@ -534,7 +615,7 @@ footer .star-mark{color:var(--star);flex:none}
   });
 
   var tabs=[].slice.call(document.querySelectorAll('[role="tab"]'));
-  var views=['result','process','cost','trial'];
+  var views=['result','process','cost','trial','versions'];
   function show(id,push){
     if(views.indexOf(id)<0) id='result';
     views.forEach(function(v){document.getElementById(v).hidden=(v!==id)});

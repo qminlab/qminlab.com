@@ -15,8 +15,8 @@ const PUSHED: Record<string, string> = { 'QL-001': '2026-10-15', 'QL-005': '2026
 const KIND: Record<Project['type'], string> = { APP: 'MobileApplication', PROGRAM: 'SoftwareApplication', GAME: 'VideoGame', ANIME: 'CreativeWork', TOOL: 'SoftwareApplication' };
 
 const L = {
-  ko: { back: '← qminlab', updated: '최근 확인', file: '케이스 파일', facts: '한눈에', maker: '만든 사람', type: '유형', platform: '플랫폼', stage: '단계', stack: 'AI · 기술 스택', pushed: 'GitHub 최근 업데이트', links: '링크', about: '김규민 소개 보기 →', faq: '자주 묻는 질문 →', types: { APP: '앱', PROGRAM: '프로그램', GAME: '게임', ANIME: '애니메이션', TOOL: '생산성 도구' } },
-  en: { back: '← qminlab', updated: 'Last checked', file: 'Case file', facts: 'At a glance', maker: 'Made by', type: 'Type', platform: 'Platform', stage: 'Stage', stack: 'AI and stack', pushed: 'Last GitHub update', links: 'Links', about: 'About Gyumin Kim →', faq: 'FAQ →', types: { APP: 'App', PROGRAM: 'Program', GAME: 'Game', ANIME: 'Animation', TOOL: 'Productivity tool' } },
+  ko: { back: '← qminlab', updated: '최근 확인', file: '케이스 파일', facts: '한눈에', maker: '만든 사람', type: '유형', platform: '플랫폼', stage: '단계', stack: 'AI · 기술 스택', pushed: 'GitHub 최근 업데이트', links: '링크', versions: '버전 변화', tried: '시도', why: '아쉬운 점', now: '지금', seeVersions: '제작노트에서 버전별 영상 보기 →', about: '김규민 소개 보기 →', faq: '자주 묻는 질문 →', types: { APP: '앱', PROGRAM: '프로그램', GAME: '게임', ANIME: '애니메이션', TOOL: '생산성 도구' } },
+  en: { back: '← qminlab', updated: 'Last checked', file: 'Case file', facts: 'At a glance', maker: 'Made by', type: 'Type', platform: 'Platform', stage: 'Stage', stack: 'AI and stack', pushed: 'Last GitHub update', links: 'Links', versions: 'How it evolved', tried: 'Tried', why: 'What fell short', now: 'Now', seeVersions: 'Watch each version in the production notes (Korean) →', about: 'About Gyumin Kim →', faq: 'FAQ →', types: { APP: 'App', PROGRAM: 'Program', GAME: 'Game', ANIME: 'Animation', TOOL: 'Productivity tool' } },
 };
 
 const pick = (locale: string) => (locale === 'ko' ? 'ko' : 'en') as 'ko' | 'en';
@@ -84,6 +84,21 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
         {p.desc && <p style={{ margin: 0 }}>{p.desc}</p>}
       </div>
       <Section title={t.facts}><Facts rows={rows} /></Section>
+      {p.versions && (
+        <Section title={t.versions}>
+          <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'grid', gap: 20 }}>
+            {p.versions.map((x) => (
+              <li key={x.v} style={{ display: 'grid', gap: 6 }}>
+                <p style={{ margin: 0, color: BONE }}><b>{x.v}</b> · {x.title}</p>
+                <p style={{ margin: 0 }}>{t.tried}: {x.tried}</p>
+                {x.why && <p style={{ margin: 0 }}>{t.why}: {x.why}</p>}
+                {x.now && <p style={{ margin: 0 }}>{t.now}: {x.now}</p>}
+              </li>
+            ))}
+          </ol>
+          <a href={`${SITE}/notes/sword-master-rsa5m/#versions`} style={linkStyle}>{t.seeVersions}</a>
+        </Section>
+      )}
       {links.length > 0 && (
         <Section title={t.links}>
           <ul style={{ margin: 0, paddingLeft: 20 }}>{links.map((x) => <li key={x.href}><a href={x.href} style={linkStyle}>{x.href}</a></li>)}</ul>
