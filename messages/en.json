@@ -151,7 +151,27 @@
       "stageLine": "In production · cut generation and polish",
       "stack": "Seedance 2.5, ElevenLabs, ChatGPT Images, Claude, ffmpeg",
       "form": "ONE CUT, FIVE STAGES",
-      "dims": "266 CUTS · 14:21"
+      "dims": "266 CUTS · 14:21",
+      "versions": [
+        {
+          "v": "v1",
+          "title": "The webtoon's own art style",
+          "tried": "Kept the webtoon's drawing style and turned the webtoon straight into animation.",
+          "why": "The loose, sketchy hand-drawn lines and the vertical, scroll-first compositions didn't suit moving animation. Skipping adaptation, script, storyboard and animatic also left a lot missing."
+        },
+        {
+          "v": "v2",
+          "title": "An anime art style and a studio pipeline",
+          "tried": "Redrew the characters for animation, referencing other anime styles, and made Scene 2 the way a studio would: adaptation and script, storyboard, animatic.",
+          "why": "Cut rhythm and direction weren't planned well enough. Cuts added in between later felt awkward next to recent anime, and because the storyboard ignored dubbing length, the running time and cut count were off."
+        },
+        {
+          "v": "v3",
+          "title": "Cut rhythm and dubbing length first (in production)",
+          "tried": "Storyboarding from the start around cut rhythm and dubbing length, with an upgraded art style aiming to match or beat well-reviewed recent anime.",
+          "now": "The cold open is being made now. The video goes up when it's done."
+        }
+      ]
     },
     {
       "code": "QL-005",
