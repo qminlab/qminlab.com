@@ -7,6 +7,7 @@ import { linksFor } from '@/lib/links';
 import { DocShell, Facts, Section, linkStyle } from '@/components/doc/DocShell';
 import { BONE } from '@/lib/tokens';
 import { BRAND, PERSON, SITE, UPDATED, ldScript } from '@/lib/identity';
+import { TRIALS, TRIAL_BY_CODE } from '@/content/trials';
 
 /** Case files that live on this template. DeepHold (QL-004) has its own long-form page at /deephold/. */
 const CODES = ['QL-001', 'QL-002', 'QL-003', 'QL-005', 'QL-006'];
@@ -15,8 +16,8 @@ const PUSHED: Record<string, string> = { 'QL-001': '2026-10-15', 'QL-005': '2026
 const KIND: Record<Project['type'], string> = { APP: 'MobileApplication', PROGRAM: 'SoftwareApplication', GAME: 'VideoGame', ANIME: 'CreativeWork', TOOL: 'SoftwareApplication' };
 
 const L = {
-  ko: { back: '← qminlab', updated: '최근 확인', file: '케이스 파일', facts: '한눈에', maker: '만든 사람', type: '유형', platform: '플랫폼', stage: '단계', stack: 'AI · 기술 스택', pushed: 'GitHub 최근 업데이트', links: '링크', versions: '버전 변화', tried: '시도', why: '아쉬운 점', now: '지금', seeVersions: '제작노트에서 버전별 영상 보기 →', about: '김규민 소개 보기 →', faq: '자주 묻는 질문 →', types: { APP: '앱', PROGRAM: '프로그램', GAME: '게임', ANIME: '애니메이션', TOOL: '생산성 도구' } },
-  en: { back: '← qminlab', updated: 'Last checked', file: 'Case file', facts: 'At a glance', maker: 'Made by', type: 'Type', platform: 'Platform', stage: 'Stage', stack: 'AI and stack', pushed: 'Last GitHub update', links: 'Links', versions: 'How it evolved', tried: 'Tried', why: 'What fell short', now: 'Now', seeVersions: 'Watch each version in the production notes (Korean) →', about: 'About Gyumin Kim →', faq: 'FAQ →', types: { APP: 'App', PROGRAM: 'Program', GAME: 'Game', ANIME: 'Animation', TOOL: 'Productivity tool' } },
+  ko: { back: '← qminlab', updated: '최근 확인', file: '케이스 파일', facts: '한눈에', maker: '만든 사람', type: '유형', platform: '플랫폼', stage: '단계', stack: 'AI · 기술 스택', pushed: 'GitHub 최근 업데이트', links: '링크', versions: '버전 변화', tried: '시도', why: '아쉬운 점', now: '지금', seeVersions: '제작노트에서 버전별 영상 보기 →', trials: '시행착오', seeTrials: '버전별 시행착오 전체 보기 →', about: '김규민 소개 보기 →', faq: '자주 묻는 질문 →', types: { APP: '앱', PROGRAM: '프로그램', GAME: '게임', ANIME: '애니메이션', TOOL: '생산성 도구' } },
+  en: { back: '← qminlab', updated: 'Last checked', file: 'Case file', facts: 'At a glance', maker: 'Made by', type: 'Type', platform: 'Platform', stage: 'Stage', stack: 'AI and stack', pushed: 'Last GitHub update', links: 'Links', versions: 'How it evolved', tried: 'Tried', why: 'What fell short', now: 'Now', seeVersions: 'Watch each version in the production notes (Korean) →', trials: 'Trial and error', seeTrials: 'Read the whole story, version by version →', about: 'About Gyumin Kim →', faq: 'FAQ →', types: { APP: 'App', PROGRAM: 'Program', GAME: 'Game', ANIME: 'Animation', TOOL: 'Productivity tool' } },
 };
 
 const pick = (locale: string) => (locale === 'ko' ? 'ko' : 'en') as 'ko' | 'en';
@@ -55,7 +56,8 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
   if (!p) notFound();
   const l = pick(locale);
   const t = L[l];
-  const links = linksFor(p.code);
+  const links = linksFor(p.code, l);
+  const trial = TRIAL_BY_CODE[p.code] ? TRIALS[TRIAL_BY_CODE[p.code]][l] : undefined;
   const ld = {
     '@type': KIND[p.type],
     '@id': `${SITE}/${l}/work/${code}/`,
@@ -97,6 +99,15 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
             ))}
           </ol>
           <a href={`${SITE}/notes/sword-master-rsa5m/#versions`} style={linkStyle}>{t.seeVersions}</a>
+        </Section>
+      )}
+      {trial && (
+        <Section title={t.trials}>
+          <p style={{ margin: 0 }}>{trial.lead[1]}</p>
+          <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'grid', gap: 6 }}>
+            {trial.versions.map((x) => <li key={x.v}><b style={{ color: BONE }}>{x.v}</b> · {x.title}</li>)}
+          </ol>
+          <a href={`../../trials/${trial.slug}/`} style={linkStyle}>{t.seeTrials}</a>
         </Section>
       )}
       {links.length > 0 && (

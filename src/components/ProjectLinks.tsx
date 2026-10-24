@@ -6,7 +6,7 @@ import { CASES, linksFor } from '@/lib/links';
 /** Outbound buttons for a project (GitHub, stores, downloads). Renders nothing until a project has one. */
 export function ProjectLinks({ code, ko, small, active = true, onAccent }: { code: string; ko: boolean; small?: boolean; active?: boolean; onAccent?: boolean }) {
   const t = useTranslations('linkKinds');
-  const links = linksFor(code);
+  const links = linksFor(code, ko ? 'ko' : 'en');
   if (!links.length) return null;
   const bd = onAccent ? INK : ACCENT;
   return (

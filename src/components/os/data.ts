@@ -51,7 +51,7 @@ export function osData(locale: string, m: Messages): OsPayload {
       stl: sentence(m.status[p.st] ?? p.st, l),
       kind: p.st === 'paused' ? 'paused' : KIND[p.type] ?? 'app',
       short: SHORT[l][key],
-      links: linksFor(p.code).map((x) => [m.linkKinds[x.kind] ?? x.kind, x.href]),
+      links: linksFor(p.code, l).map((x) => [m.linkKinds[x.kind] ?? x.kind, x.href]),
       caseHref: CASES[p.code] ? `/${l}/${CASES[p.code]}` : '',
       caseExt: isDeep,
       caseLabel: isDeep ? (l === 'ko' ? '딥홀드 사이트' : 'DeepHold site') : l === 'ko' ? '케이스 파일' : 'Case file',

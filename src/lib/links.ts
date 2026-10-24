@@ -3,7 +3,7 @@
  * language, so they live here rather than in messages/*.json; the button labels come from `linkKinds`.
  * Add a line when a project ships somewhere (App Store, Google Play, a download, a playable build).
  */
-export type LinkKind = 'github' | 'appstore' | 'googleplay' | 'download' | 'web' | 'play' | 'notes';
+export type LinkKind = 'github' | 'appstore' | 'googleplay' | 'download' | 'web' | 'play' | 'notes' | 'trials' | 'assets';
 export type ProjectLink = { kind: LinkKind; href: string };
 
 import { gh, SITE } from './identity';
@@ -12,9 +12,9 @@ import { gh, SITE } from './identity';
 export { GITHUB, GH_USER } from './identity';
 
 export const LINKS: Record<string, ProjectLink[]> = {
-  'QL-001': [{ kind: 'github', href: gh('weming') }],
-  'QL-004': [{ kind: 'download', href: gh('deephold-releases/releases/latest') }],
-  'QL-005': [{ kind: 'github', href: gh('claude-board') }],
+  'QL-001': [{ kind: 'github', href: gh('weming') }, { kind: 'trials', href: `${SITE}/{locale}/trials/weming/` }],
+  'QL-004': [{ kind: 'download', href: gh('deephold-releases/releases/latest') }, { kind: 'trials', href: `${SITE}/{locale}/trials/deephold/` }, { kind: 'assets', href: `${SITE}/deephold-assets/` }],
+  'QL-005': [{ kind: 'github', href: gh('claude-board') }, { kind: 'trials', href: `${SITE}/{locale}/trials/claude-board/` }],
   'QL-006': [{ kind: 'notes', href: `${SITE}/notes/sword-master-rsa5m/` }],
 };
 
@@ -32,4 +32,6 @@ export const CASES: Record<string, string> = {
 };
 export const caseHref = (code: string, fallback: string) => CASES[code] ?? fallback;
 
-export const linksFor = (code: string) => LINKS[code] ?? [];
+/** `{locale}` in an href (pages on this site that exist in every language) becomes the reader's language. */
+export const linksFor = (code: string, locale = 'en') =>
+  (LINKS[code] ?? []).map((x) => ({ ...x, href: x.href.replace('{locale}', locale === 'ko' ? 'ko' : 'en') }));

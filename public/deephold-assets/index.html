@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>딥홀드 에셋 · Qmin Lab</title>
+<meta name="description" content="딥홀드의 도트 그림, 애니메이션, 효과음, 음악을 모두 모아 둔 에셋 도감.">
+<link rel="canonical" href="https://qminlab.com/deephold-assets/">
+<link rel="icon" href="/icon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gowun+Dodum&display=swap">
+<style>
+/* 갱도 벽에 표본을 붙여 둔 도감. 어두운 단일 테마, 강조색은 랜턴 주황 하나. */
+:root {
+  --bg: #121017; --panel: #1a1721; --panel-2: #211d2a; --stage: #0b0a0f; --line: #2b2735; --line-2: #3a3546;
+  --fg: #ece6d9; --muted: #9d96a8; --faint: #6d677a;
+  --accent: #ffb347; --accent-hi: #ffd780; --accent-ink: #1a1206; --danger: #ff6b5a;
+  --r-c: #9a95a6; --r-r: #5fb8ad; --r-h: #b884ea; --r-l: #ffb347;
+  --display: "Do Hyeon", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --body: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius: 8px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); line-height: 1.55; overflow-x: hidden; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+
+.home { font-size: 13px; color: var(--muted); text-decoration: none; }
+.home:hover { color: var(--accent); }
+/* 머리 */
+.top { padding-block: 40px 20px; display: grid; gap: 10px; }
+.top h1 { font-family: var(--display); font-weight: 400; font-size: clamp(40px, 7vw, 72px); line-height: .95; margin: 0; }
+.top h1 em { font-style: normal; color: var(--accent); text-shadow: 0 0 24px rgba(255,179,71,.35); }
+.top p { margin: 0; color: var(--muted); max-width: 64ch; }
+.stats { font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: .04em; }
+
+/* 고정 메뉴 */
+nav.tabs { position: sticky; top: 0; z-index: 20; background: rgba(18,16,23,.94); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav.tabs .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: thin; }
+nav.tabs button { flex: none; background: transparent; border: 1px solid var(--line-2); border-radius: 999px; padding: 6px 14px; font-size: 14px; white-space: nowrap; }
+nav.tabs button:hover { border-color: var(--accent); color: var(--accent); }
+nav.tabs button[aria-current="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+/* 구역 */
+main { padding-block: 24px 96px; min-height: 60vh; }
+.sec-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.sec-head h2 { font-family: var(--display); font-weight: 400; font-size: 34px; margin: 0; line-height: 1.1; }
+.sec-head .count { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+.sec-lead { color: var(--muted); margin: 0 0 20px; max-width: 70ch; font-size: 15px; }
+.group { margin-top: 28px; }
+.group > h3, .group > summary { font-family: var(--display); font-weight: 400; font-size: 22px; margin: 0 0 4px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.group > summary { cursor: pointer; list-style: none; padding: 8px 0; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.group > summary::-webkit-details-marker { display: none; }
+.group > summary::before { content: "▸"; color: var(--accent); font-size: 16px; transition: transform .15s; display: inline-block; }
+.group[open] > summary::before { transform: rotate(90deg); }
+.group .gdesc { color: var(--muted); font-size: 14px; margin: 0 0 12px; max-width: 80ch; }
+.group .n { font-family: var(--mono); font-size: 12px; color: var(--faint); }
+.status { color: var(--muted); padding: 40px 0; font-size: 15px; }
+.status .bar { height: 3px; background: var(--line); border-radius: 2px; margin-top: 10px; max-width: 320px; overflow: hidden; }
+.status .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .15s; }
+.status.err { color: var(--danger); }
+.note-box { border: 1px solid var(--line-2); background: var(--panel); border-radius: var(--radius); padding: 10px 14px; color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+.note-box.warn { border-color: rgba(255,107,90,.5); color: #f3b3a9; }
+
+/* 카드 격자 */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(156px, 1fr)); gap: 10px; }
+.card { margin: 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.card.w2 { grid-column: span 2; }
+.card.wfull { grid-column: 1 / -1; }
+.stage { position: relative; display: grid; place-items: center; min-height: 150px; padding: 14px 8px; background: var(--stage);
+  background-image: radial-gradient(ellipse at 50% 80%, rgba(255,179,71,.08), transparent 62%); border: 0; width: 100%; overflow: hidden; }
+button.stage { cursor: pointer; }
+button.stage:hover { background-color: #100e15; }
+button.stage:hover .badge { background: var(--accent); color: var(--accent-ink); }
+.stage img, .stage canvas { image-rendering: pixelated; image-rendering: crisp-edges; max-width: 100%; height: auto; display: block; }
+.stage.tiled { background-repeat: repeat; image-rendering: pixelated; min-height: 192px; }
+.stage.layer { background-size: cover; background-position: center; padding: 0; }
+.stage.layer img { width: 100%; }
+.badge { position: absolute; top: 6px; right: 6px; font-size: 11px; padding: 1px 8px; border-radius: 999px; background: rgba(255,179,71,.14); color: var(--accent); border: 1px solid rgba(255,179,71,.4); }
+figcaption { padding: 8px 10px 10px; display: grid; gap: 2px; min-width: 0; }
+.ko { font-size: 15px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.meta { font-family: var(--mono); font-size: 10.5px; color: var(--faint); word-break: break-all; }
+.desc { font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+.dsc { display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; margin: 6px 0 0; padding-top: 7px; border-top: 1px dashed var(--line-2); font-size: 12px; line-height: 1.45; }
+.dsc dt { color: var(--accent); white-space: nowrap; font-size: 11.5px; opacity: .85; }
+.dsc dd { margin: 0; color: var(--muted); min-width: 0; }
+.dsc .gname { grid-column: 1 / -1; color: var(--faint); font-size: 11.5px; }
+.boss .dsc { font-size: 13px; margin: 0 0 12px; max-width: 90ch; }
+.boss .dsc dt { font-size: 12.5px; }
+.rank { font-size: 11px; padding: 0 8px; border-radius: 999px; border: 1px solid currentColor; line-height: 18px; white-space: nowrap; }
+.r-c { color: var(--r-c); } .r-r { color: var(--r-r); } .r-h { color: var(--r-h); } .r-l { color: var(--r-l); }
+
+/* 애니 플레이어 */
+.player { display: grid; gap: 10px; min-width: 0; }
+.pstage { background: var(--stage); border: 1px solid var(--line); border-radius: var(--radius); display: grid; place-items: center; padding: 16px; min-height: 160px; overflow: hidden;
+  background-image: linear-gradient(45deg, #0f0d14 25%, transparent 25%, transparent 75%, #0f0d14 75%), linear-gradient(45deg, #0f0d14 25%, transparent 25%, transparent 75%, #0f0d14 75%);
+  background-size: 16px 16px; background-position: 0 0, 8px 8px; }
+.pstage canvas { image-rendering: pixelated; image-rendering: crisp-edges; max-width: 100%; height: auto; display: block; }
+.pbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.pbar .info { font-family: var(--mono); font-size: 12px; flex: 1; min-width: 140px; }
+.seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 999px; overflow: hidden; }
+.seg button { background: transparent; border: 0; padding: 3px 10px; font-size: 13px; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.pacts { display: grid; gap: 8px; }
+.pacts .ph { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.pacts .ph b { font-weight: 400; font-family: var(--display); font-size: 14px; color: var(--muted); min-width: 56px; }
+.act { background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 6px; padding: 3px 9px; font-size: 12.5px; font-family: var(--mono); }
+.act:hover { border-color: var(--accent); }
+.act[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: rgba(255,179,71,.1); }
+.act .lp { color: var(--faint); margin-left: 4px; }
+
+/* 서랍(카드에서 연 플레이어) */
+.drawer { position: fixed; z-index: 40; right: 16px; bottom: 16px; width: min(420px, calc(100vw - 32px)); max-height: calc(100vh - 88px); overflow: auto;
+  background: var(--panel); border: 1px solid var(--line-2); border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.6); padding: 14px; display: none; }
+.drawer.open { display: grid; gap: 10px; }
+.drawer header { display: flex; gap: 8px; align-items: center; }
+.drawer header h4 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 22px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.xbtn { background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 999px; width: 32px; height: 32px; flex: none; }
+@media (max-width: 640px) {
+  .drawer { left: 0; right: 0; bottom: 0; width: auto; border-radius: 14px 14px 0 0; max-height: 78vh; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+}
+
+/* 보스 */
+.boss { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-top: 18px; display: grid; gap: 14px; min-width: 0; }
+.boss h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 26px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.boss h3 small { font-family: var(--body); font-size: 13px; color: var(--muted); }
+.stills { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+.stills figure { margin: 0; flex: none; background: var(--stage); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; text-align: center; }
+.stills img { image-rendering: pixelated; display: block; }
+.stills figcaption { padding: 6px 0 0; font-size: 13px; color: var(--muted); }
+.boss-body { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 980px) { .boss-body { grid-template-columns: auto minmax(0, 1fr); align-items: start; } }
+
+/* 효과음 */
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; position: sticky; top: 55px; z-index: 5; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.toolbar input[type=search] { flex: 1 1 220px; min-width: 0; background: var(--panel); border: 1px solid var(--line-2); border-radius: 999px; padding: 8px 14px; }
+.toolbar input[type=search]:focus { border-color: var(--accent); outline: none; }
+.toolbar label { font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+.btn { background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 999px; padding: 6px 14px; font-size: 13px; }
+.btn:hover { border-color: var(--accent); }
+.cat { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); margin-top: 10px; }
+.cat > summary { cursor: pointer; padding: 12px 14px; display: flex; gap: 10px; align-items: baseline; list-style: none; flex-wrap: wrap; }
+.cat > summary::-webkit-details-marker { display: none; }
+.cat > summary h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 21px; }
+.cat > summary::before { content: "▸"; color: var(--accent); display: inline-block; transition: transform .15s; }
+.cat[open] > summary::before { transform: rotate(90deg); }
+.cat .body { padding: 0 14px 14px; }
+.sub { margin-top: 12px; }
+.sub h4 { margin: 0 0 4px; font-weight: 400; font-family: var(--display); font-size: 16px; color: var(--accent-hi); display: flex; gap: 8px; align-items: baseline; }
+.row { display: grid; grid-template-columns: 34px minmax(0, 13em) minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 5px 0; border-top: 1px solid var(--line); }
+.row code { font-family: var(--mono); font-size: 12px; color: var(--fg); word-break: break-all; }
+.row .d { font-size: 13px; color: var(--muted); }
+.row .v { font-family: var(--mono); font-size: 11px; color: var(--faint); white-space: nowrap; }
+.play { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--panel-2); display: grid; place-items: center; font-size: 12px; padding: 0; }
+.play:hover { border-color: var(--accent); color: var(--accent); }
+.play.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.play.wait { opacity: .6; }
+.loopb { font-size: 10px; color: var(--r-r); border: 1px solid currentColor; border-radius: 999px; padding: 0 6px; margin-left: 6px; }
+@media (max-width: 640px) { .row { grid-template-columns: 34px minmax(0, 1fr); } .row .d, .row .v { grid-column: 2; } }
+
+/* 업적·칭호 */
+.achrules { display: grid; gap: 6px 18px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); font-size: 13.5px; color: var(--muted); }
+.achrules b { color: var(--fg); font-weight: 600; }
+.achtool { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 14px 0 6px; }
+.achtool input[type=search] { flex: 1 1 220px; min-width: 0; background: var(--panel); border: 1px solid var(--line-2); border-radius: 999px; padding: 8px 14px; }
+.achtool input[type=search]:focus { border-color: var(--accent); outline: none; }
+.achtool label { font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+.achlist { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); }
+.ach { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 4px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; align-items: start; }
+.ach .em { grid-row: span 3; width: 76px; height: 76px; display: grid; place-items: center; background: var(--stage); border-radius: 6px; }
+.ach canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; max-width: 100%; }
+.ach .hd { display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+.ach .hd b { font-size: 15px; font-weight: 600; }
+.ach .hd code { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+.ach .pt { font-size: 11px; padding: 0 7px; border-radius: 999px; border: 1px solid currentColor; line-height: 17px; }
+.ach .pt.t1 { color: #a9a5c0; } .ach .pt.t2 { color: #7fd0bf; } .ach .pt.t3 { color: #d7b8ee; } .ach .pt.t4 { color: #ffd780; }
+.ach .hid { font-size: 11px; color: #ffb0a0; border: 1px solid currentColor; border-radius: 999px; padding: 0 7px; line-height: 17px; }
+.ach .cond { font-size: 13.5px; color: var(--fg); }
+.ach .plate { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 12px; color: var(--muted); min-width: 0; }
+.ach .plate .pc { background: var(--stage); border-radius: 6px; padding: 5px 6px; max-width: 100%; overflow: hidden; }
+.ach .ex { grid-column: 1 / -1; font-size: 12px; color: var(--faint); display: flex; gap: 4px 12px; flex-wrap: wrap; border-top: 1px dashed var(--line-2); padding-top: 5px; margin-top: 2px; }
+.ach .ex .rw { color: var(--accent); }
+.achcat { margin-top: 18px; }
+.achcat h3 { font-family: var(--display); font-weight: 400; font-size: 21px; margin: 0 0 8px; display: flex; gap: 8px; align-items: center; }
+.achcat h3 canvas { image-rendering: pixelated; }
+.achcat h3 .n { font-size: 13px; color: var(--faint); font-family: var(--mono); }
+
+/* 음악 */
+.tracks { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.track { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; display: grid; gap: 6px; min-width: 0; }
+.track .t { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.track .t b { font-family: var(--display); font-weight: 400; font-size: 20px; }
+.track audio { width: 100%; height: 36px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font-family: var(--mono); font-size: 11px; color: var(--muted); border: 1px solid var(--line-2); border-radius: 999px; padding: 0 8px; }
+.bossmus { margin-top: 14px; }
+.bossmus h4 { margin: 0 0 6px; font-family: var(--display); font-weight: 400; font-size: 19px; color: var(--accent-hi); }
+.newb { display: inline-block; margin-left: 6px; font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .06em; color: #1a1206; background: #ffd780; border-radius: 999px; padding: 0 6px; line-height: 16px; vertical-align: middle; }
+nav.tabs button .newb { margin-left: 6px; }
+.chg { border: 1px solid var(--line-2); border-radius: 14px; padding: 18px 20px; margin: 0 0 18px; background: rgba(255,179,71,.04); }
+.chg h3 { margin: 0 0 4px; font-family: var(--display); font-weight: 400; font-size: 22px; }
+.chg .when { font-family: var(--mono); font-size: 12px; color: var(--faint); margin: 0 0 12px; }
+.chg ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+.chg li b { color: var(--accent-hi); font-weight: 600; }
+.chg .go { margin-left: 8px; font-size: 12px; border: 1px solid var(--line-2); border-radius: 999px; padding: 1px 10px; background: transparent; color: var(--accent); cursor: pointer; }
+.chg .go:hover { border-color: var(--accent); }
+.chg.old { background: transparent; opacity: .85; }
+.card.wfull .stage img { max-width: 100%; height: auto; }
+.bossmus .tracks { grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="home" href="/ko/trials/deephold/">← 딥홀드 시행착오 · qminlab.com</a>
+  <h1>딥홀드 <em>에셋</em></h1>
+  <p>2.5D(3/4 탑다운) 도트 시안과 사운드 전부. 빛은 왼쪽 위에서 오고, 화면에서 따뜻한 색은 도굴꾼의 랜턴과 불빛뿐이다. 카드에 <span style="color:var(--accent)">▶ 동작</span> 표시가 있으면 눌러서 애니메이션을 돌려 볼 수 있다.</p>
+  <div class="stats">정지 그림 약 1,180 · 애니메이션 시트 307 · 효과음 803 · 음악 34 · 구역을 열 때 그 구역 데이터만 불러온다</div>
+</header>
+<nav class="tabs" aria-label="구역"><div class="wrap" id="tabs"></div></nav>
+<main class="wrap" id="main"></main>
+<aside class="drawer" id="drawer" aria-label="애니메이션 플레이어">
+  <header><h4 id="dtitle"></h4><button class="xbtn" id="dclose" aria-label="닫기">✕</button></header>
+  <div id="dhost"></div>
+</aside>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, attrs, ...kids) => {
+  const e = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === 'class') e.className = v;
+    else if (k === 'text') e.textContent = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const c of kids.flat()) if (c != null && c !== false) e.append(c.nodeType ? c : String(c));
+  return e;
+};
+const store = {
+  get(k) { try { return localStorage.getItem('deephold-gallery:' + k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem('deephold-gallery:' + k, v); } catch (e) {} },
+};
+const RANK = { c: '일반', r: '희귀', h: '영웅', l: '전설' };
+const scaleFor = (w, h) => { const m = Math.max(w, h); return m <= 16 ? 6 : m <= 32 ? 4 : m <= 48 ? 3 : m <= 64 ? 3 : m <= 128 ? 2 : 1; };
+const mb = b => (b / 1e6).toFixed(1) + ' MB';
+
+/* ---------- 데이터 불러오기 (구역을 열 때만, 한 번만) ---------- */
+const packs = new Map();
+function loadPack(name, onProgress) {
+  if (packs.has(name)) return packs.get(name);
+  const p = (async () => {
+    const res = await fetch(name);
+    if (!res.ok) throw new Error(name + ' — HTTP ' + res.status);
+    const total = +res.headers.get('content-length') || 0;
+    if (!res.body || !total || !onProgress) return res.json();
+    const reader = res.body.getReader(); const chunks = []; let got = 0;
+    for (;;) { const { done, value } = await reader.read(); if (done) break; chunks.push(value); got += value.length; onProgress(got, total); }
+    const buf = new Uint8Array(got); let o = 0; for (const c of chunks) { buf.set(c, o); o += c.length; }
+    return JSON.parse(new TextDecoder().decode(buf));
+  })();
+  packs.set(name, p);
+  p.catch(() => packs.delete(name));
+  return p;
+}
+/* ---------- 설명 (게임 도감·설정에서 옮긴 글) ---------- */
+let DESC = {};
+const descReady = loadPack('desc.json').then(d => { DESC = d || {}; }).catch(() => {});
+function descOf(p) {
+  if (!p) return null;
+  const k = p.replace(/^anim\//, '').replace(/\.(png|json)$/, '');
+  return DESC[k] || DESC[k.replace(/_(up|down|left|right|v|mount|hole)$/, '')] || null;
+}
+function descEl(d, shownName) {
+  if (!d) return null;
+  const rows = [];
+  if (d.n && d.n !== shownName) rows.push(el('div', { class: 'gname' }, '게임 속 이름: ' + d.n));
+  for (const [a, b] of d.l) rows.push(el('dt', null, a), el('dd', null, b));
+  return el('dl', { class: 'dsc' }, rows);
+}
+const descLong = d => !!d && d.l.reduce((n, [a, b]) => n + a.length + b.length, 0) > 90;
+const imgCache = new Map();
+const src = (pack, p) => 'data:image/png;base64,' + pack.img[p];
+function sheet(pack, p) {
+  const k = p;
+  if (!imgCache.has(k)) imgCache.set(k, new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src(pack, p); }));
+  return imgCache.get(k);
+}
+
+/* ---------- 공용 시계 ---------- */
+const tickers = new Set(); let last = 0, running = false;
+function loop(t) { const dt = last ? Math.min(t - last, 100) : 0; last = t; for (const f of tickers) f(dt); if (tickers.size) requestAnimationFrame(loop); else { running = false; last = 0; } }
+function addTick(f) { tickers.add(f); if (!running) { running = true; requestAnimationFrame(loop); } }
+function delTick(f) { tickers.delete(f); }
+
+let speed = 1;
+const speedListeners = new Set();
+function setSpeed(s) { speed = s; store.set('speed', String(s)); speedListeners.forEach(f => f()); }
+{ const s = parseFloat(store.get('speed')); if (s === 0.5 || s === 1) speed = s; }
+
+/* ---------- 애니메이션 플레이어 ---------- */
+function groupActions(anims) {
+  const groups = new Map();
+  anims.forEach((a, i) => { const m = /^p(\d)_/.exec(a.action); const g = m ? (m[1] === '0' ? '잠듦' : m[1] + '페이즈') : '공통'; if (!groups.has(g)) groups.set(g, []); groups.get(g).push(i); });
+  if (groups.size === 1) return [['', [...groups.values()][0]]];
+  const common = groups.get('공통'); groups.delete('공통');
+  const out = [...groups.entries()]; if (common) out.push(['공통', common]); return out;
+}
+class Player {
+  constructor(host) {
+    this.canvas = el('canvas', { width: 128, height: 128 });
+    this.ctx = this.canvas.getContext('2d');
+    this.info = el('span', { class: 'info' });
+    this.loopMode = 'auto';
+    const sp = el('div', { class: 'seg', role: 'group', 'aria-label': '속도' });
+    this.spBtns = [0.5, 1].map(s => { const b = el('button', { 'aria-pressed': String(speed === s), onclick: () => setSpeed(s) }, s + '×'); sp.append(b); return [s, b]; });
+    this.onSpeed = () => this.spBtns.forEach(([s, b]) => b.setAttribute('aria-pressed', String(speed === s)));
+    speedListeners.add(this.onSpeed);
+    const lm = el('div', { class: 'seg', role: 'group', 'aria-label': '반복' });
+    this.lmBtns = [['auto', '기본'], ['loop', '반복'], ['once', '한 번']].map(([k, t]) => { const b = el('button', { 'aria-pressed': String(k === 'auto'), onclick: () => { this.loopMode = k; this.lmBtns.forEach(([kk, bb]) => bb.setAttribute('aria-pressed', String(kk === k))); this.restart(); } }, t); lm.append(b); return [k, b]; });
+    this.replay = el('button', { class: 'btn', onclick: () => this.restart() }, '다시');
+    this.acts = el('div', { class: 'pacts' });
+    this.root = el('div', { class: 'player' }, el('div', { class: 'pstage' }, this.canvas), el('div', { class: 'pbar' }, this.info, sp, lm, this.replay), this.acts);
+    host.append(this.root);
+    this.tick = dt => this.step(dt);
+    this.visible = true;
+  }
+  async load(pack, atlasKey) {
+    const a = pack.atlas[atlasKey]; this.atlas = a;
+    this.img = await sheet(pack, a.sheet);
+    const cw = a.cell ? a.cell.w : 32, ch = a.cell ? a.cell.h : 32, s = scaleFor(cw, ch);
+    this.canvas.width = cw * s; this.canvas.height = ch * s; this.s = s; this.cw = cw; this.ch = ch;
+    this.ctx.imageSmoothingEnabled = false;
+    this.acts.textContent = '';
+    this.btns = [];
+    for (const [g, idxs] of groupActions(a.anims)) {
+      const row = el('div', { class: 'ph' }, g ? el('b', null, g) : null);
+      for (const i of idxs) {
+        const an = a.anims[i];
+        const b = el('button', { class: 'act', 'aria-pressed': 'false', title: `${an.frames.length}프레임 · ${an.ms}ms${an.loop ? ' · 반복' : ''}`, onclick: () => this.play(i) }, an.action, an.loop ? el('span', { class: 'lp' }, '↻') : null);
+        this.btns[i] = b; row.append(b);
+      }
+      this.acts.append(row);
+    }
+    this.play(0);
+  }
+  play(i) {
+    this.cur = i; this.fi = 0; this.acc = 0; this.held = 0;
+    this.btns.forEach((b, j) => b.setAttribute('aria-pressed', String(i === j)));
+    this.draw(); this.start();
+  }
+  restart() { if (this.atlas) this.play(this.cur || 0); }
+  start() { if (this.visible) addTick(this.tick); }
+  stop() { delTick(this.tick); }
+  get an() { return this.atlas.anims[this.cur]; }
+  looping() { return this.loopMode === 'auto' ? this.an.loop : this.loopMode === 'loop'; }
+  dur(fi) { const f = this.atlas.frames[this.an.frames[fi]]; return (f && f[4]) || this.an.ms || 100; }
+  step(dt) {
+    if (!this.atlas) return;
+    const an = this.an, n = an.frames.length;
+    this.acc += dt * speed;
+    let changed = false;
+    while (this.acc >= this.dur(this.fi)) {
+      this.acc -= this.dur(this.fi);
+      if (this.fi < n - 1) { this.fi++; changed = true; }
+      else if (this.looping()) { this.fi = 0; changed = true; }
+      else { this.acc = 0; this.stop(); break; }   // 한 번 재생: 마지막 프레임에서 멈춤
+    }
+    if (changed) this.draw();
+  }
+  draw() {
+    const an = this.an, f = this.atlas.frames[an.frames[this.fi]];
+    const c = this.ctx; c.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (f) c.drawImage(this.img, f[0], f[1], f[2], f[3], 0, 0, f[2] * this.s, f[3] * this.s);
+    this.info.textContent = `${an.action}  ${this.fi + 1}/${an.frames.length}  ${an.ms}ms  ${this.cw}×${this.ch} ×${this.s}`;
+  }
+  destroy() { this.stop(); speedListeners.delete(this.onSpeed); this.root.remove(); }
+}
+
+/* 화면에 보일 때만 도는 썸네일 (이펙트 카드) */
+const thumbIO = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { const t = e.target._thumb; if (!t) return; e.isIntersecting ? addTick(t) : delTick(t); }), { rootMargin: '100px' }) : null;
+function thumb(canvas, pack, atlasKey) {
+  const a = pack.atlas[atlasKey], an = a.anims[0];
+  const s = scaleFor(a.cell.w, a.cell.h);
+  canvas.width = a.cell.w * s; canvas.height = a.cell.h * s;
+  const ctx = canvas.getContext('2d'); ctx.imageSmoothingEnabled = false;
+  sheet(pack, a.sheet).then(img => {
+    let fi = Math.floor(an.frames.length / 2), acc = 0, hold = 0;
+    const draw = () => { const f = a.frames[an.frames[fi]]; ctx.clearRect(0, 0, canvas.width, canvas.height); if (f) ctx.drawImage(img, f[0], f[1], f[2], f[3], 0, 0, f[2] * s, f[3] * s); };
+    draw();
+    const t = dt => {
+      if (hold > 0) { hold -= dt; if (hold <= 0) { fi = 0; draw(); } return; }
+      acc += dt * speed; const d = an.ms || 100;
+      while (acc >= d) { acc -= d; fi++; if (fi >= an.frames.length) { if (an.loop) fi = 0; else { fi = an.frames.length - 1; hold = 500; acc = 0; break; } } }
+      draw();
+    };
+    canvas._thumb = t;
+    if (thumbIO) thumbIO.observe(canvas); else addTick(t);
+  });
+}
+
+/* ---------- 서랍 ---------- */
+const drawer = $('#drawer'); let dPlayer = null;
+function openDrawer(pack, atlasKey, title) {
+  $('#dtitle').textContent = title;
+  if (!dPlayer) dPlayer = new Player($('#dhost'));
+  drawer.classList.add('open'); dPlayer.visible = true;
+  dPlayer.load(pack, atlasKey);
+}
+function closeDrawer() { drawer.classList.remove('open'); if (dPlayer) { dPlayer.visible = false; dPlayer.stop(); } }
+$('#dclose').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+/* ---------- 카드 ---------- */
+function card(pack, it, opts = {}) {
+  const s = opts.scale || scaleFor(it.w, it.h);
+  const dw = it.w * s, dh = it.h * s;
+  let stage;
+  const img = el('img', { src: src(pack, it.p), width: dw, height: dh, alt: it.ko, loading: 'lazy', decoding: 'async' });
+  const anim = it.anim && pack.atlas[it.anim];
+  if (anim) stage = el('button', { class: 'stage', type: 'button', title: '애니메이션 보기', onclick: () => openDrawer(pack, it.anim, it.ko) }, img, el('span', { class: 'badge' }, `▶ 동작 ${anim.anims.length}`));
+  else stage = el('div', { class: 'stage' }, img);
+  if (opts.tiled) {
+    stage.classList.add('tiled'); img.style.visibility = 'hidden';
+    stage.style.backgroundImage = `url(${img.src})`; stage.style.backgroundSize = `${it.w * 2}px ${it.h * 2}px`;
+    img.width = it.w * 2 * 3; img.height = it.h * 2 * 3;
+  }
+  if (opts.under) { stage.classList.add('layer'); stage.style.backgroundImage = `url(${opts.under})`; img.width = it.w; img.height = it.h; }
+  const d = descOf(it.p) || descOf(it.anim);
+  const fig = el('figure', { class: 'card' + (opts.wide || dw > 300 ? ' wfull' : dw > 150 || descLong(d) ? ' w2' : '') }, stage,
+    el('figcaption', null,
+      el('span', { class: 'ko' }, it.ko, it.rank ? el('span', { class: 'rank r-' + it.rank }, RANK[it.rank]) : null),
+      el('span', { class: 'meta' }, `${it.p} · ${it.w}×${it.h}`),
+      it.note ? el('span', { class: 'desc' }, it.note) : null,
+      descEl(d, it.ko)));
+  return fig;
+}
+function groupEl(g, kids, collapsible, open) {
+  const head = [g.title, el('span', { class: 'n' }, String(g.items ? g.items.length : ''))];
+  const desc = g.desc ? el('p', { class: 'gdesc' }, g.desc) : null;
+  if (collapsible) { const d = el('details', { class: 'group', open: open || null }, el('summary', null, ...head), desc, kids); return d; }
+  return el('section', { class: 'group' }, el('h3', null, ...head), desc, kids);
+}
+function renderGroups(host, pack, groups, opts = {}) {
+  groups.forEach((g, gi) => {
+    const grid = el('div', { class: 'grid' });
+    const under = g.layer && opts.under ? opts.under : null;
+    for (const it of g.items) grid.append(card(pack, it, { tiled: opts.tiled && opts.tiled(it, g), under, wide: !!under || (it.w >= 300) }));
+    host.append(groupEl(g, grid, opts.collapse && opts.collapse(g, gi), opts.open && opts.open(g, gi)));
+  });
+}
+
+/* ---------- 구역 ---------- */
+const NEW_TABS = new Set(['mapframe', 'ach']);
+const NEW_SFX = new Set(['world']);
+const NEW_MUSIC = new Set([]);
+const CHANGES = [
+  { v: 'v15', when: '2026-10-19 · v0.5.0 폐광산 프레임', items: [
+    ['폐광산 프레임', 'mapframe', '추가 — 모서리 4(24×24) · 위아래 들보 32×8 · 좌우 암벽 6×32 9칸 틀. 안쪽 1px 어두운 선, 화면 가림 8.53%.'],
+  ] },
+  { v: 'v14', when: '2026-10-19 · 업적·칭호 탭', old: true, items: [
+    ['업적·칭호', 'ach', '추가 — 업적 255개마다 달성 조건, 점수, 붙는 엠블럼(등급 판 + 분류 문양 / 특별 그림)과 칭호가 찍힌 칭호 판, 보상 꾸미기. 분류·검색·칭호만 보기.'],
+  ] },
+  { v: 'v13', when: '2026-10-18 · 에셋 설명 추가', old: true, items: [
+    ['몬스터', 'monsters', '설명 추가 — 카드마다 체력(타)·등급, 공격 패턴, 반응, 빈틈, 생김새 (게임 도감 글 그대로).'],
+    ['보스', 'bosses', '설명 추가 — 페이즈별 체력 구간과 패턴, 대응·빈틈·공략 메모.'],
+    ['함정·장치·아이템', 'objects', '설명 추가 — 함정 11종 동작·예고·주기, 장치 쓰임, 아이템 얻는 곳·쓰임.'],
+    ['유물·저주', 'relics', '설명 추가 — 유물 30종 분류·등급·효과·대가, 저주 11종 단계별 효과와 점수.'],
+  ] },
+  { v: 'v12', when: '2026-10-18 · v0.4.6 좀벌레 땅에서 나옴', old: true, items: [
+    ['좀벌레', 'upd9', '추가 — 바닥 흙이 불룩하게 들썩이다(반복 3) 흙이 튀며 구멍이 열리는(4) 이펙트. 좀벌레 시트와 같은 기준점에 맞춤.'],
+    ['효과음', 'sfx', '추가 — world 분류에 silverfish_dig (흙을 긁으며 파고 올라옴, 작게 → 크게 0.5초).'],
+    ['기름 샘 2×2', 'upd9', '추가 — 64×64 큰 기름 샘(둥근 돌 테두리, 출렁이는 4프레임)과 다 받은 뒤 마른 모습.'],
+  ] },
+  { v: 'v11', when: '2026-10-18 · v0.4.5 폐광산 좀벌레', old: true, items: [
+    ['좀벌레', 'upd9', '추가 — 폐광산 좀벌레 24×24 (idle 2 · run 4 · hit 1 · death 4), 캐는 블록의 미묘한 경고(실금 꿈틀 + 흙먼지), 블록이 깨지며 튀어나오는 파편·먼지.'],
+    ['효과음', 'sfx', '추가 — world 분류에 silverfish_hint · spawn · hit · die.'],
+  ] },
+  { v: 'v10', when: '2026-10-18 · v0.4.1 임시 그림 교체', old: true, items: [
+    ['폐광산', 'upd8', '추가 — 돌 조각 광맥 블록(바위에 부서진 돌·자갈이 박힘, 반짝임 없음), 광부의 상자(낡은 나무·녹슨 쇠 띠, 열리면 역청 + 호박빛) 6프레임.'],
+    ['잠긴 계단', 'upd8', '추가 — 계단 구멍을 덮은 녹슨 쇠창살 + 사슬 + 자물쇠 (idle 2 · unlock 8, 창살이 양옆으로 걷힘). 보스 문과 나란히 둔 비교.'],
+    ['연출·HUD', 'upd8', '추가 — 숨은 방 벽 무너짐(먼지), 쓰러진 동료 바닥 초록 빛, 화면 밖 화살표(보스 해골 · 위험 느낌표 · 녹슨 나침반).'],
+    ['효과음', 'sfx', '추가 — world 분류에 secret_wall_open(벽이 밀려나며 무너짐 1초), relic_bell_ring(울리는 종 0.4초).'],
+  ] },
+  { v: 'v9', when: '2026-10-18 · v0.3.3 엠블럼·칭호', old: true, items: [
+    ['엠블럼 판', 'upd7', '추가 — 업적 등급별 판 4종(철 방패 · 청동 둥근 방패 · 날개 단 은 방패 · 왕관 얹은 황금 방패) 16·32px + 못 얻은 칸(자물쇠). 청동 2초마다 반짝, 은 보석 숨쉬기, 황금 테두리 빛줄기·불티.'],
+    ['분류 문양', 'upd7', '추가 — 업적 분류 13종 문양 10·20px (계단·해골 문·곡괭이와 검·소용돌이·사슬 눈·달과 별·깃발·망치와 벽돌·소환진·책·보석·광석과 은전·물음표).'],
+    ['특별 엠블럼', 'upd7', '추가 — 보스 정복 5 · 숨은 업적 8 전용 그림 16·32px, 8~12프레임 (거미왕 묘비·톱니 왕관·잠긴 왕관·용 비늘·꺼질 듯한 랜턴·고양이 발바닥·졸린 랜턴·빈 낚싯바늘·해골 탑·이빨 자국 랜턴·깨진 거울·메아리·모래시계).'],
+    ['칭호 판', 'upd7', '추가 — 이름 위 3-slice 판 청동·은·황금·특별, 어려운 칭호 전용 판 8종(거미왕·용광로·익사한 왕·화룡·랜턴을 삼킨 자 사냥꾼, 저주받은·스스로 묶인 자·심연의 계약자). 머리 위 쌓은 모습 미리보기(마을·폐광산).'],
+    ['효과음', 'sfx', '추가 — UI 분류에 emblem_equip(문장 달기 "착"), emblem_unlock(새 문장 — 등급 1·2 는 0.85초까지, 3 이상은 끝 반짝임까지).'],
+  ] },
+  { v: 'v8', when: '2026-10-17 · 업데이트 6', old: true, items: [
+    ['업데이트 6', 'upd6', '추가 — 철괴·은괴·금괴 아이콘(16·24px), 파티·준비 완료·파티장·이끼석 보험·출발 아이템 아이콘, 보스층 배너와 보스층 점(해골), 다른 광부 랜턴 빛.'],
+    ['폐광산', 'upd6', '추가 — 천장 붕괴 돌무더기 3종, 역청 흐름 애니. 다시 그림 — 역청 블록(무지개 얼룩 → 검고 번들거리는 역청).'],
+    ['방향 그림', 'upd6', '추가 — 녹슨 포탑 위·아래 시트, 구르기 먼지·꾸미기 흔적 세로판 5종, 옆으로 걷는 발자국 4종, 도굴꾼 캐기 앞·뒤(모든 후드·랜턴 포함).'],
+    ['벽 윗면', 'upd6', '검토 후 다시 그림 — 녹슨 공방·가라앉은 신전·칠흑 심연 벽 윗면을 바닥과 확실히 구별되게. 이끼 묘지·용암 광맥은 그대로.'],
+    ['효과음', 'sfx', '추가 — 광석별 캐기·부수기 10, 제련소·주괴·염색·강화 5, 기름 충전·오프라인·보험·출발 아이템·연습·사망 정산·보스 % 7, 보스층 입장·나가기 선택·돌무더기 3, 파티 5. 효과음 탭에서 NEW 표시 분류.'],
+  ] },
+  { v: 'v7', when: '2026-10-16 · 업데이트 5 (플레이 테스트 반영)', old: true, items: [
+    ['UI v2', 'ui_v2', '새로 만듦 — HUD(하트 3칸·기름병 5칸 받침·재화 칸·유물 칸·층 명판·저주 배지·보스 체력바·미니맵/전체 지도 틀), 아이콘 21종(은전·광석 4종 포함), 9-slice 창·대화창·툴팁·입장 확인 창·건물 이름표, 버튼·탭·슬라이더, 원정 가방·창고·거래소, 획득 알림·업적 알림·사망/탈출 결과, 로고와 글자가 겹치지 않는 입장 배너 8종, 숫자 글꼴, 레터박스.'],
+    ['함정·드롭', 'traps5', '다시 만듦 — 함정 11종을 바닥 홈·벽 부착형 3D로. 추가 — 화살 발사대 4방향, 회전 칼날 레일(가로·세로·끝), 압착 벽 벽면 부분, 벽 덩굴 5종, 드롭 빛기둥 4등급·바닥 고리·줍기 강조·줍기 반짝임.'],
+    ['폐광산 깊은 갱도', 'traps5', '추가 — 철·은·금·심연 수정 광석 블록(빛이 닿을 때만 반짝임), 단단한 암반, 깊은 갱도 입구.'],
+    ['마을', 'village', '추가 — 상인 하스, 거래소 간판, 남북 방향 강 반짝임, 폭포 물 흐름. 고침 — 건물·소품 충돌을 벽 밑동만으로(지붕·처마 뒤로 지나감), 내 집 대문 장식을 3D 지하실 문 둘레로 다시 만듦.'],
+  ] },
+  { v: 'v6', when: '2026-10-16 · 3D 렌더 → 도트', old: true, items: [
+    ['새 마을 (3D)', 'village', '다시 만듦 — 마을 전체를 3D로 모델링해 햇빛·그림자·구석 음영을 계산하고 도트로 변환. 실제 높낮이(북쪽 바위 절벽 속 던전 입구·폭포, 동쪽 돌 축대 위 소환 사원, 파인 강줄기와 돌다리·나무다리), 건물 16 + 다리 2, 소품 88종(나무 7·울타리·담·노점·분수·풍차 등), 움직임 19종(불꽃·물·연기·나무 흔들림·풍차).'],
+    ['던전 구조물 (3D)', 'dungeon3d', '다시 만듦 — 5개 바이옴의 벽 자동타일·바닥·구조물 소품·보스방 장치(약 360개 파일), 지형 블록 16 + 애니, 폐광산 블록 20. 이름·크기·기준점 그대로.'],
+    ['타일·소품 탭', 'tiles', '위 3D 던전 그림이 그대로 들어가 있다.'],
+    ['유물·저주', 'relics', '고침 — 고요의 망토·꺼져가는 등불·공허의 거래·박쥐 귀·그림자 걸음 등 알아보기 어렵던 아이콘, 저주 "얇은 몸"(바늘 꽂힌 심장).'],
+    ['꾸미기', 'cosmetics', '고침 — 사슬 구르기 흔적, 기본 발자국(어두운 바닥에서도 보이게), 칠흑/칠흑 심연·가라앉은 신전/백일 후드 구분.'],
+    ['NPC·이모트', 'village', '고침 — 목수 판자·게시판지기 두루마리, 날아가는 새, 쓰다듬는 고양이 반응, 박수·손 흔들기 이모트.'],
+    ['몬스터', 'monsters', '고침 — 이끼 기사·증기 골렘 뒤돌기, 까마귀 급강하, 종류별로 다른 죽는 모습. 추가 — 개발 중 빠졌던 동작(곡하는 해골 backstep·boomerang_catch, 장의사 flee, 까마귀 xdive, 이끼 기사 shield_guard, 이끼 슬라임 split, 용광로 p3_melt_floor).'],
+    ['이펙트', 'vfx', '추가 — 빠졌던 투사체(인형·쇳덩이·쇠공·흙·광석 조각).'],
+    ['배경·카드', 'backgrounds', '고침 — 로딩 화면 3장 밝기·초점 빛.'],
+    ['효과음', 'sfx', '고침 — NPC 말소리 42개를 웅얼웅얼 말소리로, 보스 4종 권장 볼륨(meta) 채움, 보스 동작 이름과 맞는 소리 추가.'],
+  ] },
+  { v: 'v5', when: '2026-10-16 · 업데이트 1·3·4', old: true, items: [
+    ['소환 연출', 'summon', '새로 추가 — 소환 제단(바침·예고 불꽃 4색·균열·승급/가짜 승급·금빛 깨짐·등급별 해방), 화면 효과(연기·고리·빛기둥·전설 암전·번개·방사광), 공개 받침대, 전설 실루엣 포효 5종, NEW·중복·천장 배지.'],
+    ['유물·저주', 'relics', '새로 추가 — 유물 30종(평범 12·진귀 10·저주받은 8, 테두리 있는 것과 없는 것), 유물 제단 애니, 슬롯·재굴림·점수 UI, 저주 인장 11종.'],
+    ['꾸미기', 'cosmetics', '새로 추가 — 도굴꾼을 body·lantern·eyes 세 겹으로 분리. 후드 13·랜턴 7·불빛 6·구르기 흔적 4·처치 효과 6·발자국 4·대문 장식 6. 크기·피격 판정 불변 검사 통과.'],
+    ['새 마을', 'village', '다시 만듦 — 80×56칸 낮 마을 전체 지도, 크기가 제각각인 건물 16종 + 다리, 건물 움직임(등불탑 불꽃·우물 물빛·굴뚝 연기·사원 룬), NPC 21명 + 고양이·개·새, 이모트 8종, 말풍선·건물 정보 팝업·프로필·미니맵·전체 지도·건물 아이콘 16종, 마을 타일·소품. 예전 어두운 마을(배경·카드 탭)은 더 이상 쓰지 않는다.'],
+    ['효과음', 'sfx', '추가 — 소환 연출 29 · 유물 11 · 저주 8 · 마을 65(환경음·발소리·NPC 말소리 14명×3) · 소셜 15 · 업적·꾸미기·오늘의 심연 9. 효과음 탭 맨 위의 NEW 표시된 분류.'],
+    ['음악', 'music', '추가 — 마을 낮 테마(village_day, 100초 루프), 희귀 소환·영웅 소환 징글.'],
+  ] },
+  { v: 'v4', when: '2026-10-15', old: true, items: [
+    ['보스', 'bosses', '용암 광맥 바이옴·칠흑 심연 최종 보스 다시 그림, 보스 페이즈별 더 강해진 모습.'],
+    ['몬스터', 'monsters', '모든 몬스터·보스의 동작별 프레임 애니(공격 패턴 포함), 까마귀·비석 미믹 위장 추가.'],
+    ['효과음', 'sfx', '효과음·음악 전체 첫 버전.'],
+  ] },
+];
+function renderChanges(h) {
+  for (const c of CHANGES) {
+    h.append(el('article', { class: 'chg' + (c.old ? ' old' : '') },
+      el('h3', null, c.v, c.old ? null : el('span', { class: 'newb' }, 'NEW')),
+      el('p', { class: 'when' }, c.when),
+      el('ul', null, c.items.map(([t, id, d]) => el('li', null, el('b', null, t), ' ', d, el('button', { class: 'go', type: 'button', onclick: () => show(id, true) }, '보러 가기 →'))))));
+  }
+}
+const SECTIONS = [
+  { id: 'changes', ko: '바뀐 것', lead: '버전마다 새로 생기거나 다시 그린 에셋. 새 탭과 새 소리 분류에는 NEW 표시가 붙는다.', render: renderChanges },
+  { id: 'hero', ko: '도굴꾼', file: 'art_characters.json', lead: '플레이어 캐릭터. 정면·뒷면·옆면(왼쪽은 반전)·구르기·공격 정지 그림과, 모든 동작 애니메이션.', render: (h, p) => {
+      const g = p.sections.hero[0];
+      const pl = new Player(h); const atlasKey = g.items.find(i => i.anim).anim; pl.load(p, atlasKey); h._players = [pl];
+      renderGroups(h, p, [{ title: '정지 그림', items: g.items }]);
+    } },
+  { id: 'monsters', ko: '몬스터', file: 'art_characters.json', lead: '바이옴별 일반·희귀·영웅 몬스터 (전설 보스는 보스 구역). 일반·희귀 32, 영웅 48. 카드를 누르면 동작을 돌려 본다. 카드 아래 설명은 게임 도감 글(체력·공격 패턴·반응·빈틈·생김새).', render: (h, p) => renderGroups(h, p, p.sections.monsters) },
+  { id: 'bosses', ko: '보스', file: 'art_bosses.json', lead: '전설 보스 5종. 페이즈별 정지 그림을 나란히 두고, 아래에서 모든 동작을 재생한다. 위에는 도감의 페이즈별 패턴·대응·빈틈.', render: renderBosses },
+  { id: 'vfx', ko: '이펙트', file: 'art_vfx.json', lead: '전투·예고·투사체·환경·보스·채굴·소환 이펙트. 썸네일은 첫 동작을 반복 재생한다.', render: renderVfx },
+  { id: 'tiles', ko: '타일·지형·자동타일', file: 'art_world.json', lead: '바닥 32×32(이어 붙여도 이음새 없음), 벽 32×48. 자동타일은 바이옴마다 벽 16종 + 그림자·구덩이·물가 덮개.', render: (h, p) => renderGroups(h, p, p.sections.tiles, {
+      tiled: it => /_floor_[ab]\.png$/.test(it.p), collapse: g => g.title.startsWith('자동타일'), open: (g, i) => i === 2 }) },
+  { id: 'props', ko: '소품·광산·보스방', file: 'art_world.json', lead: '바이옴별 장식 소품, 마을 폐광산 채굴 타일, 보스방 문과 기믹.', render: (h, p) => renderGroups(h, p, p.sections.props) },
+  { id: 'objects', ko: '함정·장치·아이템', file: 'art_world.json', lead: '함정·장치·아이템 카드에 게임 속 동작과 쓰임 설명을 붙였다. 함정과 장치는 대부분 동작 애니메이션이 있다. 아이템은 16×16.', render: (h, p) => renderGroups(h, p, p.sections.objects) },
+  { id: 'ui', ko: 'UI', file: 'art_ui.json', lead: '게임 화면 480×270 기준 원본 픽셀. 9-slice 여백은 L,T,R,B. 팔레트 N0 #0b0a10 ~ N8 #cfc8dc, 강조 #ffb347/#ffd780, 위험 #ff4a3a.', render: (h, p) => renderGroups(h, p, p.sections.ui) },
+  { id: 'backgrounds', ko: '배경·카드', file: 'art_backgrounds.json', lead: '화면 배경, 소개·분노 카드, 층 배너, 마을 건물 겹침 레이어(마을 바닥 위에 얹어 표시).', render: (h, p) => {
+      const g0 = p.sections.backgrounds[0]; const ground = g0.items.find(i => /village_ground/.test(i.p));
+      renderGroups(h, p, p.sections.backgrounds, { under: ground ? src(p, ground.p) : null, collapse: g => !!g.layer, open: () => false });
+    } },
+  { id: 'summon', ko: '소환 연출', file: 'art_update.json', tag: '업데이트 1', lead: '등급별로 다른 소환 연출. 첫 불꽃 색·균열·승급은 결과를 암시만 하고 가끔 속인다(가짜 승급, 금빛 깨짐). 전설은 암전 → 금빛 번개 → 실루엣 포효.', render: (h, p) => renderMixed(h, p, p.sections.summon) },
+  { id: 'relics', ko: '유물·저주', file: 'art_update.json', tag: '업데이트 3', lead: '유물 30종(평범 12 · 진귀 10 · 저주받은 8, 등급 테두리 포함), 유물 제단, 슬롯 UI, 저주 11종 인장.', render: (h, p) => renderMixed(h, p, p.sections.relics) },
+  { id: 'cosmetics', ko: '꾸미기', file: 'art_update.json', tag: '업데이트 3', lead: '도굴꾼을 body·lantern·eyes 세 레이어로 나눴다. 후드 13 · 랜턴 7 · 불빛 6 · 구르기 흔적 4 · 처치 효과 6 · 발자국 4 · 대문 장식 6. 크기·피격 판정은 그대로.', render: (h, p) => renderMixed(h, p, p.sections.cosmetics) },
+  { id: 'village', ko: '새 마을 (3D)', file: 'art_village3d.json', tag: '업데이트 4', lead: '마을 전체를 3D로 모델링하고 햇빛·그림자·구석 음영을 계산해 도트로 바꿨다. 건물 16 + 다리 2, 소품 88종, NPC 21명 + 동물, 광장 소셜 UI, 지도.', render: (h, p) => renderMixed(h, p, p.sections.village) },
+  { id: 'dungeon3d', ko: '던전 구조물 (3D)', file: 'art_village3d.json', lead: '다섯 바이옴의 벽·바닥·자동타일·구조물 소품·보스방 장치, 지형 블록, 폐광산 블록을 3D 렌더 → 도트로 다시 만들었다. 파일 이름·크기는 그대로라 타일·소품 탭에도 새 그림이 들어가 있다.', render: (h, p) => renderMixed(h, p, p.sections.dungeon3d) },
+  { id: 'ui_v2', ko: 'UI v2', file: 'art_upd5.json', lead: '전면 재디자인한 도트 UI — HUD(체력·기름병·재화·유물·보스 바·지도), 아이콘, 창·버튼, 원정 가방·창고·거래소, 알림·결과, 겹치지 않는 입장 배너. 480×270 원본 크기.', render: (h, p) => renderMixed(h, p, p.sections.ui_v2) },
+  { id: 'upd9', ko: 'v0.4.5~6', file: 'art_upd9.json', tag: 'v0.4.5', lead: '폐광산 좀벌레(몬스터 시트, 캐는 블록의 미묘한 경고, 깨지며 튀어나옴, 바닥에서 기어 나옴)와 기름 샘 2×2.', render: (h, p) => renderMixed(h, p, p.sections.upd9) },
+  { id: 'upd8', ko: 'v0.4.1', file: 'art_upd8.json', tag: 'v0.4.1', lead: '임시 그림 교체 — 돌 조각 광맥·광부의 상자·잠긴 계단 쇠창살, 숨은 방 벽 무너짐, 화면 밖 화살표, 쓰러진 동료 바닥 빛.', render: (h, p) => renderMixed(h, p, p.sections.upd8) },
+  { id: 'mapframe', ko: 'v0.5.0 프레임', file: 'art_upd15.json', tag: 'v0.5.0', lead: '폐광산 바깥 프레임을 9칸 늘이기 틀로 다시 그렸다 — 암벽·나무 들보 분위기 그대로, 화면을 가리는 부분은 39.6% → 8.53%.', render: (h, p) => renderGroups(h, p, p.sections.mapframe) },
+  { id: 'ach', ko: '업적·칭호', file: 'art_ach.json', tag: 'v0.4.6', lead: '업적 255개(쉬운 모드 5개 포함)마다 게임이 실제로 붙이는 엠블럼과 칭호 판을 규칙(src/core/emblem.ts) 그대로 합성했다. 달성 조건·점수·보상 꾸미기도 함께.', render: renderAch },
+  { id: 'upd7', ko: '엠블럼·칭호', file: 'art_upd7.json', tag: 'v0.3.3', lead: '업적 엠블럼(등급 판 + 분류 문양, 특별 전용 그림)과 이름 위 칭호 판. 업적이 어려울수록 화려하게, 그래도 캐릭터보다 튀지 않게 머리 위 장식 크기로.', render: (h, p) => renderMixed(h, p, p.sections.upd7) },
+  { id: 'upd6', ko: '업데이트 6', file: 'art_upd6.json', lead: '경제·파티·원정 UI 아이콘, 보스층 배너, 폐광산 돌무더기·새 역청 블록, 녹슨 포탑 위·아래, 구르기·발자국 방향판, 도굴꾼 캐기 앞·뒤, 벽 윗면 가독성 검토.', render: (h, p) => renderMixed(h, p, p.sections.upd6) },
+  { id: 'traps5', ko: '함정·드롭 (업데이트 5)', file: 'art_upd5.json', lead: '바닥에 박히고 벽에 붙도록 다시 만든 함정, 화살 4방향, 회전 칼날 레일, 벽 덩굴, 아이템 드롭 빛기둥, 폐광산 깊은 갱도 광석, 상인 하스, 강·폭포 오버레이, 내 집 대문 장식.', render: (h, p) => renderMixed(h, p, p.sections.traps5) },
+  { id: 'sfx', ko: '효과음', file: 'audio_index.json', lead: '모든 효과음(OGG). 분류를 펼치고 ▶ 를 누르면 그 분류의 소리 파일을 처음 한 번 불러온 뒤 재생한다. 반복(루프) 소리는 다시 누르면 멈춘다.', render: renderSfx },
+  { id: 'music', ko: '음악', file: 'audio_index.json', lead: '배경 음악과 징글. 탐험·보스 곡은 끝과 시작이 자연스럽게 이어지는 루프다.', render: renderMusic },
+];
+
+function achSheet(p, key, scale) {
+  const sh = p.sheets[key]; const cv = el('canvas', { width: sh.w * scale, height: sh.h * scale });
+  const ctx = cv.getContext('2d'); ctx.imageSmoothingEnabled = false;
+  const img = new Image(); img.src = 'data:image/png;base64,' + p.img[key];
+  let fi = 0, acc = 0;
+  const draw = () => { ctx.clearRect(0, 0, cv.width, cv.height); ctx.drawImage(img, fi * sh.w, 0, sh.w, sh.h, 0, 0, sh.w * scale, sh.h * scale); };
+  img.onload = () => {
+    draw();
+    if (sh.d.length < 2) return;
+    cv._thumb = dt => { acc += dt * speed; while (acc >= sh.d[fi]) { acc -= sh.d[fi]; fi = (fi + 1) % sh.d.length; } draw(); };
+    if (thumbIO) thumbIO.observe(cv); else addTick(cv._thumb);
+  };
+  return cv;
+}
+const ACH_SIGIL = { '원정': 'expedition', '바이옴·보스': 'biome', '몬스터 숙련': 'mastery', '실력': 'skill', '저주': 'curse', '오늘의 심연': 'daily', '공개 던전·친구': 'social', '건설': 'build', '소환·수집': 'summon', '도감': 'codex', '유물': 'relic', '폐광산·경제': 'mine', '숨은 업적': 'hidden', '쉬운 모드': 'expedition' };
+function renderAch(h, p) {
+  h.append(el('div', { class: 'note-box' }, el('div', { class: 'achrules' },
+    el('div', null, el('b', null, '엠블럼 판 = 점수'), ' — 5점 쇠(1등급) · 10점 청록(2) · 15점 보라(3) · 20점 황금(4). 가운데에 분류 문양이 얹힌다.'),
+    el('div', null, el('b', null, '특별 엠블럼 13개'), ' — 바이옴 정복 5개와 숨은 업적 8개는 판·문양 없이 전용 그림 한 장.'),
+    el('div', null, el('b', null, '칭호 판'), ' — 칭호가 있는 업적만. 10점 청동 · 15점 은 · 20점 황금 · 숨은 업적은 붉은 판.'),
+    el('div', null, el('b', null, '전용 칭호 판 8개'), ' — 보스 사냥꾼 5개와 저주 20점 3개(a125·a128·a130)는 테마 판(가운데 8px 반복).'),
+    el('div', null, el('b', null, '못 얻은 업적'), ' — 게임에서는 조건이 ??? 로, 숨은 업적은 이름까지 ??? 로 보인다. 여기서는 모두 공개.'),
+    el('div', null, el('b', null, '글자'), ' — 칭호 글자는 미리보기용 도트 글꼴이다. 게임에서는 엔진 이름표 글꼴로 같은 자리에 찍는다.'))));
+  const cats = []; for (const r of p.rows) if (!cats.includes(r.cat)) cats.push(r.cat);
+  const q = el('input', { type: 'search', placeholder: '업적·조건·칭호로 찾기 (예: 거미, 저주, 사냥꾼)', 'aria-label': '업적 찾기' });
+  const sel = el('select', { 'aria-label': '분류', class: 'btn' }, el('option', { value: '' }, '모든 분류 (' + p.rows.length + ')'), cats.map(c => el('option', { value: c }, c + ' (' + p.rows.filter(r => r.cat === c).length + ')')));
+  const onlyT = el('input', { type: 'checkbox' }); const onlyS = el('input', { type: 'checkbox' });
+  h.append(el('div', { class: 'achtool' }, q, sel, el('label', null, onlyT, '칭호 있는 것만'), el('label', null, onlyS, '특별·전용 판만')));
+  const host = el('div'); h.append(host);
+  const groups = new Map();
+  for (const c of cats) {
+    const list = el('div', { class: 'achlist' }); const n = el('span', { class: 'n' });
+    const sig = p.sheets['sig_' + ACH_SIGIL[c]] ? achSheet(p, 'sig_' + ACH_SIGIL[c], 1) : null;
+    const box = el('section', { class: 'achcat' }, el('h3', null, sig, c, n), list);
+    host.append(box); groups.set(c, { box, list, n, items: [] });
+  }
+  for (const r of p.rows) {
+    const tier = Math.max(1, Math.min(4, Math.round(r.pts / 5)));
+    const card = el('article', { class: 'ach' },
+      el('div', { class: 'em', title: r.ek }, achSheet(p, r.e, 2)),
+      el('div', { class: 'hd' }, el('b', null, r.name), el('span', { class: 'pt t' + tier }, r.pts + '점'), r.hidden ? el('span', { class: 'hid' }, '숨은 업적') : null, el('code', null, r.id)),
+      el('div', { class: 'cond' }, r.cond),
+      r.p ? el('div', { class: 'plate' }, el('span', { class: 'pc' }, achSheet(p, r.p, 2)), r.pk) : el('div', { class: 'plate' }, '칭호 없음'),
+      (r.cos || r.note || r.ek === '특별 엠블럼') ? el('div', { class: 'ex' },
+        r.ek === '특별 엠블럼' ? el('span', null, '엠블럼: 특별 전용 그림') : el('span', null, '엠블럼: ' + r.ek),
+        r.cos ? el('span', { class: 'rw' }, '보상 꾸미기: ' + r.cos) : null,
+        r.note ? el('span', null, '아직 집계 안 됨 — ' + r.note) : null) : null);
+    const text = (r.id + ' ' + r.name + ' ' + r.cond + ' ' + (r.title || '') + ' ' + (r.cos || '') + ' ' + r.cat).toLowerCase();
+    groups.get(r.cat).items.push({ card, r, text }); groups.get(r.cat).list.append(card);
+  }
+  const apply = () => {
+    const t = q.value.trim().toLowerCase();
+    for (const [c, g] of groups) {
+      let k = 0;
+      for (const it of g.items) {
+        const ok = (!sel.value || sel.value === c) && (!t || it.text.includes(t)) && (!onlyT.checked || it.r.p) && (!onlyS.checked || it.r.ek === '특별 엠블럼' || it.r.pk === '전용 판');
+        it.card.hidden = !ok; if (ok) k++;
+      }
+      g.box.hidden = !k; g.n.textContent = String(k);
+    }
+  };
+  let tm; q.addEventListener('input', () => { clearTimeout(tm); tm = setTimeout(apply, 120); });
+  sel.addEventListener('change', apply); onlyT.addEventListener('change', apply); onlyS.addEventListener('change', apply);
+  apply();
+}
+function renderBosses(h, p) {
+  h._players = [];
+  for (const b of p.sections.bosses) {
+    const s = scaleFor(b.w, b.h);
+    const stills = el('div', { class: 'stills' }, b.stills.map(st => el('figure', null, el('img', { src: src(p, st.p), width: b.w * s, height: b.h * s, alt: `${b.ko} ${st.label}` }), el('figcaption', null, st.label))));
+    const ph = el('div');
+    const art = el('article', { class: 'boss' },
+      el('h3', null, b.ko, el('span', { class: 'rank r-l' }, '전설'), el('small', null, `${b.biome} · ${b.w}×${b.h} · 동작 ${p.atlas[b.anim].anims.length}`)),
+      descEl(DESC['boss:' + b.key], b.ko),
+      el('div', { class: 'boss-body' }, stills, ph));
+    h.append(art);
+    const pl = new Player(ph); pl.load(p, b.anim); h._players.push(pl);
+  }
+}
+function animGrid(p, items) {
+  const grid = el('div', { class: 'grid' });
+  for (const it of items) {
+    const a = p.atlas[it.anim]; const cv = el('canvas');
+    const name = it.anim.split('/').pop().replace('.json', '');
+    const d = descOf(it.anim);
+    grid.append(el('figure', { class: 'card' + (Math.max(it.w, it.h) * scaleFor(it.w, it.h) > 300 ? ' wfull' : Math.max(it.w, it.h) * scaleFor(it.w, it.h) > 150 || descLong(d) ? ' w2' : '') },
+      el('button', { class: 'stage', type: 'button', title: '애니메이션 보기', onclick: () => openDrawer(p, it.anim, it.ko || name) }, cv, el('span', { class: 'badge' }, `▶ 동작 ${a.anims.length}`)),
+      el('figcaption', null, el('span', { class: 'ko', style: it.ko && it.ko !== name ? null : 'font-family:var(--mono);font-size:13px' }, it.ko || name),
+        el('span', { class: 'meta' }, `${name} · ${it.w}×${it.h} · ${a.anims.map(x => `${x.action} ${x.frames.length}f`).join(', ')}`),
+        it.note ? el('span', { class: 'desc' }, it.note) : null,
+        descEl(d, it.ko || name))));
+    thumb(cv, p, it.anim);
+  }
+  return grid;
+}
+function renderVfx(h, p) { for (const g of p.sections.vfx) h.append(groupEl(g, animGrid(p, g.items))); }
+function renderMixed(h, p, groups) {
+  for (const g of groups) {
+    if (g.kind === 'anim') h.append(groupEl(g, animGrid(p, g.items)));
+    else renderGroups(h, p, [g]);
+  }
+}
+
+/* ---------- 소리 ---------- */
+const OGG_OK = (() => { try { return !!new Audio().canPlayType('audio/ogg; codecs="vorbis"'); } catch (e) { return false; } })();
+const oggNotice = () => OGG_OK ? null : el('div', { class: 'note-box warn' }, '이 브라우저는 OGG(Vorbis) 재생을 지원하지 않는 것 같다. 소리가 안 나면 Chrome·Firefox·Edge 또는 최신 Safari에서 열어 보자.');
+const sfxData = new Map();
+function sfxCat(cat) {
+  if (!sfxData.has(cat.cat)) {
+    const pr = Promise.all(cat.files.map(f => loadPack(f))).then(parts => Object.assign({}, ...parts.map(x => x.files)));
+    sfxData.set(cat.cat, pr); pr.catch(() => sfxData.delete(cat.cat));
+  }
+  return sfxData.get(cat.cat);
+}
+const blobUrls = new Map();
+function b64url(key, b64) {
+  if (!blobUrls.has(key)) { const bin = atob(b64); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); blobUrls.set(key, URL.createObjectURL(new Blob([u], { type: 'audio/ogg' }))); }
+  return blobUrls.get(key);
+}
+let useVol = store.get('usevol') !== '0';
+const playing = new Set();
+function stopAll() { for (const x of [...playing]) x.stop(); }
+function renderSfx(h, data) {
+  const n = oggNotice(); if (n) h.append(n);
+  const q = el('input', { type: 'search', placeholder: '이름·설명으로 찾기 (예: windup, 폭발, spider)', 'aria-label': '효과음 찾기' });
+  const vol = el('input', { type: 'checkbox' }); vol.checked = useVol; vol.addEventListener('change', () => { useVol = vol.checked; store.set('usevol', useVol ? '1' : '0'); });
+  const cnt = el('span', { class: 'n', style: 'font-family:var(--mono);font-size:12px;color:var(--faint)' });
+  h.append(el('div', { class: 'toolbar' }, q, el('label', null, vol, '권장 볼륨으로'), el('button', { class: 'btn', onclick: stopAll }, '모두 멈춤'), cnt));
+  const rows = []; const cats = [];
+  for (const cat of [...data.sfx].sort((a, b) => NEW_SFX.has(b.cat) - NEW_SFX.has(a.cat))) {
+    const body = el('div', { class: 'body' });
+    const sumN = el('span', { class: 'n' }, `${cat.count}개 · ${cat.mb} MB`);
+    const det = el('details', { class: 'cat' }, el('summary', null, el('h3', null, cat.ko, NEW_SFX.has(cat.cat) ? el('span', { class: 'newb' }, 'NEW') : null), el('code', { class: 'n' }, cat.cat), sumN), body);
+    det.addEventListener('toggle', () => { if (det.open) sfxCat(cat).catch(() => {}); });
+    const subs = [];
+    for (const g of cat.groups) {
+      const box = g.key ? el('div', { class: 'sub' }, el('h4', null, g.ko || g.key, g.ko && g.ko !== g.key ? el('code', { class: 'n' }, g.key) : null)) : el('div', { class: 'sub' });
+      const subRows = [];
+      for (const it of g.items) {
+        const btn = el('button', { class: 'play', 'aria-label': it.k + ' 재생' }, '▶');
+        const name = g.key ? it.k.slice(g.key.length + 1) : it.k;
+        const row = el('div', { class: 'row' }, btn, el('code', null, name, it.loop ? el('span', { class: 'loopb' }, '루프') : null), el('span', { class: 'd' }, it.desc || ''), el('span', { class: 'v' }, it.vol != null ? 'vol ' + it.vol : ''));
+        let audio = null;
+        const ctl = { stop() { if (audio) { audio.pause(); audio.currentTime = 0; } btn.classList.remove('on'); btn.textContent = '▶'; playing.delete(ctl); } };
+        btn.addEventListener('click', async () => {
+          if (playing.has(ctl)) { ctl.stop(); return; }
+          btn.classList.add('wait'); btn.textContent = '…';
+          try {
+            const files = await sfxCat(cat);
+            const b = files[it.k]; if (!b) throw new Error('없음');
+            if (!audio) { audio = new Audio(b64url(cat.cat + '/' + it.k, b)); audio.addEventListener('ended', () => ctl.stop()); }
+            audio.loop = !!it.loop; audio.volume = useVol && it.vol != null ? Math.min(1, it.vol) : 1; audio.currentTime = 0;
+            await audio.play();
+            playing.add(ctl); btn.classList.add('on'); btn.textContent = '■';
+          } catch (e) { btn.textContent = '!'; btn.title = '재생 실패: ' + (e && e.message || e); setTimeout(() => { btn.textContent = '▶'; }, 1500); }
+          finally { btn.classList.remove('wait'); }
+        });
+        const text = (cat.cat + ' ' + cat.ko + ' ' + it.k + ' ' + (g.ko || '') + ' ' + (it.desc || '')).toLowerCase();
+        subRows.push({ row, text }); box.append(row);
+      }
+      subs.push({ box, rows: subRows }); body.append(box);
+      rows.push(...subRows);
+    }
+    cats.push({ det, subs, sumN, cat }); h.append(det);
+  }
+  const total = rows.length;
+  const apply = () => {
+    const t = q.value.trim().toLowerCase(); let shown = 0;
+    for (const c of cats) {
+      let cn = 0;
+      for (const s of c.subs) { let sn = 0; for (const r of s.rows) { const ok = !t || r.text.includes(t); r.row.hidden = !ok; if (ok) sn++; } s.box.hidden = sn === 0; cn += sn; }
+      c.det.hidden = cn === 0; shown += cn;
+      c.sumN.textContent = t ? `${cn} / ${c.cat.count}개` : `${c.cat.count}개 · ${c.cat.mb} MB`;
+      if (t && cn > 0 && cn <= 60) c.det.open = true;
+    }
+    cnt.textContent = t ? `${shown}개 찾음` : `전체 ${total}개`;
+  };
+  let tm; q.addEventListener('input', () => { clearTimeout(tm); tm = setTimeout(apply, 120); });
+  apply();
+}
+function trackEl(t) {
+  const au = el('audio', { controls: true, preload: 'none', src: t.src });
+  au.addEventListener('play', () => { document.querySelectorAll('audio').forEach(a => { if (a !== au) a.pause(); }); stopAll(); });
+  const mm = t.len ? `${Math.floor(t.len / 60)}:${String(Math.round(t.len % 60)).padStart(2, '0')}` : null;
+  return el('div', { class: 'track' },
+    el('div', { class: 't' }, el('b', null, t.ko, NEW_MUSIC.has(t.name) ? el('span', { class: 'newb' }, 'NEW') : null), el('code', { class: 'meta' }, t.name + '.ogg')),
+    t.desc ? el('div', { class: 'desc' }, t.desc) : null,
+    el('div', { class: 'chips' }, [mm && el('span', { class: 'chip' }, mm), t.bpm && el('span', { class: 'chip' }, t.bpm + ' BPM'), t.key && el('span', { class: 'chip' }, t.key), t.meter && el('span', { class: 'chip' }, t.meter), t.loop && el('span', { class: 'chip' }, '루프'), t.vol != null && el('span', { class: 'chip' }, 'vol ' + t.vol), el('span', { class: 'chip' }, t.kb + ' KB')]),
+    au);
+}
+function renderMusic(h, data) {
+  const n = oggNotice(); if (n) h.append(n);
+  for (const g of data.music) {
+    const box = el('section', { class: 'group' }, el('h3', null, g.title), g.desc ? el('p', { class: 'gdesc' }, g.desc) : null);
+    if (g.bosses) for (const b of g.bosses) box.append(el('div', { class: 'bossmus' }, el('h4', null, b.ko), el('div', { class: 'tracks' }, b.tracks.map(trackEl))));
+    else box.append(el('div', { class: 'tracks' }, g.tracks.map(trackEl)));
+    h.append(box);
+  }
+}
+
+/* ---------- 탭 전환 ---------- */
+const tabs = $('#tabs'), main = $('#main');
+const hosts = new Map();
+let current = null;
+for (const s of SECTIONS) tabs.append(el('button', { 'data-id': s.id, onclick: () => show(s.id, true) }, s.ko, NEW_TABS.has(s.id) ? el('span', { class: 'newb' }, 'NEW') : null));
+async function show(id, user) {
+  const s = SECTIONS.find(x => x.id === id) || SECTIONS[0];
+  if (current === s.id) { if (user) window.scrollTo({ top: 0 }); return; }
+  if (current) { const old = hosts.get(current); old.hidden = true; (old._players || []).forEach(p => { p.visible = false; p.stop(); }); }
+  closeDrawer();
+  current = s.id; store.set('tab', s.id);
+  try { history.replaceState(null, '', '#' + s.id); } catch (e) {}
+  tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-current', String(b.dataset.id === s.id)));
+  const btn = tabs.querySelector(`[data-id="${s.id}"]`); if (btn && btn.scrollIntoView) btn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  if (user) window.scrollTo({ top: 0 });
+  let h = hosts.get(s.id);
+  if (h) { h.hidden = false; (h._players || []).forEach(p => { p.visible = true; p.start(); }); return; }
+  h = el('section', { id: 'sec-' + s.id });
+  hosts.set(s.id, h); main.append(h);
+  h.append(el('div', { class: 'sec-head' }, el('h2', null, s.ko)), el('p', { class: 'sec-lead' }, s.lead));
+  const bar = el('i'); const msg = el('span', null, '불러오는 중…');
+  const st = el('div', { class: 'status' }, msg, el('div', { class: 'bar' }, bar)); h.append(st);
+  try {
+    const data = s.file ? await loadPack(s.file, (got, tot) => { msg.textContent = `불러오는 중… ${mb(got)} / ${mb(tot)}`; bar.style.width = (100 * got / tot).toFixed(1) + '%'; }) : null;
+    await descReady;
+    st.remove();
+    s.render(h, data);
+    if (current !== s.id) (h._players || []).forEach(p => { p.visible = false; p.stop(); });
+  } catch (e) {
+    st.className = 'status err'; st.textContent = '불러오지 못했다: ' + (e && e.message || e) + ' ';
+    st.append(el('button', { class: 'btn', onclick: () => { hosts.delete(s.id); h.remove(); current = null; show(s.id); } }, '다시 시도'));
+  }
+}
+const seenV5 = store.get('seen') === 'v15'; store.set('seen', 'v15');
+const initial = (location.hash || '').slice(1) || (seenV5 ? store.get('tab') : 'changes') || 'changes';
+show(SECTIONS.some(s => s.id === initial) ? initial : 'changes');
+window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if (SECTIONS.some(s => s.id === id)) show(id, true); });
+})();
+</script>
+
+
+
+</body>
+</html>
