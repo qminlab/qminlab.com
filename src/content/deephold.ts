@@ -65,7 +65,7 @@ const ko: CaseFile = {
     eyebrow: '01 — 게임 소개',
     title: '실력 말고는 아무것도 늘지 않아요',
     body: [
-      '딥홀드는 탑다운 실시간 액션에 로그라이트 파밍과 던전 건설을 섞은 게임이에요. 층을 내려갈수록 몬스터는 많아지고 빨라지지만 보상도 커져요. 지금 돌아갈지, 한 층만 더 내려갈지는 언제나 내 선택이에요. 랜턴 기름이 떨어지기 전에, 그리고 체력이 바닥나기 전에요.',
+      '딥홀드는 탑다운 실시간 액션에 로그라이트 파밍과 던전 건설을 섞은 게임이에요. 층을 내려갈수록 몬스터는 많아지고 빨라지지만 보상도 커져요. 지금 돌아갈지, 한 층만 더 내려갈지는 언제나 내 선택이에요. 체력 세 칸이 바닥나기 전에요.',
       '모아 온 자원으로는 나만의 던전을 지어요. 함정을 깔고, 소환한 몬스터를 배치하고, 친구에게 도전장을 보내요. 누가 더 깊이 내려가고, 누구의 던전이 더 악랄한지 겨루는 게임이에요.',
     ],
     rulesTitle: '다섯 가지 원칙',
@@ -78,7 +78,7 @@ const ko: CaseFile = {
     ],
     loopTitle: '한 번의 원정',
     loop: [
-      '랜턴 기름 1병을 들고 던전 입구로 내려가요.',
+      '랜턴 하나만 들고 던전 입구로 내려가요.',
       '층마다 지도 · 몬스터 편성 · 층 성격(함정 · 사냥꾼 · 보물 창고 · 혼불 제단…)이 무작위로 바뀌어요.',
       '3 · 6 · 9층의 탈출 포탈로 살아 나와야 전리품이 창고에 들어가요. 죽으면 들고 있던 걸 잃어요.',
       '바이옴 마지막 층에는 보스방 문이 따로 있어요. 들어갈지는 내가 정해요.',
@@ -100,10 +100,10 @@ const ko: CaseFile = {
     title: '무너진 지하왕국, 마지막 등불',
     body: [
       '땅 밑에는 오래전에 무너진 지하왕국이 있어요. 그 입구 위, 안개 낀 폐허에 천막과 판잣집 몇 채가 모인 작은 캠프가 있고, 가운데의 큰 등불 하나가 마을 전체를 비춰요. 그래서 마을 이름이 "마지막 등불"이에요.',
-      '주인공은 이름 없는 도굴꾼이에요. 디자인이 정해진 한 사람이고, 손에 든 랜턴이 유일한 빛이에요. 화면 대부분은 어둡고, 적의 눈만 어둠 속에서 붉게 빛나요. 기름은 시간이 지나면 조금씩 다시 차오르고, 폐광산에서 캔 역청을 정제소에서 기름으로 바꿀 수도 있어요.',
+      '주인공은 이름 없는 도굴꾼이에요. 디자인이 정해진 한 사람이고, 손에 든 랜턴이 유일한 빛이에요. 화면 대부분은 어둡고, 적의 눈만 어둠 속에서 붉게 빛나요. 폐광산에서 캔 광석과 역청은 마을 제련소에서 주괴로 바꿔요.',
       '깊이마다 왕국의 다른 얼굴이 나와요. 다섯 바이옴에는 각자 전설 보스가 하나씩 살고, 보스마다 방 구조를 이용하는 공략이 있어요.',
     ],
-    villageCap: '마을 "마지막 등불". 던전 입구 · 정제소 · 소환 사원 · 기록비 · 도전 게시판 · 폐광산이 모여 있어요.',
+    villageCap: '마을 "마지막 등불". 던전 입구 · 제련소 · 소환 사원 · 기록비 · 도전 게시판 · 폐광산이 모여 있어요.',
     placesTitle: '다섯 개의 깊이와 그 주인들',
     places: [
       { img: 'room_moss_graveyard', name: '이끼 묘지', floors: '1~3층', boss: '무덤지기 거미왕', bossImg: 'boss_spider_king', line: '원형 묘역과 기둥 네 개. 천장으로 올라간 거미왕의 낙하를 유도해 뒤집힌 배를 때려야 해요.' },
@@ -280,7 +280,7 @@ const en: CaseFile = {
     eyebrow: '01 — The game',
     title: 'Nothing gets stronger except you',
     body: [
-      'DeepHold mixes top-down real-time action with roguelite farming and dungeon building. Every floor down brings more and faster monsters, and better loot. Whether to turn back now or risk one more floor is always your call — before the lantern runs dry, and before your hearts do.',
+      'DeepHold mixes top-down real-time action with roguelite farming and dungeon building. Every floor down brings more and faster monsters, and better loot. Whether to turn back now or risk one more floor is always your call, as long as your three hearts last.',
       'What you bring back builds a dungeon of your own: lay traps, place the monsters you summoned, and send your friends a challenge. Who goes deepest, and whose dungeon is the cruelest?',
     ],
     rulesTitle: 'Five rules',
@@ -293,7 +293,7 @@ const en: CaseFile = {
     ],
     loopTitle: 'One expedition',
     loop: [
-      'Take one bottle of lantern oil down the dungeon gate.',
+      'Take nothing but your lantern down the dungeon gate.',
       'Each floor rolls a new map, a new monster cast and a floor type (traps, hunters, treasure vault, soul-flame altar…).',
       'Loot only reaches your storehouse if you walk out through the escape portal on floors 3, 6 and 9. Die and you lose what you carry.',
       'The last floor of each biome has a separate boss door. Going in is your choice.',
@@ -315,10 +315,10 @@ const en: CaseFile = {
     title: 'A fallen kingdom, the Last Lantern',
     body: [
       'Under the ground lies a kingdom that collapsed long ago. Over its entrance, in the foggy ruins, a handful of tents and shacks make a small camp, and one great lantern in the middle lights all of it. That is why the village is called the Last Lantern.',
-      'You play a nameless digger whose lantern is the only light. Most of the screen is dark, and only enemy eyes glow red in it. Oil slowly refills over time, and bitumen dug in the old mine can be refined into more.',
+      'You play a nameless digger whose lantern is the only light. Most of the screen is dark, and only enemy eyes glow red in it. Ore and bitumen dug in the old mine are smelted into ingots at the village smelter.',
       'Every depth shows a different face of the kingdom. Each of the five biomes has one legendary boss, and every boss is beaten by using its room.',
     ],
-    villageCap: 'The village, the Last Lantern: dungeon gate, refinery, summoning temple, record stone, challenge board and the old mine.',
+    villageCap: 'The village, the Last Lantern: dungeon gate, smelter, summoning temple, record stone, challenge board and the old mine.',
     placesTitle: 'Five depths and their masters',
     places: [
       { img: 'room_moss_graveyard', name: 'Moss Graveyard', floors: 'Floors 1–3', boss: 'Gravekeeper Spider King', bossImg: 'boss_spider_king', line: 'A round crypt with four pillars. Bait the king down from the ceiling and hit its upturned belly.' },
