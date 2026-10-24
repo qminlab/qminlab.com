@@ -4,7 +4,7 @@ import { routing } from '@/i18n/routing';
 import { PROFILE } from '@/content/profile';
 import { DocShell, Facts, Section, linkStyle } from '@/components/doc/DocShell';
 import { BONE, LINE, MUTED } from '@/lib/tokens';
-import { SITE, UPDATED, ldScript, orgLd, personLd } from '@/lib/identity';
+import { SITE, UPDATED, ldScript, orgLd, personLd, OG_IMAGE } from '@/lib/identity';
 
 const pick = (locale: string) => (locale === 'ko' ? 'ko' : 'en') as 'ko' | 'en';
 
@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: c.meta.title,
     description: c.meta.description,
     alternates: { canonical: `/${locale}/about/`, languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}/about/`])) },
-    openGraph: { type: 'profile', title: c.meta.title, description: c.meta.description, url: `/${locale}/about/` },
+    openGraph: { type: 'profile', title: c.meta.title, description: c.meta.description, url: `/${locale}/about/`, images: [OG_IMAGE] },
   };
 }
 
