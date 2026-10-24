@@ -205,7 +205,7 @@ card('weming', { code: 'QL-001', type: 'APP', ko: '위밍', en: 'Weming', st: 'r
 card('deephold', { code: 'QL-004', type: 'GAME', ko: '딥홀드', en: 'DeepHold', st: 'dev', status: '개발 중 · v0.6 친구 테스트', pillW: 250,
   one: ['던전에서 캐 온 자원으로 내 던전을 짓고,', '친구가 도전하는 2.5D 도트 액션 게임'], bg: ['#2A1E14', '#120D09'], ink: '#F3E6CF', sub: 'rgba(243,230,207,.6)', art: bricks + torch });
 card('sword', { code: 'QL-006', type: 'ANIME', ko: '별을 품은 소드마스터', en: '', st: 'making', status: '제작 중 · 266컷 · 14분 21초', pillW: 262,
-  one: ['소설 「별을 품은 기사」 원작 웹툰의 첫 이야기를', '한 편의 AI 애니메이션으로 옮기는 중'], bg: ['#24335E', '#0B0F1E'], ink: '#EEF2FF', sub: 'rgba(238,242,255,.62)', art: stars });
+  one: ['같은 이름의 소설이 원작인 웹툰의 첫 이야기를', '한 편의 AI 애니메이션으로 옮기는 중'], bg: ['#24335E', '#0B0F1E'], ink: '#EEF2FF', sub: 'rgba(238,242,255,.62)', art: stars });
 card('board', { code: 'QL-005', type: 'TOOL', ko: 'Claude 대기판', en: 'Wait Board', st: 'use', status: '사용 중 · 오픈소스', pillW: 190,
   one: ['여러 Claude 작업의 진행 상황을', '한눈에 보여주는 아이패드 현황판'], bg: ['#FFFFFF', '#EEEBE4'], ink: '#1D1D1F', sub: 'rgba(29,29,31,.5)', art: columns });
 
