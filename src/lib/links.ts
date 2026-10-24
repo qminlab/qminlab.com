@@ -3,7 +3,7 @@
  * language, so they live here rather than in messages/*.json; the button labels come from `linkKinds`.
  * Add a line when a project ships somewhere (App Store, Google Play, a download, a playable build).
  */
-export type LinkKind = 'github' | 'appstore' | 'googleplay' | 'download' | 'web' | 'play' | 'notes' | 'trials';
+export type LinkKind = 'github' | 'appstore' | 'googleplay' | 'download' | 'web' | 'play' | 'notes' | 'trials' | 'assets';
 export type ProjectLink = { kind: LinkKind; href: string };
 
 import { gh, SITE } from './identity';
@@ -13,7 +13,7 @@ export { GITHUB, GH_USER } from './identity';
 
 export const LINKS: Record<string, ProjectLink[]> = {
   'QL-001': [{ kind: 'github', href: gh('weming') }, { kind: 'trials', href: `${SITE}/{locale}/trials/weming/` }],
-  'QL-004': [{ kind: 'download', href: gh('deephold-releases/releases/latest') }, { kind: 'trials', href: `${SITE}/{locale}/trials/deephold/` }],
+  'QL-004': [{ kind: 'download', href: gh('deephold-releases/releases/latest') }, { kind: 'trials', href: `${SITE}/{locale}/trials/deephold/` }, { kind: 'assets', href: `${SITE}/deephold-assets/` }],
   'QL-005': [{ kind: 'github', href: gh('claude-board') }, { kind: 'trials', href: `${SITE}/{locale}/trials/claude-board/` }],
   'QL-006': [{ kind: 'notes', href: `${SITE}/notes/sword-master-rsa5m/` }],
 };

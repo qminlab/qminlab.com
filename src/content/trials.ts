@@ -595,6 +595,7 @@ const deephold: Record<'ko' | 'en', TrialPage> = {
     ],
     links: [
       { label: '딥홀드 사이트', href: '../../deephold/' },
+      { label: '에셋 도감 (그림·소리 전부)', href: '/deephold-assets/' },
       { label: '패치 노트 (GitHub)', href: gh('deephold-releases') },
     ],
   },
@@ -732,6 +733,7 @@ const deephold: Record<'ko' | 'en', TrialPage> = {
     ],
     links: [
       { label: 'DeepHold site', href: '../../deephold/' },
+      { label: 'Asset gallery, all art and sound (Korean)', href: '/deephold-assets/' },
       { label: 'Patch notes (GitHub)', href: gh('deephold-releases') },
     ],
   },
