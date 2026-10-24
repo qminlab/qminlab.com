@@ -4,6 +4,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { TRIALS, TRIAL_LABELS, TRIAL_SLUGS, TRIALS_AS_OF, type TrialSlug } from '@/content/trials';
 import { EMAIL, SITE, ldScript } from '@/lib/identity';
+import type { TrialMedia } from '@/content/trials';
+import { Demo } from '@/components/trials/Demos';
 import '@/styles/trials.css';
 
 /**
@@ -27,6 +29,30 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     alternates: { canonical: `/${locale}/trials/${slug}/`, languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}/trials/${slug}/`])) },
     openGraph: { title: c.meta.title, description: c.meta.description, url: `/${locale}/trials/${slug}/` },
   };
+}
+
+function Figure({ m, l }: { m: TrialMedia; l: 'ko' | 'en' }) {
+  if (m.kind === 'demo') {
+    return (
+      <figure className="tr-fig tr-fig-demo">
+        <Demo demo={m.demo} l={l} />
+        <figcaption>{m.cap[l]}</figcaption>
+      </figure>
+    );
+  }
+  const tall = m.h > m.w;
+  return (
+    <figure className="tr-fig" data-tall={tall ? '' : undefined} data-phone={m.kind === 'img' && m.phone ? '' : undefined} data-small={m.w <= 400 ? '' : undefined}>
+      <div className="tr-frame">
+        {m.kind === 'img' ? (
+          <img src={m.src} width={m.w} height={m.h} alt={m.alt[l]} loading="lazy" decoding="async" data-pixel={m.pixel ? '' : undefined} />
+        ) : (
+          <video src={m.src} poster={m.poster} width={m.w} height={m.h} autoPlay muted loop playsInline preload="metadata" aria-label={m.alt[l]} />
+        )}
+      </div>
+      <figcaption>{m.cap[l]}</figcaption>
+    </figure>
+  );
 }
 
 const anchor = (v: string) => `v-${v.toLowerCase().replace(/[^a-z0-9가-힣]+/g, '-').replace(/^-|-$/g, '')}`;
@@ -97,6 +123,11 @@ export default async function TrialsPage({ params }: { params: Promise<{ locale:
                   <p className="tr-when">{v.when}{v.now && <span className="tr-now">{t.now}</span>}</p>
                 </div>
               </div>
+              {v.media && (
+                <div className="tr-media" data-n={v.media.length}>
+                  {v.media.map((m, j) => <Figure key={j} m={m} l={l} />)}
+                </div>
+              )}
               <div className="tr-ver-body">
                 <section className="tr-block">
                   <h3>{t.tried}</h3>

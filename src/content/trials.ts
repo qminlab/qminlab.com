@@ -22,7 +22,16 @@ export type TrialVersion = {
   next?: string;
   /** The version in use now. */
   now?: boolean;
+  /** Pictures, clips or small live demos shown with this version. */
+  media?: TrialMedia[];
 };
+
+type Cap = { ko: string; en: string };
+/** img/video live under public/ (paths from the site root). A demo is a small CSS animation drawn by the page. */
+export type TrialMedia =
+  | { kind: 'img'; src: string; w: number; h: number; alt: Cap; cap: Cap; pixel?: boolean; phone?: boolean }
+  | { kind: 'video'; src: string; poster: string; w: number; h: number; alt: Cap; cap: Cap }
+  | { kind: 'demo'; demo: 'board' | 'instant' | 'att'; cap: Cap };
 
 export type TrialPage = {
   slug: string;
@@ -733,3 +742,88 @@ export type TrialSlug = keyof typeof TRIALS;
 export const TRIAL_SLUGS = Object.keys(TRIALS) as TrialSlug[];
 /** Trial page per project code, for links from case files and the home screen. */
 export const TRIAL_BY_CODE: Record<string, TrialSlug> = { 'QL-001': 'weming', 'QL-004': 'deephold', 'QL-005': 'claude-board' };
+
+/**
+ * Media per version, by position in `versions` (the same in both languages). Screenshots are the projects' own:
+ * the Wait Board README images (first release), Weming store screenshots (sample data), DeepHold game captures
+ * and work files. DeepHold pictures already on the game site are reused from /deephold/ as they are.
+ */
+const M: Record<TrialSlug, Record<number, TrialMedia[]>> = {
+  'claude-board': {
+    0: [{ kind: 'img', src: '/trials/claude-board/board.webp', w: 1400, h: 973,
+      alt: { ko: '아이패드 대기판 화면. 작업중 · 확인 필요 · 완료 세 칸에 번호 붙은 카드들', en: 'The iPad board: numbered cards in Working, Needs attention and Done' },
+      cap: { ko: '첫 공개 때의 대기판. 카드마다 번호 · 이름 · 지금 하는 일 · 경과 시간이 붙어요.', en: 'The board at first release. Each card shows a number, a name, what it is doing and for how long.' } }],
+    1: [
+      { kind: 'img', src: '/trials/claude-board/architecture.webp', w: 1400, h: 554,
+        alt: { ko: '구조도: Claude 앱 대화와 Claude Code의 신호가 맥 서버를 거쳐 아이패드로 가요', en: 'Diagram: signals from Claude app chats and Claude Code go through the Mac server to the iPad' },
+        cap: { ko: '두 길로 들어온 신호가 맥 서버 한곳에 모여요. 1.0부터는 칸을 정하는 판단도 전부 이 서버가 해요.', en: 'Signals from two paths meet at the Mac server. From 1.0 on, every lane decision is made there too.' } },
+      { kind: 'img', src: '/trials/claude-board/flash.webp', w: 1400, h: 973,
+        alt: { ko: '확인 필요가 생겨 화면 전체가 빨갛게 깜빡이는 대기판', en: 'The board flashing red because something needs attention' },
+        cap: { ko: '확인 필요가 생기면 화면 전체가 빨갛게 깜빡여요. 10초 규칙 전에는 잠깐 묻고 넘어가는 승인에도 이렇게 깜빡였어요.', en: 'Needs attention flashes the whole screen red. Before the 10-second rule, even a prompt approved a moment later did this.' } },
+    ],
+    2: [{ kind: 'img', src: '/trials/claude-board/links.webp', w: 1400, h: 973,
+      alt: { ko: '연결 탭: 대기판에 신호를 보내는 대화 목록과 연결 끊기 버튼', en: 'The link tab: chats sending signals to the board, each with a disconnect button' },
+      cap: { ko: '연결 탭 (첫 공개 때 그림). 1.1부터 대화마다 이름을 바꾸는 버튼이 생겼어요.', en: 'The link tab (first-release picture). From 1.1 each chat also gets a rename button.' } }],
+    3: [{ kind: 'demo', demo: 'board',
+      cap: { ko: '움직이는 예시: 권한 승인이 10초 넘게 막히면 확인 필요로, 승인하면 다시 작업중으로, 앞 턴이 끝나도 뒤 턴이 돌고 있으면 그대로 작업중이에요.', en: 'Live example: stuck on a prompt for over 10 seconds goes to Needs attention, approving sends it back to Working, and a finished turn stays Working while a later turn runs.' } }],
+  },
+  weming: {
+    1: [
+      { kind: 'img', src: '/trials/weming/feed.webp', w: 540, h: 960, phone: true,
+        alt: { ko: '위밍 피드 화면', en: 'Weming feed screen' },
+        cap: { ko: '네 번 갈아엎은 끝에 정한 피드 카드', en: 'The feed card, settled after four redesigns' } },
+      { kind: 'img', src: '/trials/weming/chat.webp', w: 540, h: 960, phone: true,
+        alt: { ko: '위밍 대화방 화면', en: 'Weming chat screen' },
+        cap: { ko: '말풍선 반응 · 답장 · 입력 중 표시가 들어간 대화방', en: 'Chat with reactions, replies and typing indicators' } },
+    ],
+    2: [{ kind: 'img', src: '/trials/weming/instant-old.webp', w: 540, h: 960, phone: true,
+      alt: { ko: '바로 대화 시작 화면: 서로의 프로필은 공개되지 않는다는 안내', en: 'Instant Chat start screen saying profiles are not shown' },
+      cap: { ko: '처음 바로 대화 화면. "서로의 프로필은 공개되지 않고" 바로 다음 친구와 이어졌어요. 심사에서 걸린 게 바로 이 부분이에요. (스토어 스크린샷, 예시 데이터)', en: 'The original Instant Chat screen: "profiles are not shown", and you were connected straight away. This is exactly what review flagged. (Store screenshot, sample data.)' } }],
+    3: [{ kind: 'demo', demo: 'instant',
+      cap: { ko: '움직이는 예시: 다시 설계한 바로 대화. 서로의 프로필 카드를 20초 동안 보고, 둘 다 수락해야 3분 대화가 열려요.', en: 'Live example: the redesigned Instant Chat. Both profile cards for 20 seconds, both accept, then a three-minute chat.' } }],
+    4: [{ kind: 'demo', demo: 'att',
+      cap: { ko: '움직이는 예시: 빌드 9의 순서. 앱을 켜면 로그인 화면 위에서 추적 허용을 먼저 묻고, 알림 허용은 그다음이에요.', en: 'Live example: the build 9 order. When the app opens, tracking permission is asked first, over the login screen; notifications come after.' } }],
+  },
+  deephold: {
+    0: [{ kind: 'img', src: '/deephold/boss_spider_king.webp', w: 288, h: 288, pixel: true,
+      alt: { ko: '무덤지기 거미왕 도트 그림', en: 'Pixel art of the Grave-keeper Spider King' },
+      cap: { ko: 'v0.1에서 규칙부터 만든 보스 다섯 중 첫째, 무덤지기 거미왕 (지금 그림)', en: 'The first of the five bosses built rules-first in v0.1: the Grave-keeper Spider King (current art)' } }],
+    1: [{ kind: 'img', src: '/deephold/village.webp', w: 1280, h: 896, pixel: true,
+      alt: { ko: '새로 그린 마을 "마지막 등불" 전경', en: 'The redrawn village, Last Lantern' },
+      cap: { ko: '새 그림으로 다시 만든 마을 "마지막 등불". 마을 안에서도 베고 구를 수 있어요.', en: 'The village Last Lantern, rebuilt from new art. You can slash and roll here too.' } }],
+    2: [{ kind: 'img', src: '/trials/deephold/mine-bedrock.webp', w: 1440, h: 810, pixel: true,
+      alt: { ko: '폐광산에서 곡괭이가 단단한 암반에 튕겨 나오는 장면', en: 'In the mine, the pickaxe bounces off bedrock' },
+      cap: { ko: '"너무 단단해서 곡괭이가 튕겨 나온다." 한 방향으로만 캐는 자동 채굴을 막으려고 못 캐는 암반을 흩어 놓았어요.', en: '"Too hard, the pickaxe bounces off." Undiggable bedrock was scattered to stop straight-line auto-mining.' } }],
+    3: [{ kind: 'img', src: '/trials/deephold/mine-deep.webp', w: 1440, h: 810, pixel: true,
+      alt: { ko: '폐광산 깊은 갱도 입구', en: 'Entrance to the mine\'s deep tunnels' },
+      cap: { ko: '깊은 갱도. 이곳의 광맥 숫자를 하루 사이에 네 번 바꿨어요.', en: 'The deep tunnels, where the vein numbers changed four times in one day.' } }],
+    4: [
+      { kind: 'img', src: '/deephold/v052_furnace.webp', w: 880, h: 300, pixel: true,
+        alt: { ko: '멈추지 않는 용광로의 새 그림들: 화구 · 경고등 · 쇳물 · 증기', en: 'New Endless Furnace art: mouth, warning light, molten iron, steam' },
+        cap: { ko: '손질한 두 번째 보스, 멈추지 않는 용광로. 체력 36 · 열림당 3타.', en: 'The reworked second boss, the Endless Furnace: 36 hits, 3 per opening.' } },
+      { kind: 'img', src: '/trials/deephold/emblems.webp', w: 1904, h: 480, pixel: true,
+        alt: { ko: '업적 엠블럼 크기 비교, 고치기 전과 후', en: 'Achievement emblems before and after resizing' },
+        cap: { ko: '업적 엠블럼 크기를 다시 맞출 때 쓴 비교 그림 (v0.5.2)', en: 'The comparison sheet used when emblem sizes were redone (v0.5.2)' } },
+    ],
+    5: [
+      { kind: 'img', src: '/deephold/v060_hitbox.webp', w: 944, h: 344, pixel: true,
+        alt: { ko: '판정을 그림 모양 그대로: 초록은 맞는 곳, 주황은 때리는 곳', en: 'Hits follow the art: green is where you get hit, orange is where you hit' },
+        cap: { ko: '그림 모양 그대로의 판정. 초록은 맞는 곳, 주황은 때리는 곳이에요.', en: 'Hit shapes taken from the art. Green gets hit, orange hits.' } },
+      { kind: 'video', src: '/trials/deephold/collision.mp4', poster: '/trials/deephold/collision-poster.webp', w: 540, h: 960,
+        alt: { ko: '건물 충돌 판정을 만드는 과정 영상', en: 'Clip: how building collision is made' },
+        cap: { ko: '같은 버전에서 마을 건물 충돌도 다시 만들었어요. 3D 모델을 높이별로 잘라 픽셀마다 앞뒤 순서를 정하는 과정 (5초).', en: 'The same version rebuilt building collision: slicing a 3D model by height to set the front-back order of every pixel (5 s).' } },
+    ],
+    6: [{ kind: 'img', src: '/trials/deephold/decal-furnace.webp', w: 1368, h: 320, pixel: true,
+      alt: { ko: '용광로 화구 열림 예고 장판, 고치기 전과 후', en: 'Furnace mouth warning zone, before and after' },
+      cap: { ko: '같은 때 예고 장판도 매끈한 원에서 도트 데칼로 바꿨어요 (왼쪽 전, 오른쪽 후).', en: 'Warning zones also went from flat circles to pixel decals (left before, right after).' } }],
+    7: [{ kind: 'img', src: '/trials/deephold/mine-oil-rule.webp', w: 1440, h: 810, pixel: true,
+      alt: { ko: '"기름이 있어서 역청이 단단하다" 말풍선이 뜬 폐광산', en: 'Mine bubble: "you have oil, so the pitch is too hard"' },
+      cap: { ko: '"기름이 있어서 역청이 단단하다." v0.6.2에서 기름과 함께 없앤 규칙이에요.', en: '"You have oil, so the pitch is too hard." One of the rules that left with lantern oil in v0.6.2.' } }],
+  },
+};
+
+for (const slug of TRIAL_SLUGS) {
+  for (const l of ['ko', 'en'] as const) {
+    TRIALS[slug][l].versions.forEach((v, i) => { if (M[slug][i]) v.media = M[slug][i]; });
+  }
+}
