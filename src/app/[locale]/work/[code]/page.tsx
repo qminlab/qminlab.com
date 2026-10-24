@@ -6,7 +6,7 @@ import type { Project } from '@/lib/projects';
 import { linksFor } from '@/lib/links';
 import { DocShell, Facts, Section, linkStyle } from '@/components/doc/DocShell';
 import { BONE } from '@/lib/tokens';
-import { BRAND, PERSON, SITE, UPDATED, ldScript } from '@/lib/identity';
+import { BRAND, PERSON, SITE, UPDATED, ldScript, OG_IMAGE } from '@/lib/identity';
 import { TRIALS, TRIAL_BY_CODE } from '@/content/trials';
 
 /** Case files that live on this template. DeepHold (QL-004) has its own long-form page at /deephold/. */
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title,
     description,
     alternates: { canonical: `/${locale}/work/${code}/`, languages: Object.fromEntries(routing.locales.map((x) => [x, `/${x}/work/${code}/`])) },
-    openGraph: { title, description, url: `/${locale}/work/${code}/` },
+    openGraph: { title, description, url: `/${locale}/work/${code}/`, images: [OG_IMAGE] },
   };
 }
 

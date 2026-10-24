@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { TRIALS, TRIAL_LABELS, TRIAL_SLUGS, TRIALS_AS_OF, type TrialSlug } from '@/content/trials';
-import { EMAIL, SITE, ldScript } from '@/lib/identity';
+import { EMAIL, OG_IMAGE, SITE, ldScript } from '@/lib/identity';
 import type { TrialMedia } from '@/content/trials';
 import { Demo } from '@/components/trials/Demos';
 import '@/styles/trials.css';
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: c.meta.title,
     description: c.meta.description,
     alternates: { canonical: `/${locale}/trials/${slug}/`, languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}/trials/${slug}/`])) },
-    openGraph: { title: c.meta.title, description: c.meta.description, url: `/${locale}/trials/${slug}/` },
+    openGraph: { title: c.meta.title, description: c.meta.description, url: `/${locale}/trials/${slug}/`, images: [OG_IMAGE] },
   };
 }
 
