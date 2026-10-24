@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -605,7 +605,7 @@ footer .star-mark{color:var(--star);flex:none}
   try{var tr=document.getElementById('subtrack');tr.src=URL.createObjectURL(new Blob([vtt],{type:'text/vtt'}));tr.track.mode='showing';}catch(e){}
   try{var tr2=document.getElementById('subtrack2');tr2.src=tr.src;tr2.track.mode='showing';}catch(e){}
 
-  // 테마: 시스템 설정을 따르고, 버튼으로 바꾼 값은 이 브라우저에만 기억
+  // 테마: 기본은 다크, 버튼으로 바꾼 값은 이 브라우저에만 기억
   var root=document.documentElement, KEY='sm-notes-theme';
   try{var saved=localStorage.getItem(KEY); if(saved==='light'||saved==='dark') root.setAttribute('data-theme',saved);}catch(e){}
   document.getElementById('theme').addEventListener('click',function(){
