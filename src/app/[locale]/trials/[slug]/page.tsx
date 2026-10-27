@@ -80,7 +80,7 @@ export default async function TrialsPage({ params }: { params: Promise<{ locale:
       <script type="application/ld+json" dangerouslySetInnerHTML={ldScript(ld)} />
       <header className="tr-hero">
         <div className="tr-wrap">
-          <a className="tr-back" href="../../">{t.back}</a>
+          <a className="tr-back" href={`/${l}/`}>{t.back}</a>
           <p className="tr-eyebrow">{c.eyebrow}</p>
           <h1 className="tr-title">{c.title}</h1>
           <div className="tr-lead">{c.lead.map((p) => <p key={p}>{p}</p>)}</div>
