@@ -38,6 +38,7 @@ h1,h2,h3,h4,h5,p,dl,dd{margin:0}
 .ic-rules{background:linear-gradient(180deg,#FFFFFF,#EDEDED)}
 .ic-contact{background:linear-gradient(180deg,#B9B9BE,#8E8E93)}
 .ic-gh{background:linear-gradient(180deg,#2A2A2C,#141415)}
+.ic-games{background:linear-gradient(180deg,#2A2B27,#0C0D0B)}
 .ic-launch{background:linear-gradient(180deg,#F2F2F7,#D9D9DE)}
 .appic.ic-trash{-webkit-mask:none;mask:none;background:none}
 .appic.ic-trash svg{width:88%;height:88%}
