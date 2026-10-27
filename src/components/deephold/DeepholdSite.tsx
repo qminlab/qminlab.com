@@ -209,7 +209,7 @@ export function DeepholdSite({ c, locale }: { c: CaseFile; locale: 'ko' | 'en' }
     <div className="dh" data-ko={locale === 'ko' || undefined}>
       <div className="dh-scan" aria-hidden="true" />
       <header className="dh-top">
-        <a href="../" className="dh-home"><span aria-hidden="true">◂</span> {ui.home}</a>
+        <a href={`/${locale}/`} className="dh-home"><span aria-hidden="true">◂</span> {ui.home}</a>
         <nav aria-label={ui.lang} className="dh-lang">
           {(['ko', 'en'] as const).map((l) => <a key={l} href={`../../${l}/deephold/`} aria-current={l === locale ? 'page' : undefined}>{l.toUpperCase()}</a>)}
         </nav>
@@ -392,7 +392,7 @@ export function DeepholdSite({ c, locale }: { c: CaseFile; locale: 'ko' | 'en' }
       </main>
 
       <footer className="dh-foot">
-        <a href="../" className="dh-home"><span aria-hidden="true">◂</span> {c.footer.home}</a>
+        <a href={`/${locale}/`} className="dh-home"><span aria-hidden="true">◂</span> {c.footer.home}</a>
         <p>{c.footer.copy}</p>
       </footer>
     </div>

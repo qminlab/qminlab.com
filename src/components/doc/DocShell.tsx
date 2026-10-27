@@ -10,7 +10,7 @@ export function DocShell({ ko, back, eyebrow, title, updated, children }: { ko: 
   return (
     <div style={{ minHeight: '100vh', background: INK, color: BONE, fontFamily: ko ? KR : MONO, wordBreak: ko ? 'keep-all' : undefined }}>
       <main style={{ maxWidth: 760, margin: '0 auto', padding: '40px 16px 96px' }}>
-        <a href="../" style={{ display: 'inline-flex', alignItems: 'center', minHeight: 44, fontFamily: ko ? MONO_KR : MONO, fontSize: 13, color: BONE, textDecoration: 'none', letterSpacing: '0.06em' }}>{back}</a>
+        <a href={ko ? '/ko/' : '/en/'} style={{ display: 'inline-flex', alignItems: 'center', minHeight: 44, fontFamily: ko ? MONO_KR : MONO, fontSize: 13, color: BONE, textDecoration: 'none', letterSpacing: '0.06em' }}>{back}</a>
         <p style={{ margin: '32px 0 8px', fontFamily: ko ? MONO_KR : MONO, fontSize: 12, letterSpacing: '0.12em', color: ACCENT }}>{eyebrow}</p>
         <h1 style={{ margin: 0, fontSize: 'clamp(34px, 6vw, 52px)', lineHeight: 1.15, letterSpacing: '-0.04em', fontWeight: 700 }}>{title}</h1>
         <p style={{ margin: '12px 0 0', fontFamily: ko ? MONO_KR : MONO, fontSize: 12, color: MUTED }}>{updated} <time dateTime={UPDATED}>{UPDATED}</time></p>
