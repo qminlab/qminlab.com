@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>별을 품은 소드마스터 제작노트</title>
-<meta name="description" content="AI 애니메이션 「별을 품은 소드마스터」 장면 2를 각색부터 소리 작업까지 어떤 순서와 도구로 만들고 있는지 단계별로 정리한 제작노트입니다.">
+<meta name="description" content="AI 애니메이션 「별을 품은 소드마스터」 v3 콜드 오픈 「장미의 미소」를 각색부터 보정까지 어떤 순서와 도구로 만들었는지 단계별로 정리한 제작노트입니다.">
 <meta property="og:title" content="별을 품은 소드마스터 애니메이션 제작노트">
-<meta property="og:description" content="각색·콘티·애니매틱·디자인·영상 생성·편집·보정·오디오, 장면 2를 만든 과정과 도구, 비용, 시행착오.">
+<meta property="og:description" content="각색·콘티·디자인·영상 생성·편집·보정, v3 콜드 오픈 「장미의 미소」를 만든 과정과 도구, 비용, 시행착오, 버전 변화.">
 <meta property="og:image" content="https://qminlab.com/notes/sword-master-rsa5m/m/key.jpg">
 <meta property="og:type" content="article">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,6 +84,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .pipe .done button::before{content:"✓ ";color:#7fd4a8}
 .pipe .wip button{border-color:#e7b25c;color:#f5d39a}
 .pipe .wip button::before{content:"● ";color:#e7b25c}
+.pipe .drop button{border-style:dashed;color:var(--night-muted)}
+.pipe .drop button::before{content:"– ";color:var(--night-muted)}
 
 /* ── tabs ── */
 .tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
@@ -145,6 +147,43 @@ figure figcaption{font-size:13px;line-height:1.55;color:var(--muted);margin-top:
 .script .line b{font-weight:600}
 ul.plain{margin:0;padding-left:1.1em;display:grid;gap:6px}
 ul.plain li::marker{color:var(--ember)}
+ol.plain{margin:0;padding-left:1.3em;display:grid;gap:6px}
+ol.plain li::marker{color:var(--ember);font-family:var(--mono);font-size:.9em}
+.status.skip{color:var(--muted);border:1px dashed var(--muted)}
+.stage.skip .num{border-style:dashed;border-color:var(--muted);color:var(--muted)}
+.stage.skip h2{color:var(--muted)}
+[lang="ja"]{font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",var(--body);word-break:normal;line-break:strict;overflow-wrap:normal}
+/* 좁은 화면: 표를 옆으로 밀지 않고 줄마다 카드처럼 쌓기 */
+@media (max-width:600px){
+  .tbl:has(.t-stack){overflow:visible;background:var(--panel)}
+  .tbl:has(.t-stack)+.swipe{display:none}
+  table.t-stack{min-width:0}
+  table.t-stack thead{display:none}
+  table.t-stack tr{display:grid;gap:2px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  table.t-stack tr:last-child{border-bottom:0}
+  table.t-stack td{display:block;padding:0;border:0;text-align:left!important;white-space:normal}
+  table.t-stack td[data-l]:not([data-l=""]){position:relative;padding-left:6.4em}
+  table.t-stack td[data-l]:not([data-l=""])::before{content:attr(data-l);position:absolute;left:0;top:.3em;width:6em;font-family:var(--mono);font-size:11px;line-height:1.5;letter-spacing:.02em;color:var(--muted)}
+  table.t-stack td:first-child{padding-left:0!important}
+  table.t-stack td:first-child{font-weight:600}
+  table.t-stack td:first-child::before{display:none!important}
+  table.t-stack tbody tr:hover td{background:none}
+}
+/* 디자인 비교: 가로로 긴 시트는 한 줄씩, v2 시트는 반폭 */
+.design{display:grid;gap:16px}
+.design .d-v2{max-width:min(100%,560px)}
+@media (min-width:601px){table.t-cmp{min-width:560px}}
+table.t-cmp td:first-child{white-space:nowrap}
+table.t-cmp td:last-child{color:var(--ink)}
+table.t-cmp td:nth-child(2){color:var(--muted)}
+/* 보정 전/후 쌍 */
+.bas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px 18px}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.ba span{position:relative;display:block;min-width:0}
+.ba img{border-radius:4px;border:1px solid var(--line);width:100%;height:auto;background:#000}
+.ba i{position:absolute;top:6px;left:6px;font-style:normal;font-family:var(--mono);font-size:11px;background:rgba(10,16,36,.72);color:#fff;padding:1px 7px;border-radius:4px}
+.trial-sub{font-size:clamp(18px,.8vw + 15px,21px);padding-top:18px;border-top:2px solid var(--ember);display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.trial-sub .muted{font-family:var(--body);font-weight:400;font-size:14px}
 
 /* table: 표는 자기 상자 안에서만 옆으로 밀림 */
 .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;-webkit-overflow-scrolling:touch;
@@ -232,6 +271,15 @@ tfoot td{font-weight:600;background:var(--soft);border-top:1px solid var(--line)
 @media (max-width:560px){.trial article{grid-template-columns:1fr}.trial p{grid-column:1}}
 
 .section-head{display:grid;gap:10px}
+.pvswitch{margin-bottom:calc(-1 * clamp(36px,5vw,64px));display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 54px);z-index:4;padding:8px 0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.pvswitch button{font:inherit;font-size:14px;line-height:1.4;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;transition:border-color .2s,color .2s}
+.pvswitch button b{font-family:var(--latin);color:var(--ember);margin-right:4px}
+.pvswitch button:hover{color:var(--ink)}
+.pvswitch button[aria-pressed="true"]{color:var(--ink);border-color:var(--ember);background:color-mix(in srgb,var(--ember) 12%,var(--panel));font-weight:600}
+.rv{display:grid;gap:16px}
+.pv{display:grid;gap:clamp(56px,7vw,88px)}
+.pv-note{font-size:14px;margin-bottom:calc(-1 * clamp(36px,5vw,64px))}
+@media (max-width:560px){.pvswitch .t{display:none}.pvswitch{gap:6px}.pvswitch button{padding:5px 11px;font-size:13.5px}}
 footer{border-top:1px solid var(--line)}
 footer .wrap{padding-block:28px 48px;font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:baseline}
 footer a{color:inherit;text-underline-offset:3px}
@@ -256,10 +304,10 @@ footer .star-mark{color:var(--star);flex:none}
   <img class="kv" src="m/key.jpg" alt="" aria-hidden="true">
   <div class="topline"><div class="wrap"><a class="home" href="/ko/">← QMINLAB</a><span>PRODUCTION NOTE</span><button class="theme-btn" id="theme" type="button" aria-label="화면 밝기 바꾸기">◐ 테마</button></div></div>
   <div class="wrap hero-in">
-    <p class="who">김규민 · 2026.10.21</p>
+    <p class="who">김규민 · 2026.10.27</p>
     <h1><span class="t1">별을 품은 소드마스터<span class="star-mark" aria-hidden="true"></span></span> <span class="t2">애니메이션 제작노트</span></h1>
-    <ul class="pipe" aria-label="S2 진행 상황">
-      <li class="done"><button type="button" data-stage="s1">각색·각본</button></li><li class="done"><button type="button" data-stage="s2">콘티</button></li><li class="done"><button type="button" data-stage="s3">애니매틱</button></li><li class="done"><button type="button" data-stage="s4">디자인</button></li><li class="done"><button type="button" data-stage="s5">영상 생성</button></li><li class="done"><button type="button" data-stage="s6">편집</button></li><li class="done"><button type="button" data-stage="s7">보정</button></li><li class="wip"><button type="button" data-stage="s8">오디오 진행 중</button></li>
+    <ul class="pipe" aria-label="v3 콜드 오픈 진행 상황">
+      <li class="done"><button type="button" data-stage="s1">각색·각본</button></li><li class="done"><button type="button" data-stage="s2">콘티</button></li><li class="done"><button type="button" data-stage="s4">디자인</button></li><li class="done"><button type="button" data-stage="s5">영상 생성</button></li><li class="done"><button type="button" data-stage="s6">편집</button></li><li class="drop"><button type="button" data-stage="s7">보정 드롭</button></li><li class="wip"><button type="button" data-stage="s8">오디오 보류</button></li>
     </ul>
   </div>
 </header>
@@ -279,21 +327,206 @@ footer .star-mark{color:var(--star);flex:none}
 
 <!-- ===================== 결과물 ===================== -->
 <section class="view" id="result" role="tabpanel" aria-labelledby="tab-result">
+  <div class="pvswitch" role="group" aria-label="제작 과정 버전 선택">
+    <button type="button" data-pv="v3" aria-pressed="true"><b>v3</b> 콜드 오픈<span class="t"> 「장미의 미소」</span></button>
+    <button type="button" data-pv="v2" aria-pressed="false"><b>v2</b> 장면 2<span class="t"> 「대장간 앞의 별」</span></button>
+    <button type="button" data-pv="v1" aria-pressed="false"><b>v1</b> 첫 시도<span class="t"> 「별이 떨어진 자리」</span></button>
+  </div>
+  <div class="rv" id="rv-v3">
   <div class="result">
+    <div class="result-head"><span class="label">콜드 오픈</span><h2>장미의 미소</h2></div>
+    <div class="screen">
+      <video controls playsinline preload="metadata" poster="m/v3_poster.jpg">
+        <source src="m/v3_result.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="muted meta">1분 12초 · 콜드 오픈(작품 맨 앞 장면) · 보정 도중 멈춘 미완성본. 웹툰 38화에서 블라드가 「장미의 미소」 로비에서 잭의 부하 50여 명을 혼자 쓰러뜨리는 장면입니다. <b>소리(대사·효과음)와 타이틀 로고는 아직 넣지 않은 무음본</b>이고, 마지막 0.5초 검은 화면 뒤에 타이틀이 들어갈 자리입니다.</p>
+    <p class="goto"><span>이 장면을 어떤 순서와 도구로 만들었는지는 <a href="#process" data-goto="process">제작 과정 <span aria-hidden="true">→</span></a>에서 단계별로 보실 수 있습니다. 첫 시도부터 지금까지 영상이 어떻게 바뀌었는지는 <a href="#versions" data-goto="versions">버전 변화 <span aria-hidden="true">→</span></a>에 정리했습니다.</span></p>
+  </div>
+  </div>
+  <div class="rv" id="rv-v2" hidden>
+    <div class="result">
     <div class="result-head"><span class="label">장면 2</span><h2>대장간 앞의 별</h2></div>
     <div class="screen">
-      <video controls playsinline preload="metadata" poster="m/poster.jpg">
+      <video controls playsinline preload="none" poster="m/poster.jpg">
         <source src="m/result.mp4" type="video/mp4">
-        <track id="subtrack" kind="subtitles" srclang="ko" label="한국어" default>
+        <track class="subko" kind="subtitles" srclang="ko" label="한국어" default>
       </video>
     </div>
     <p class="muted meta">2분 24초 · 일본어 더빙 · 한국어 자막(초안) · 보정 완료본. 소리는 아직 작업 중인 임시 버전이고, 도입부 15초(도시 원경)는 이번 보정본에 포함되지 않았습니다.</p>
-    <p class="goto"><span>이 장면을 어떤 순서와 도구로 만들었는지는 <a href="#process" data-goto="process">제작 과정 <span aria-hidden="true">→</span></a>에서 단계별로 보실 수 있습니다. 첫 시도부터 지금까지 영상이 어떻게 바뀌었는지는 <a href="#versions" data-goto="versions">버전 변화 <span aria-hidden="true">→</span></a>에 정리했습니다.</span></p>
+    <p class="goto"><span>이 버전을 만든 과정은 <a href="#process" data-goto="process" data-pv="v2">v2 제작 과정 <span aria-hidden="true">→</span></a>에서 보실 수 있습니다.</span></p>
+  
+</div>
+  </div>
+  <div class="rv" id="rv-v1" hidden>
+    <div class="result">
+    <div class="result-head"><span class="label">첫 시도</span><h2>별이 떨어진 자리</h2></div>
+    <div class="screen">
+      <video controls playsinline preload="none" poster="m/poster_v1.jpg">
+        <source src="m/v1.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="muted meta">1분 3초 · 한국어 나레이션 · 웹툰 그림체를 그대로 살린 첫 시도 영상</p>
+    <p class="goto"><span>이 버전을 만든 과정은 <a href="#process" data-goto="process" data-pv="v1">v1 제작 과정 <span aria-hidden="true">→</span></a>에서 보실 수 있습니다.</span></p>
+    </div>
   </div>
 </section>
 
 <!-- ===================== 제작 과정 ===================== -->
 <section class="view" id="process" role="tabpanel" aria-labelledby="tab-process" hidden>
+  <div class="pvswitch" role="group" aria-label="제작 과정 버전 선택">
+    <button type="button" data-pv="v3" aria-pressed="true"><b>v3</b> 콜드 오픈<span class="t"> 「장미의 미소」</span></button>
+    <button type="button" data-pv="v2" aria-pressed="false"><b>v2</b> 장면 2<span class="t"> 「대장간 앞의 별」</span></button>
+    <button type="button" data-pv="v1" aria-pressed="false"><b>v1</b> 첫 시도<span class="t"> 「별이 떨어진 자리」</span></button>
+  </div>
+
+  <div class="pv" id="pv-v3">
+
+  <div class="prose intro">
+    <p>원작 소설 1~10화(웹툰 1~5화)를 일본어 더빙 TV 애니메이션 1화로 옮기고 있습니다. v3에서는 작품을 여는 <b>콜드 오픈</b>부터 다시 만들었습니다. 1화 본편은 어린 블라드가 빈민가에서 검의 길을 택하는 조용한 이야기라, 시작부터 긴장감을 주기 위해 한참 뒤 웹툰 38화의 전투(성장한 블라드가 혼자 50명을 상대하는 장면)를 맨 앞에 미리 보여 주는 구성으로 바꿨습니다. 같은 건물 「장미의 미소」가 콜드 오픈과 본편을 잇습니다.</p>
+    <div class="cards">
+      <div class="card"><span class="label">원작 범위</span><span class="big">웹툰 38화</span><span class="muted">「장미의 미소」 50인 전투</span></div>
+      <div class="card"><span class="label">길이</span><span class="big">1분 12초</span><span class="muted">콘티 80초 · 37컷 → 편집본 68초 + 검은 화면·타이틀</span></div>
+      <div class="card"><span class="label">대사</span><span class="big">블라드 2줄 + 잔당 외침</span><span class="muted">일본어 · 나레이션 없음</span></div>
+    </div>
+  </div>
+
+  <div class="rail">
+
+  <!-- 1 -->
+  <article class="stage" id="s1">
+    <div class="stage-head"><span class="num">1</span><h2>각색·각본</h2><span class="status ok">완료</span></div>
+    <div class="facts"><span>원작 <b>웹툰 38화(102칸) + 소설 53화</b></span><span>구성 <b>80초 하이라이트 몽타주(A안)</b></span></div>
+    <p class="prose">웹툰 38화 102칸을 비트로 나눈 뒤, 80초 안에 들어가도록 습격 → 포위 → 오라 폭발 → 몽타주(쇠그물·밧줄·궁수) → 정적 → 클로징의 여섯 덩어리로 골랐습니다. 유혈이 노골적인 칸(목 베기)은 실루엣·화면 밖 처리로 바꾸고, 나레이션은 빼고 잔당들의 짧은 외침을 넣었습니다.</p>
+    <div class="script" aria-label="콜드 오픈 대사">
+      <span class="label">대사</span>
+      <div><span class="cut">CO-1</span><p class="line"><b>블라드</b> <span lang="ja">「迷わなくていい。……どうせ全員、斬るから。」</span></p><p class="act">마요와나쿠테 이이. 도-세 젠인, 키루카라. · 고민 안 해도 돼. 어차피 전부 베어버릴 거니까.</p></div>
+      <div><span class="cut">CO-2</span><p class="line"><b>블라드(속마음)</b> <span lang="ja">「続けなくちゃ。……今まで家、貸してやった分は払ってもらわないと。」</span></p><p class="act">츠즈케나쿠챠. 이마마데 이에, 카시테 얏타 분와 하랏테 모라와나이토. · 계속해야지. 그동안 집 빌려준 값은 받아야 하니까.</p></div>
+      <div><span class="cut">잔당</span><p class="line"><span lang="ja">「やれぇっ！」</span> <span class="muted">야레엣! · 내리쳐!</span></p><p class="line"><span lang="ja">「下がるな！囲め！」</span> <span class="muted">사가루나! 카코메! · 물러서지 마! 포위해!</span></p><p class="line"><span lang="ja">「網だ！鉄の網を投げろ！」</span> <span class="muted">아미다! 테츠노 아미오 나게로! · 그물이다! 쇠그물 던져!</span></p><p class="act">외</p></div>
+    </div>
+  </article>
+
+  <!-- 2 -->
+  <article class="stage" id="s2">
+    <div class="stage-head"><span class="num">2</span><h2>콘티</h2><span class="status ok">완료</span></div>
+    <p class="prose">각본을 37컷·80초로 나누고, 컷마다 카메라 움직임(오빗·팔로우·크레인·휩 팬·크래시 줌)과 작화 지시(스매어·잔상·과장 원근)를 적었습니다. 영상 AI가 한 번에 12초씩 만들기 때문에 37컷을 7개 묶음(G1~G7)으로 나눴습니다.</p>
+    <div class="tbl" tabindex="0" aria-label="콜드 오픈 묶음표">
+      <table class="t-stack">
+        <thead><tr><th>묶음</th><th>내용</th><th class="r">컷</th><th class="r">길이</th></tr></thead>
+        <tbody>
+          <tr><td data-l="묶음">G1 습격</td><td data-l="내용">칼날이 쏟아짐 → 푸른 눈 → 회전 베기 → 걸어 나오며 벰</td><td data-l="컷" class="n r">1–5</td><td data-l="길이" class="n r">12초</td></tr>
+          <tr><td data-l="묶음">G2 포위</td><td data-l="내용">원으로 둘러싼 무리 → 망설임 → 「어차피 전부 베어버릴 거니까」</td><td data-l="컷" class="n r">6–10</td><td data-l="길이" class="n r">12초</td></tr>
+          <tr><td data-l="묶음">G3 오라 폭발</td><td data-l="내용">눈이 빛남 → 번쩍 → 무리를 가로지르며 벰</td><td data-l="컷" class="n r">11–16</td><td data-l="길이" class="n r">12초</td></tr>
+          <tr><td data-l="묶음">G4 그물·기둥</td><td data-l="내용">쇠그물 X자 베기 → 기둥 뒤 → 계단 봉쇄 → 밧줄 절단</td><td data-l="컷" class="n r">17–22</td><td data-l="길이" class="n r">11초</td></tr>
+          <tr><td data-l="묶음">G5 위층·화살</td><td data-l="내용">밧줄 타고 솟구침 → 회랑 돌파 → 화살 쳐내기</td><td data-l="컷" class="n r">23–28</td><td data-l="길이" class="n r">11초</td></tr>
+          <tr><td data-l="묶음">G6 정적</td><td data-l="내용">물 마시기 → 물병 깨짐 → 속마음 → 칼</td><td data-l="컷" class="n r">29–33</td><td data-l="길이" class="n r">12초</td></tr>
+          <tr><td data-l="묶음">G7 클로징</td><td data-l="내용">뒤따라 걷기 → 웃는 얼굴</td><td data-l="컷" class="n r">34–35</td><td data-l="길이" class="n r">6초</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="swipe" aria-hidden="true">표는 옆으로 밀어서 보실 수 있습니다 →</p>
+  </article>
+
+  <!-- 3 -->
+  <article class="stage skip" id="s3">
+    <div class="stage-head"><span class="num">3</span><h2>애니매틱</h2><span class="status skip">생략</span></div>
+    <p class="prose">v3에서는 따로 애니매틱을 만들지 않고, 콘티 단계에서 대사를 먼저 녹음해 길이를 재고 컷 길이를 정했습니다. 대신 묶음마다 생성 → 편집을 빠르게 반복하며 박자를 맞췄습니다.</p>
+  </article>
+
+  <!-- 4 -->
+  <article class="stage" id="s4">
+    <div class="stage-head"><span class="num">4</span><h2>디자인(캐릭터)</h2><span class="status ok">완료</span></div>
+    <p class="prose">v2 디자인은 OpenAI 이미지 모델 한 가지로 만들어 선이 굵고 단순한 '일반 TV 애니' 느낌이었습니다. v3에서는 그림체를 더 끌어올리려고 도구를 역할별로 나눴습니다. <b>얼굴과 그림체는 니지저니(Midjourney의 애니 모델, Stylization 600)</b>, <b>전신과 의상은 OpenAI 이미지(GPT)</b>로 만들고, 손가락·망토처럼 틀린 부분은 포토샵으로 고쳤습니다. 그리고 1화 기준 시트(성장 전)와 콜드 오픈판(38화, 성장 후)을 따로 만들었습니다.</p>
+    <figure><img src="m/v3_design_face_compare.jpg" alt="블라드 얼굴 비교: v2, v3 기준 시트, v3 콜드 오픈판" loading="lazy" decoding="async"><figcaption>얼굴 비교 — 왼쪽 v2(GPT 한 가지) · 가운데 v3 기준 시트(니지 얼굴) · 오른쪽 v3 콜드 오픈판(38화). 눈의 반사광, 머리카락 결, 얼굴 그림자가 최신 애니에 가까워졌습니다.</figcaption></figure>
+    <div class="design">
+      <figure class="d-v2"><img src="m/v3_design_v2_blad.jpg" alt="v2 블라드 턴어라운드 시트" loading="lazy" decoding="async"><figcaption>v2 블라드 · 셔츠 차림 턴어라운드</figcaption></figure>
+      <figure><img src="m/v3_design_v3_sheet.jpg" alt="v3 블라드 기준 시트" loading="lazy" decoding="async"><figcaption>v3 블라드 기준 시트(성장 전 · 1화) — 전신 정면·45도·측면·뒷면 + 얼굴 정면·45도</figcaption></figure>
+      <figure><img src="m/v3_design_v3_coldopen.jpg" alt="v3 블라드 콜드 오픈판 시트" loading="lazy" decoding="async"><figcaption>v3 콜드 오픈판(38화) — 피 묻은 망토, 가벼운 갑옷. 영상 AI의 '요소'로 등록해 매 컷 같은 모습을 유지</figcaption></figure>
+    </div>
+    <div class="tbl" tabindex="0" aria-label="v2와 v3 캐릭터 디자인 비교">
+      <table class="t-cmp t-stack">
+        <thead><tr><th></th><th>v2</th><th>v3</th></tr></thead>
+        <tbody>
+          <tr><td data-l=""><b>도구</b></td><td data-l="v2">OpenAI 이미지 한 가지</td><td data-l="v3">니지(얼굴·그림체) + GPT(전신·의상) + 포토샵(손·망토 수정)</td></tr>
+          <tr><td data-l=""><b>그림체</b></td><td data-l="v2">선 굵고 단순한 TV 애니</td><td data-l="v3">섬세한 머리카락 결·눈 반사광, 최신 극장판에 가까운 셀 셰이딩</td></tr>
+          <tr><td data-l=""><b>시트</b></td><td data-l="v2">인물마다 턴어라운드·표정</td><td data-l="v3">기준 시트(성장 전) + 장면판(콜드 오픈 성장 후) 분리</td></tr>
+          <tr><td data-l=""><b>영상 AI에 넣는 법</b></td><td data-l="v2">디자인 시트 그림을 참조로</td><td data-l="v3">Dreamina <b>요소</b>로 등록(정면·45도·측면·뒷면 4장)해 프롬프트에서 @이름으로 호출</td></tr>
+          <tr><td data-l=""><b>군중(잭의 부하 50명)</b></td><td data-l="v2">—</td><td data-l="v3">에셋을 만들지 않고 프롬프트 묘사로 생성</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="swipe" aria-hidden="true">표는 옆으로 밀어서 보실 수 있습니다 →</p>
+  </article>
+
+  <!-- 5 -->
+  <article class="stage" id="s5">
+    <div class="stage-head"><span class="num">5</span><h2>영상 생성</h2><span class="status ok">완료</span></div>
+    <div class="facts"><span>도구 <b>Dreamina · Seedance 2.5</b></span><span><b>720p · 24fps</b></span><span>저장한 테이크 <b>20개(약 3분 47초)</b>, 버린 시험 생성 별도</span></div>
+    <p class="prose">v2에서는 컷마다 길이·샷·카메라·동작을 자세히 적었습니다. v3에서 같은 방식으로 액션을 하나하나 지정해 보니(예: 점프, 앞구르기, 지그재그) 오히려 작화가 뻣뻣해졌습니다. 그래서 <b>장면의 큰 흐름(무엇이 일어나는지)과 움직임·카메라의 성격만 적고, 구체적인 동작은 영상 AI에 맡기는 '자유 연출' 방식</b>으로 바꿨습니다. 그 결과 캐릭터 움직임이 훨씬 자연스럽고 작화가 좋아졌습니다. 피하고 싶은 것은 동작을 대신 지시하지 않고 '제외' 목록으로만 막았습니다.</p>
+    <div class="pair">
+      <figure><video src="m/v3_seedance_raw.mp4" controls playsinline preload="metadata"></video><figcaption>Seedance가 만든 G3 원본 한 테이크(12초, 소리 뺌). 이렇게 나온 결과 중 쓸 구간만 골라 다음 단계에서 편집합니다.</figcaption></figure>
+      <div class="script" aria-label="프롬프트 일부">
+        <span class="label">프롬프트 일부(한국어 번역)</span>
+        <p><b>요소</b> @Vlad_ColdOpen = 블라드(짧은 금발, 맨머리, 가벼운 갑옷, 어깨에서 늘어진 긴 망토) · @Sword_Blacksmith = 대장장이의 검</p>
+        <p><b>장면</b> 밤, 갱단 건물의 넓고 어둑한 목조 로비, 차가운 푸른 달빛, 옅은 안개. 깡패 약 50명이 홀을 가득 메움.</p>
+        <p><b>연출</b> 블라드는 한 자리에 머물지 않는다. 카메라는 크고 빠르게 그를 쫓고, 거리가 계속 바뀐다. 액션은 짧은 샷들로.</p>
+        <p><b>비트</b> [3–8초] 블라드가 홀 끝에서 끝까지 무리 전체를 질주해 뚫고 지나가며 깡패들을 쓰러뜨린다.</p>
+        <p><b>제외</b> 머리를 덮는 것, 일렁이거나 녹아내리는 얼굴, 바닥 자국, 빛나는 눈·광원 효과, 자막</p>
+      </div>
+    </div>
+    <p class="note">빛 효과(눈 발광·오라·섬광)는 생성 단계에서 모두 금지하고 보정 단계에서 직접 넣었습니다. 영상 AI가 그린 빛은 모양과 위치를 고칠 수 없기 때문입니다.</p>
+  </article>
+
+  <!-- 6 -->
+  <article class="stage" id="s6">
+    <div class="stage-head"><span class="num">6</span><h2>편집(컷 리듬)</h2><span class="status ok">완료</span></div>
+    <p class="prose">묶음마다 2~3개씩 뽑은 테이크에서 좋은 구간만 골라 섞었습니다(예: G3는 서로 다른 세 테이크를 7조각으로 이음). 묶음과 묶음 사이는 디졸브 없이 <b>하드컷</b>으로만 잇고, 어색한 곳은 같은 자세·같은 방향의 프레임을 찾아 붙이거나, 시선 → 대상 → 시선 순서로 바꾸거나, 짧은 인서트(물병 클로즈업)를 새로 만들어 넣었습니다.</p>
+    <div class="cards">
+      <div class="card"><span class="label">길이</span><span class="big mono">68초 → 72초</span><span class="muted">보정 때 오라 폭발·그물 베기 장면을 늘려 3.3초 추가</span></div>
+      <div class="card"><span class="label">컷 수</span><span class="big mono">약 45컷</span><span class="muted">평균 약 1.5초</span></div>
+      <div class="card"><span class="label">원칙</span><span class="big">하드컷만</span><span class="muted">디졸브·페이드 없음, 정지된 꼬리는 자름</span></div>
+    </div>
+  </article>
+
+  <!-- 7 -->
+  <article class="stage" id="s7">
+    <div class="stage-head"><span class="num">7</span><h2>보정</h2><span class="status skip">드롭</span></div>
+    <p class="prose">보정은 세 개의 작업 방(G1–G2, G3–G4, G5–G7)으로 나눠 동시에 진행했습니다. 먼저 중앙에서 모든 방이 같이 쓸 <b>기본 톤(달빛 하나, 채도 유지)</b>과 <b>오라의 모양</b>을 정하고, 각 방은 자기 구간만 맡았습니다. 오라는 Fate(ufotable)식 촬영 처리를 기준으로, 칼은 그대로 두고 빛 안개·번짐·몸에 떨어지는 빛으로 표현했습니다. 달리는 블라드에게만 오라를 입히기 위해 AI 인물 분할(SAM2·YOLO)로 프레임마다 몸과 앞을 지나가는 적을 구분했습니다.</p>
+    <div class="compare" style="--pos:50%">
+      <img src="m/v3_before_aura.jpg" alt="보정 전 G3 오라 폭발" class="before">
+      <img src="m/v3_after_aura.jpg" alt="보정 후 G3 오라 폭발" class="after">
+      <span class="bar" aria-hidden="true"></span>
+      <span class="knob" aria-hidden="true">⟷</span>
+      <span class="tagl">보정 전</span><span class="tagr">보정 후</span>
+      <input type="range" id="cmp" min="0" max="100" value="50" aria-label="보정 전후 비교 위치">
+    </div>
+    <p class="muted" style="font-size:13px">가운데 선을 좌우로 밀어 비교해 보세요. (G3 오라 폭발)</p>
+    <p class="note">v3는 보정 단계에서 멈췄습니다(드롭). 미완성이라 오라를 비롯한 보정 퀄리티가 아직 부족하고, 아래 v4에서 영상을 다시 만들기로 했습니다.</p>
+    <div class="bas">
+      <figure><div class="ba"><span><img src="m/v3_before_strike.jpg" alt="보정 전" loading="lazy" decoding="async"><i>전</i></span><span><img src="m/v3_after_strike.jpg" alt="보정 후" loading="lazy" decoding="async"><i>후</i></span></div><figcaption>G1 첫 타격(히트스톱·섬광)</figcaption></figure>
+      <figure><div class="ba"><span><img src="m/v3_before_xslash.jpg" alt="보정 전" loading="lazy" decoding="async"><i>전</i></span><span><img src="m/v3_after_xslash.jpg" alt="보정 후" loading="lazy" decoding="async"><i>후</i></span></div><figcaption>G4 쇠그물 X자 빛 검로</figcaption></figure>
+      <figure><div class="ba"><span><img src="m/v3_before_rope.jpg" alt="보정 전" loading="lazy" decoding="async"><i>전</i></span><span><img src="m/v3_after_rope.jpg" alt="보정 후" loading="lazy" decoding="async"><i>후</i></span></div><figcaption>G4 밧줄 클로즈업 칼 오라</figcaption></figure>
+      <figure><div class="ba"><span><img src="m/v3_before_eye.jpg" alt="보정 전" loading="lazy" decoding="async"><i>전</i></span><span><img src="m/v3_after_eye.jpg" alt="보정 후" loading="lazy" decoding="async"><i>후</i></span></div><figcaption>G7 웃는 얼굴 눈빛</figcaption></figure>
+    </div>
+    <div class="cards">
+      <div class="card"><span class="label">공통 톤</span><span class="big">달빛 하나</span><span class="muted">채도 1.15 · 그림자만 청색</span></div>
+      <div class="card"><span class="label">오라</span><span class="big">Fate 촬영식</span><span class="muted">몸 빛 안개 + 칼 빛 + 눈빛</span></div>
+      <div class="card"><span class="label">금지</span><span class="big">불티·입김·별 문양</span><span class="muted">단색 띠 오라·고르게 뿌린 입자</span></div>
+    </div>
+  </article>
+
+  <!-- 8 -->
+  <article class="stage wip" id="s8">
+    <div class="stage-head"><span class="num">8</span><h2>오디오</h2><span class="status wip">보류</span></div>
+    <p class="prose">v3에서는 소리를 그림이 확정된 뒤 장면 전체를 한 번에 작업하기로 했습니다. 영상 AI가 "효과음 없이"라고 해도 효과음을 계속 섞어 넣어, 대사만 따로 쓰기 어려웠기 때문입니다. 대사는 Dreamina의 AI 오디오(SeedAudio)로 목소리만 만든 뒤 입 모양 프레임에 맞춰 배치하는 방식을 시험해 두었고, 효과음은 원본 소리 분리 또는 영상 맞춤 효과음 AI(Mirelo)를 쓸 계획입니다. 다만 <a href="#versions" data-goto="versions">v4</a>에서 영상을 다시 만들기로 해서, 소리는 v4 그림이 확정된 뒤 작업합니다.</p>
+  </article>
+
+  </div>
+  </div>
+
+  <div class="pv" id="pv-v2" hidden>
+  <p class="pv-note muted">v2 때(2026.10.21 기준)의 제작 과정을 그대로 남겨 두었습니다.</p>
+
 
   <div class="prose intro">
     <p>원작 소설 1~10화(웹툰 1~5화)를 일본어 더빙 TV 애니메이션 1화(약 20분)로 옮기고 있습니다. 총 12화 완결을 목표로 하고, 유튜브에 공개할 계획입니다. 이 페이지는 두 번째 장면 「대장간 앞의 별」을 따라가며, 각색부터 소리 작업까지 어떤 순서와 도구로 만들고 있는지 보여 드립니다.</p>
@@ -309,7 +542,7 @@ footer .star-mark{color:var(--star);flex:none}
   <div class="rail">
 
   <!-- 1 -->
-  <article class="stage" id="s1">
+  <article class="stage" id="v2s1">
     <div class="stage-head"><span class="num">1</span><h2>각색·각본</h2><span class="status ok">완료</span></div>
     <div class="facts"><span>원작 범위 <b>소설 1~10화 = 웹툰 1~5화</b></span><span>1화 <b>266컷 · 콘티 14분 21초 → 영상 약 20분 예상</b></span><span>장면 2 <b>22컷 · 1분 38.5초</b>(콘티 기준)</span></div>
     <div class="prose" style="display:grid;gap:10px">
@@ -332,7 +565,7 @@ footer .star-mark{color:var(--star);flex:none}
   </article>
 
   <!-- 2 -->
-  <article class="stage" id="s2">
+  <article class="stage" id="v2s2">
     <div class="stage-head"><span class="num">2</span><h2>콘티</h2><span class="status ok">완료</span></div>
     <p class="prose">각본을 컷 단위로 나눠 길이, 샷 크기, 카메라, 원작의 어느 칸에서 왔는지를 적었습니다. 콘티는 8번 고쳐 v8이 최종입니다. 아래는 장면 2 부분입니다.</p>
     <div class="tbl" tabindex="0" aria-label="장면 2 콘티표">
@@ -368,7 +601,7 @@ footer .star-mark{color:var(--star);flex:none}
   </article>
 
   <!-- 3 -->
-  <article class="stage" id="s3">
+  <article class="stage" id="v2s3">
     <div class="stage-head"><span class="num">3</span><h2>애니매틱</h2><span class="status ok">완료</span></div>
     <p class="prose">콘티의 컷을 한 장씩 그림으로 만들고, 더빙 대사와 함께 이어 붙여 영상의 박자를 미리 확인했습니다. 처음에는 스케치로, 최종본(v6)은 컷마다 원작 장면을 바탕으로 다시 그린 그림으로 만들었습니다. 실제 영상은 이 박자를 기준으로 만듭니다.</p>
     <figure>
@@ -379,7 +612,7 @@ footer .star-mark{color:var(--star);flex:none}
   </article>
 
   <!-- 4 -->
-  <article class="stage" id="s4">
+  <article class="stage" id="v2s4">
     <div class="stage-head"><span class="num">4</span><h2>디자인(캐릭터·장소·소품)</h2><span class="status ok">완료</span></div>
     <div class="prose" style="display:grid;gap:10px">
       <p>영상 AI가 인물을 매 컷 똑같이 그리도록, 기준이 되는 디자인 시트를 먼저 만들었습니다. 외형과 복장은 웹툰 그대로 가져오고, 그림체는 일본 TV 애니메이션의 셀 셰이딩(얇은 선, 두 단계 그림자)으로 맞췄습니다.</p>
@@ -396,7 +629,7 @@ footer .star-mark{color:var(--star);flex:none}
   </article>
 
   <!-- 5 -->
-  <article class="stage" id="s5">
+  <article class="stage" id="v2s5">
     <div class="stage-head"><span class="num">5</span><h2>영상 생성</h2><span class="status ok">완료</span></div>
     <div class="facts"><span>도구 <b>Dreamina · Seedance 2.5</b></span><span><b>720p · 24fps</b></span><span>장면 2 프롬프트 <b>37개 버전</b></span></div>
     <div class="prose" style="display:grid;gap:10px">
@@ -420,7 +653,7 @@ footer .star-mark{color:var(--star);flex:none}
   </article>
 
   <!-- 6 -->
-  <article class="stage" id="s6">
+  <article class="stage" id="v2s6">
     <div class="stage-head"><span class="num">6</span><h2>편집(컷 리듬)</h2><span class="status ok">완료</span></div>
     <div class="prose" style="display:grid;gap:10px">
       <p>생성된 컷을 이어 붙인 뒤, 컷 길이와 전환 시점을 TV 애니메이션의 편집 규칙에 맞게 점검했습니다. 한 컷이 대사로 10초씩 이어지던 곳에는 듣는 사람의 반응 컷을 숨 쉬는 지점에 넣고, 긴 투샷은 확대해 네 컷으로 나눴습니다.</p>
@@ -433,7 +666,7 @@ footer .star-mark{color:var(--star);flex:none}
   </article>
 
   <!-- 7 -->
-  <article class="stage" id="s7">
+  <article class="stage" id="v2s7">
     <div class="stage-head"><span class="num">7</span><h2>보정</h2><span class="status ok">완료</span></div>
     <p class="prose">색과 빛을 한 번에 바꾸지 않고 단계를 나눠 쌓았습니다. 밤의 기본 톤을 잡고, 대장간 화로 불빛이 컷마다 실제 문·아치 위치에서 들어오게 하고, 회상 장면은 차갑게 구분했습니다. 화면을 어둡게 누르기보다 채도를 살리는 쪽으로 맞췄습니다.</p>
     <div class="compare" style="--pos:50%">
@@ -442,7 +675,7 @@ footer .star-mark{color:var(--star);flex:none}
       <span class="bar" aria-hidden="true"></span>
       <span class="knob" aria-hidden="true">⟷</span>
       <span class="tagl">보정 전</span><span class="tagr">보정 후</span>
-      <input type="range" id="cmp" min="0" max="100" value="50" aria-label="보정 전후 비교 위치">
+      <input type="range" id="cmp2" min="0" max="100" value="50" aria-label="보정 전후 비교 위치">
     </div>
     <p class="muted" style="font-size:13px">가운데 선을 좌우로 밀어 비교해 보세요. (컷 2-08)</p>
     <div class="strip">
@@ -457,7 +690,7 @@ footer .star-mark{color:var(--star);flex:none}
   </article>
 
   <!-- 8 -->
-  <article class="stage wip" id="s8">
+  <article class="stage wip" id="v2s8">
     <div class="stage-head"><span class="num">8</span><h2>오디오</h2><span class="status wip">진행 중</span></div>
     <div class="prose" style="display:grid;gap:10px">
       <p>더빙은 일본어로 하고, 한국어 자막을 함께 붙입니다. 일본에서 만들어진 애니메이션이 많은 만큼 AI가 참고할 수 있는 연기 톤과 목소리 데이터도 다양해서, 더 사람답고 더 만화다운 연기를 끌어낼 수 있다고 봤습니다. 제 개인적인 취향도 조금 들어가 있습니다.</p>
@@ -476,6 +709,51 @@ footer .star-mark{color:var(--star);flex:none}
     <p class="note">제미나 「찍혀서 교회에라도 끌려가면 어쩔 생각이야?」(컷 2-05d) — ②와 ③은 대사가 끝난 뒤 뒤쪽 1~2초를 들어 보시면 차이가 잘 들립니다.</p>
   </article>
 
+  </div>
+  </div>
+  <div class="pv" id="pv-v1" hidden>
+  <p class="pv-note muted">v1 때(2026.10.9~10)의 작업 파일을 바탕으로 정리한 과정입니다.</p>
+  <div class="prose intro">
+    <p>v1은 웹툰 1화의 그림을 거의 그대로 살려, 웹툰을 바로 애니메이션으로 옮겨 본 첫 시도입니다. 웹툰 1화 12칸으로 1분 남짓한 오프닝 장면 「별이 떨어진 자리」를 만들었고, 하루 정도 걸렸습니다.</p>
+    <div class="cards">
+      <div class="card"><span class="label">원작 범위</span><span class="big">웹툰 1화 12칸</span><span class="muted">원작에 없는 장면 3개는 새 그림</span></div>
+      <div class="card"><span class="label">길이</span><span class="big">1분 3초</span><span class="muted">15컷 · 한국어 나레이션</span></div>
+      <div class="card"><span class="label">작업 기간</span><span class="big">약 하루</span><span class="muted">2026.10.9 저녁 ~ 10.10 오후</span></div>
+    </div>
+  </div>
+
+  <div class="rail">
+
+  <article class="stage" id="v1s1">
+    <div class="stage-head"><span class="num">1</span><h2>콘티</h2><span class="status ok">완료</span></div>
+    <div class="facts"><span>컷 <b>15컷(S1~S15)</b></span><span>계획 길이 <b>약 1분 10초</b></span></div>
+    <p class="prose">웹툰 1화의 칸을 순서대로 15컷에 배정하고, 컷마다 시작 시간을 정했습니다. 원작에 없는 동작 세 가지(잔해 밖으로 솟는 손, 잔해를 밀어내며 빠져나오는 상체, 쓰레기 속 검 손잡이를 움켜쥐는 손)는 새 그림이 필요한 컷으로 표시했습니다. 중간에 제목 로고 컷(S10)을 넣었습니다.</p>
+  </article>
+
+  <article class="stage" id="v1s2">
+    <div class="stage-head"><span class="num">2</span><h2>화면 배치</h2><span class="status ok">완료</span></div>
+    <p class="prose">웹툰은 세로로 긴 그림이라 16:9 화면에 그대로 들어가지 않습니다. 세로로 긴 칸(밤하늘, 마을, 검)은 화면을 위아래로 훑는 <b>세로 팬</b>으로 보여 주고, 나머지는 칸을 화면 안에 배치한 뒤 빈 곳을 채웠습니다. 일부 컷은 1920×1080으로 넓힌 배경(밤하늘, 하늘, 골목)을 따로 만들었습니다.</p>
+  </article>
+
+  <article class="stage" id="v1s3">
+    <div class="stage-head"><span class="num">3</span><h2>영상 생성</h2><span class="status ok">완료</span></div>
+    <div class="facts"><span>생성한 컷 <b>12개 · 한 컷 4~6초</b></span><span>나머지 <b>세로 팬·정지 화면</b></span></div>
+    <p class="prose">칸 그림(또는 새 그림)을 시작 화면으로 넣어 한 컷씩 4~6초 영상으로 만들었습니다. 손이 솟는 컷(S3)은 시작 그림과 끝 그림을 함께 넣어 움직임의 처음과 끝을 정했습니다.</p>
+    <figure><video src="m/v1_clip_s03.mp4" controls playsinline preload="none" poster="m/v1_clip_s03.jpg"></video><figcaption>컷 S3 원본(5초, 소리 뺌) — 원작에 없어 새로 그린 장면을 영상으로 만든 컷입니다.</figcaption></figure>
+  </article>
+
+  <article class="stage" id="v1s4">
+    <div class="stage-head"><span class="num">4</span><h2>편집·소리·색보정</h2><span class="status ok">완료</span></div>
+    <p class="prose">생성한 컷을 이어 붙인 러프컷을 <b>11번</b> 고쳐 최종본을 만들었습니다. 6번째에 효과음, 7번째에 음악, 10번째에 색보정, 11번째에 목소리를 넣었습니다.</p>
+    <div class="cards">
+      <div class="card"><span class="label">러프컷</span><span class="big mono">v1 → v11</span><span class="muted">1분 1~6초 사이에서 조정 → 최종 1분 3초</span></div>
+      <div class="card"><span class="label">목소리</span><span class="big">나레이션 2줄</span><span class="muted">+ 블라드 숨소리·대사, 제미나 "또또또"</span></div>
+      <div class="card"><span class="label">효과음</span><span class="big">7가지</span><span class="muted">잔해, 땅 울림, 눈 밟는 소리, 겨울바람, 마을 웅성임, 주먹 쥐는 소리, 제목 빛</span></div>
+    </div>
+    <p class="note">음악: Scott Buckley 「The Great Sea」, HarumachiMusic 「Wandering Travelers」</p>
+  </article>
+
+  </div>
   </div>
 </section>
 
@@ -514,6 +792,25 @@ footer .star-mark{color:var(--star);flex:none}
       <div class="card"><span class="label">장면 2에 쓴 크레딧</span><span class="big mono">약 3,000</span><span class="muted">약 2분 40초 분량</span></div>
     </div>
     <p class="prose">방법이 자리를 잡을수록 같은 크레딧으로 더 좋은 결과를 얻고 있어, 앞으로는 더 적은 크레딧으로 장면을 만들 수 있을 것으로 봅니다. 다만 좋은 컷을 얻으려면 그 장면에 여러 번 뽑아 고르는 크레딧을 충분히 써야 한다는 점은 변하지 않습니다.</p>
+
+    <h3 style="margin-top:16px">v3에서 새로 쓴 것</h3>
+    <div class="tbl" tabindex="0" aria-label="v3에서 새로 쓴 도구">
+      <table class="t-stack">
+        <thead><tr><th>도구</th><th>v3에서 한 일</th><th>비용</th></tr></thead>
+        <tbody>
+          <tr><td data-l="도구">니지저니(Midjourney Pro, 기존 결제)</td><td data-l="한 일">블라드 얼굴·그림체</td><td data-l="비용">기존 구독 안에서</td></tr>
+          <tr><td data-l="도구">Dreamina 요소(Elements)</td><td data-l="한 일">캐릭터·검을 등록해 @로 호출</td><td data-l="비용">Ultra 구독 안에서</td></tr>
+          <tr><td data-l="도구">Dreamina SeedAudio</td><td data-l="한 일">대사 목소리 소스 시험</td><td data-l="비용" class="n">1회 17크레딧</td></tr>
+          <tr><td data-l="도구">SAM2 · YOLO(오픈소스)</td><td data-l="한 일">보정 때 인물 분할</td><td data-l="비용">무료(클라우드 작업 공간에서 실행)</td></tr>
+          <tr><td data-l="도구">ffmpeg · Python</td><td data-l="한 일">편집·보정 전부</td><td data-l="비용">무료</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="swipe" aria-hidden="true">표는 옆으로 밀어서 보실 수 있습니다 →</p>
+    <div class="cards">
+      <div class="card"><span class="label">콜드 오픈 저장 테이크</span><span class="big mono">약 227초</span><span class="muted">20개(720p)</span></div>
+      <div class="card"><span class="label">콜드 오픈에 쓴 크레딧(추정)</span><span class="big mono">약 8,400 이상</span><span class="muted">720p 1초 약 37크레딧 × 저장 테이크. 버린 시험 생성과 480p 초안은 빠져 있어 실제로는 더 많음</span></div>
+    </div>
   </div>
 </section>
 
@@ -522,6 +819,20 @@ footer .star-mark{color:var(--star);flex:none}
   <div class="stage">
     <div class="section-head"><span class="label">Trial &amp; Error</span><h2>시행착오</h2></div>
     <p class="prose">잘 안 된 것과 그래서 바꾼 것을 순서대로 적었습니다. 지금 방식은 대부분 이 과정에서 정해졌습니다.</p>
+    <h3 class="trial-sub">v3 콜드 오픈</h3>
+    <div class="trial">
+      <article><span class="when">영상</span><h3>액션을 자세히 지시하면 작화가 나빠짐</h3><p>점프·앞구르기·지그재그 같은 동작을 컷마다 정하자 움직임이 뻣뻣해졌습니다. 큰 흐름만 주고 동작은 영상 AI에 맡기자 훨씬 좋아졌습니다.</p></article>
+      <article><span class="when">영상</span><h3>'하지 마라'고 쓴 단어가 오히려 나옴</h3><p>"후드를 내려라"를 여러 번 쓰자 세 테이크 연속 후드를 썼고, "사슬"을 쓰자 샹들리에 대신 사슬을 잡았고, "네 조각으로 잘린다"는 그물이 깨지듯 부서지게 했습니다. 피하고 싶은 것은 단어 자체를 빼고 원하는 상태만 적었습니다.</p></article>
+      <article><span class="when">영상</span><h3>빛 효과는 생성에서 금지</h3><p>레이저 같은 눈, 이상한 오라, 시계 모양으로 쓰러진 사람들이 나왔습니다. 빛은 보정에서 직접 넣기로 했습니다.</p></article>
+      <article><span class="when">영상</span><h3>"수십 명"이라 쓰면 10명만</h3><p>"약 50명이 홀을 가득 메운 큰 무리"로 적어야 인원이 찼습니다.</p></article>
+      <article><span class="when">영상</span><h3>검열 오류</h3><p>피·쓰러진 사람이 정지 화면에 오래 보이는 장면은 "부적절한 콘텐츠"로 막혔습니다. 피를 빼고 쓰러진 잔당을 '신음하며 꿈틀대는' 모습으로 바꿔 통과했습니다.</p></article>
+      <article><span class="when">영상</span><h3>칼이 두 자루</h3><p>요소 그림 속 허리 칼집 때문에 손의 칼과 허리 칼이 같이 나왔습니다. "유일한 칼, 처음부터 끝까지 오른손"을 상태로 적었습니다.</p></article>
+      <article><span class="when">편집</span><h3>묶음 사이 연결이 부자연스러움</h3><p>묶음마다 따로 생각해 콘티를 짜서 G와 G 사이가 자주 튀었습니다. 같은 자세 프레임 찾기, 순서 바꾸기, 인서트 새로 만들기로 메웠지만 근본 해결은 v4 과제입니다.</p></article>
+      <article><span class="when">오디오</span><h3>효과음 제어 불가</h3><p>영상 AI가 효과음을 계속 넣어 대사만 뽑기 어려웠고, AI 오디오로 효과음을 새로 만들면 그림과 타이밍이 안 맞았습니다.</p></article>
+      <article><span class="when">보정</span><h3>오라 1차 불합격</h3><p>처음 만든 오라는 "그림판으로 그린 것 같고 입자가 날파리 같다"는 평가를 받았습니다. Fate(ufotable) 촬영식으로 바꿔 통과했습니다.</p></article>
+      <article><span class="when">보정</span><h3>달리는 몸에 오라가 어긋남</h3><p>손으로 찍은 윤곽은 몸과 어긋나고 앞을 지나가는 적 위에도 비쳤습니다. AI 인물 분할로 프레임마다 몸을 잡아 해결했습니다.</p></article>
+    </div>
+    <h3 class="trial-sub">v2 때 <span class="muted">장면 2 「대장간 앞의 별」</span></h3>
     <div class="trial">
       <article><span class="when">콘티</span><h3>콘티 8번, 애니매틱 6번 수정</h3><p>처음에는 5분 시연 영상으로 짰다가, 길이를 고정하면 연출이 상한다고 보고 한 화 분량으로 다시 짰습니다. 장면 7은 원작 4화 격전을 거의 그대로 살리도록 15컷을 지우고 45컷으로 새로 구성했습니다.</p></article>
       <article><span class="when">디자인</span><h3>이미지 도구를 세 번 바꿈</h3><p>ChatGPT 화면에서 만들다가 파일 업로드 제한에 막혔고, Midjourney는 결제했지만 거의 쓰지 못했습니다(환불 거절). 결국 OpenAI 이미지 API로 시트 62장을 한 번에 만들고, 같은 시트를 두 모델로 뽑아 비교해 골랐습니다.</p></article>
@@ -541,7 +852,7 @@ footer .star-mark{color:var(--star);flex:none}
 <section class="view" id="versions" role="tabpanel" aria-labelledby="tab-versions" hidden>
   <div class="stage">
     <div class="section-head"><span class="label">Versions</span><h2>버전 변화</h2></div>
-    <p class="prose">같은 작품을 지금까지 세 번 새로 시작했습니다. 버전마다 무엇을 시도했고, 무엇이 부족해서 다시 만들기로 했는지 순서대로 적었습니다.</p>
+    <p class="prose">같은 작품을 지금까지 네 번 새로 시작했습니다. 버전마다 무엇을 시도했고, 무엇이 부족해서 다시 만들기로 했는지 순서대로 적었습니다.</p>
     <div class="vers">
 
       <article class="ver" id="v1">
@@ -552,7 +863,7 @@ footer .star-mark{color:var(--star);flex:none}
               <source src="m/v1.mp4" type="video/mp4">
             </video>
           </div>
-          <p class="muted meta" style="margin-top:10px">1분 3초 · 한국어 나레이션 · 첫 시도 영상</p>
+          <p class="muted meta" style="margin-top:10px">1분 3초 · 한국어 나레이션 · 첫 시도 영상. 이 버전의 <a href="#process" data-goto="process" data-pv="v1">제작 과정</a>도 볼 수 있습니다.</p>
         </div>
         <div class="txt">
           <div><h4>시도</h4><p>웹툰의 그림체를 그대로 살려서, 웹툰을 바로 애니메이션으로 만들었습니다.</p></div>
@@ -567,10 +878,10 @@ footer .star-mark{color:var(--star);flex:none}
           <div class="screen">
             <video controls playsinline preload="none" poster="m/poster.jpg">
               <source src="m/result.mp4" type="video/mp4">
-              <track id="subtrack2" kind="subtitles" srclang="ko" label="한국어" default>
+              <track class="subko" kind="subtitles" srclang="ko" label="한국어" default>
             </video>
           </div>
-          <p class="muted meta" style="margin-top:10px">2분 24초 · 일본어 더빙 · 한국어 자막. 이 페이지의 <a href="#process" data-goto="process">제작 과정</a>이 이 버전입니다.</p>
+          <p class="muted meta" style="margin-top:10px">2분 24초 · 일본어 더빙 · 한국어 자막 · 보정 완료본. 이 버전의 <a href="#process" data-goto="process" data-pv="v2">제작 과정</a>도 볼 수 있습니다.</p>
         </div>
         <div class="txt">
           <div><h4>시도</h4><p>다른 애니메이션의 그림체를 참고해 캐릭터를 애니메이션에 맞게 다시 그렸습니다. 그리고 애니메이션 회사가 작품을 만들 때처럼 각색·각본, 콘티, 애니매틱 과정을 거쳐 만들었습니다.</p></div>
@@ -580,13 +891,35 @@ footer .star-mark{color:var(--star);flex:none}
       </article>
 
       <article class="ver" id="v3">
-        <div class="ver-head"><span class="v">v3</span><h3>컷 리듬과 더빙 길이부터</h3><span class="status wip">제작 중</span><span class="when">2026.10 · 콜드 오픈</span></div>
+        <div class="ver-head"><span class="v">v3</span><h3>컷 리듬과 더빙 길이부터</h3><span class="status skip">보정 단계에서 드롭</span><span class="when">2026.10 · 콜드 오픈 「장미의 미소」</span></div>
         <div>
-          <div class="soon" role="img" aria-label="v3 영상 제작 중"><span class="star-mark" aria-hidden="true"></span><b>콜드 오픈 제작 중</b><span>완성되면 이 자리에 영상을 올립니다.</span></div>
+          <div class="screen">
+            <video controls playsinline preload="none" poster="m/v3_poster.jpg">
+              <source src="m/v3_result.mp4" type="video/mp4">
+            </video>
+          </div>
+          <p class="muted meta" style="margin-top:10px">1분 12초 · 무음 · 보정 도중 멈춘 미완성본. 이 페이지의 <a href="#process" data-goto="process" data-pv="v3">제작 과정</a>이 이 버전입니다.</p>
         </div>
         <div class="txt">
           <div><h4>시도</h4><p>처음부터 컷 리듬과 더빙 길이를 생각해서 콘티를 만들고 시작합니다. 그림체도 일반적인 애니메이션보다 더 좋게 바꿔, 호평받는 최신 애니메이션과 비슷하거나 그 이상의 퀄리티를 내 보려고 합니다.</p></div>
-          <div class="why"><h4>지금</h4><p>작품의 첫 장면인 콜드 오픈을 만들고 있습니다.</p></div>
+          <div><h4>한 것</h4><p>콜드 오픈(웹툰 38화 50인 전투) 1분 12초를 콘티 → 디자인 → 생성 → 편집까지 마치고, 보정 도중 멈췄습니다(드롭). 그래서 오라 등 보정 퀄리티는 아직 부족합니다. 캐릭터를 니지(얼굴)+GPT(전신)로 다시 그렸고, 동작은 영상 AI에 맡기는 자유 연출로 작화가 크게 좋아졌습니다.</p></div>
+          <div class="why"><h4>아쉬운 점</h4><ol class="plain">
+            <li>묶음(G)과 묶음 사이 연결이 부드럽지 못했습니다. 콘티를 짤 때 G1, G2 … 각각만 생각하고, G1에서 G2로 어떻게 자연스럽게 넘어갈지 설계하지 않아 이음매가 자주 튀었습니다.</li>
+            <li>작화는 좋았지만 카메라가 너무 정적이었습니다. 카메라 움직임은 아무리 여러 번 뽑아도 화려해지지 않았습니다.</li>
+            <li>액션 연출에 비해 컷 리듬이 느렸습니다.</li>
+          </ol></div>
+        </div>
+        <p class="next"><span aria-hidden="true">↓</span><span>그래서 v4는 좋은 액션 장면을 프레임 단위로 먼저 분석하고, 묶음 사이 연결과 카메라·컷 리듬까지 설계한 뒤 만들기로 했습니다.</span></p>
+      </article>
+
+      <article class="ver" id="v4">
+        <div class="ver-head"><span class="v">v4</span><h3>액션 연출을 프레임 단위로</h3><span class="status wip">준비 중</span><span class="when">2026.10</span></div>
+        <div>
+          <div class="soon" role="img" aria-label="v4 영상 준비 중"><span class="star-mark" aria-hidden="true"></span><b>준비 중</b><span>완성되면 이 자리에 영상을 올립니다.</span></div>
+        </div>
+        <div class="txt">
+          <div><h4>시도</h4><p>호평받은 TV 애니(나 혼자만 레벨업 2기 전투 장면)를 프레임 단위로 분석해 컷 길이, 카메라 움직임, 구도, 임팩트 연출을 수치로 정리하고, 그 기준으로 콘티를 다시 짭니다. 묶음 사이는 처음부터 '어떻게 넘어갈지'를 콘티에 함께 적고, 카메라가 크게 움직이는 컷은 영상 AI에 맡기지 않고 따로 설계합니다.</p></div>
+          <div class="why"><h4>지금</h4><p>참고 장면 분석 중입니다. 보정과 음향은 작화·연출·카메라·컷 리듬이 완성된 뒤에 다시 합니다.</p></div>
         </div>
       </article>
 
@@ -602,8 +935,7 @@ footer .star-mark{color:var(--star);flex:none}
 <script>
 (function(){
   var vtt="WEBVTT\n\n1\n00:00:00.542 --> 00:00:03.208\n또또또. 정신 못 차리고 있네.\n\n2\n00:00:03.875 --> 00:00:06.250\n…방해할 거면 좀 꺼져.\n\n3\n00:00:09.458 --> 00:00:13.167\n…그래서, 아직도 막대기 같은 것만\n붙잡으면 목소리가 들려?\n\n4\n00:00:20.500 --> 00:00:22.292\n<i>검은 벼락이래…</i>\n\n5\n00:00:22.458 --> 00:00:24.458\n<i>악마에 붙들린 거야…</i>\n\n6\n00:00:26.708 --> 00:00:31.708\n하필이면 검은색 벼락을 맞아서는…\n다들 뒤에서 수군거려.\n\n7\n00:00:32.000 --> 00:00:36.667\n주교가 사특한 징조만 보이면\n툭하면 화형시키는 거 알잖아.\n\n8\n00:00:36.958 --> 00:00:40.667\n찍혀서 교회에라도 끌려가면\n어쩔 생각이야?\n\n9\n00:00:42.583 --> 00:00:46.250\n…검 좀 본다고 안 끌려가.\n\n10\n00:00:46.333 --> 00:00:48.458\n진짜 답답하네!\n\n11\n00:00:48.542 --> 00:00:50.458\n그냥 외상으로 확 사 버려!\n\n12\n00:00:50.542 --> 00:00:52.167\n저게 얼만데!\n\n13\n00:00:53.792 --> 00:00:55.083\n…5골드.\n\n14\n00:00:55.333 --> 00:00:59.250\n…헐. …저거 하나면\n일 년은 놀고먹겠네.\n\n15\n00:00:59.333 --> 00:01:04.458\n이놈들이 장사 안 되게\n남의 가게 앞을 틀어막고!\n\n16\n00:01:04.917 --> 00:01:08.958\n이건 너희 같은 뒷골목 놈들이\n노릴 물건이 아니야!\n\n17\n00:01:09.500 --> 00:01:14.708\n허. …뒷골목에서 장사하면서\n뒷골목 놈들한텐 안 판다고?\n\n18\n00:01:15.000 --> 00:01:19.500\n우리 둘 합쳐도 영감보다는\n여기 오래 안 있었거든요!\n\n19\n00:01:19.667 --> 00:01:23.917\n뒷골목 놈이란 말은\n오히려 영감한테 더 어울리지!\n\n20\n00:01:24.125 --> 00:01:27.375\n뒷골목에 걸어 놓고\n뒷골목 놈한텐 안 판다니,\n\n21\n00:01:27.458 --> 00:01:29.417\n영감 노망났어?\n\n22\n00:01:29.708 --> 00:01:32.750\n이… 이…!\n…이 되다 만 것이!\n\n23\n00:01:32.833 --> 00:01:35.833\n되다 만 것?\n다 큰 숙녀한테!\n\n24\n00:01:35.917 --> 00:01:39.625\n내년엔 나도 큰돈 벌거든!\n\n25\n00:01:39.750 --> 00:01:43.875\n그땐 저딴 칼, 사서\n소시지나 썰어 버릴 거야!\n\n26\n00:01:44.167 --> 00:01:46.292\n아이 진짜 왜들 이래.\n\n27\n00:01:46.375 --> 00:01:49.125\n…영감, 우리 갈게요.\n\n28\n00:01:49.208 --> 00:01:51.917\n영감, 죽을 때가 다 됐나 봐!\n\n29\n00:01:52.000 --> 00:01:55.250\n그래! 죽을 때가 다 됐다!\n\n30\n00:01:57.208 --> 00:01:58.875\n멍청한 놈.\n\n31\n00:01:59.000 --> 00:02:01.667\n그냥 먹고 살 생각이나 하지…\n\n32\n00:02:01.750 --> 00:02:07.083\n…애송아. 괜히 이런 곳에서\n꿈을 가지면 고달퍼.\n\n33\n00:02:07.500 --> 00:02:10.083\n…내가 잘 알지.\n\n34\n00:02:12.625 --> 00:02:17.917\n내 마지막 작품을\n이런 곳에서 썩힐 수는 없지.\n\n35\n00:02:18.250 --> 00:02:22.708\n…이건 여기서 나갈 수 있는\n녀석한테만 팔 거다.\n\n";
-  try{var tr=document.getElementById('subtrack');tr.src=URL.createObjectURL(new Blob([vtt],{type:'text/vtt'}));tr.track.mode='showing';}catch(e){}
-  try{var tr2=document.getElementById('subtrack2');tr2.src=tr.src;tr2.track.mode='showing';}catch(e){}
+  try{var vurl=URL.createObjectURL(new Blob([vtt],{type:'text/vtt'}));document.querySelectorAll('track.subko').forEach(function(t){t.src=vurl;t.track.mode='showing';});}catch(e){}
 
   // 테마: 기본은 다크, 버튼으로 바꾼 값은 이 브라우저에만 기억
   var root=document.documentElement, KEY='sm-notes-theme';
@@ -625,10 +957,18 @@ footer .star-mark{color:var(--star);flex:none}
   }
   function toTabs(){ var top=document.querySelector('.tabs').offsetTop; if(window.scrollY>top) window.scrollTo(0,top); }
   tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.view,true);toTabs();})});
-  document.querySelectorAll('[data-goto]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();show(a.dataset.goto,true);toTabs();})});
+  // 제작 과정 버전 전환(v3 / v2)
+  var pvBtns=[].slice.call(document.querySelectorAll('[data-pv]:not(a)'));
+  function showPv(v){
+    ['v3','v2','v1'].forEach(function(k){document.getElementById('pv-'+k).hidden=(k!==v);document.getElementById('rv-'+k).hidden=(k!==v)});
+    pvBtns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.pv===v?'true':'false')});
+    document.querySelectorAll('#process video,#process audio,#result video').forEach(function(m){ if(m.closest('[hidden]')) m.pause(); });
+  }
+  pvBtns.forEach(function(b){b.addEventListener('click',function(){showPv(b.dataset.pv);toTabs();})});
+  document.querySelectorAll('[data-goto]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();if(a.dataset.pv) showPv(a.dataset.pv);show(a.dataset.goto,true);toTabs();})});
   // 상단 단계 칩: 제작 과정 탭의 해당 단계로 이동
   document.querySelectorAll('[data-stage]').forEach(function(b){b.addEventListener('click',function(){
-    show('process',true);
+    show('process',true); showPv('v3');
     var el=document.getElementById(b.dataset.stage);
     requestAnimationFrame(function(){ el.scrollIntoView({block:'start'}); });
   })});
@@ -638,8 +978,7 @@ footer .star-mark{color:var(--star);flex:none}
   });
   show((location.hash||'').replace('#',''),false);
 
-  var r=document.getElementById('cmp');
-  if(r){ var box=r.closest('.compare'); r.addEventListener('input',function(){ box.style.setProperty('--pos',r.value+'%'); }); }
+  document.querySelectorAll('.compare input[type=range]').forEach(function(r){ var box=r.closest('.compare'); r.addEventListener('input',function(){ box.style.setProperty('--pos',r.value+'%'); }); });
 
   // 오디오 비교: 하나를 재생하면 나머지는 멈추고, 재생 중인 줄을 표시
   var auds=[].slice.call(document.querySelectorAll('.aud audio'));
