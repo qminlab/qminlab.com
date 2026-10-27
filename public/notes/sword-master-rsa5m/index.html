@@ -279,7 +279,7 @@ tfoot td{font-weight:600;background:var(--soft);border-top:1px solid var(--line)
 .rv{display:grid;gap:16px}
 .pv{display:grid;gap:clamp(56px,7vw,88px)}
 .pv-note{font-size:14px;margin-bottom:calc(-1 * clamp(36px,5vw,64px))}
-@media (max-width:560px){.pvswitch .t{display:none}.pvswitch{flex-wrap:nowrap}.pvswitch button{padding:5px 12px}}
+@media (max-width:560px){.pvswitch .t{display:none}.pvswitch{gap:6px}.pvswitch button{padding:5px 11px;font-size:13.5px}}
 footer{border-top:1px solid var(--line)}
 footer .wrap{padding-block:28px 48px;font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:baseline}
 footer a{color:inherit;text-underline-offset:3px}
@@ -330,6 +330,7 @@ footer .star-mark{color:var(--star);flex:none}
   <div class="pvswitch" role="group" aria-label="제작 과정 버전 선택">
     <button type="button" data-pv="v3" aria-pressed="true"><b>v3</b> 콜드 오픈<span class="t"> 「장미의 미소」</span></button>
     <button type="button" data-pv="v2" aria-pressed="false"><b>v2</b> 장면 2<span class="t"> 「대장간 앞의 별」</span></button>
+    <button type="button" data-pv="v1" aria-pressed="false"><b>v1</b> 첫 시도<span class="t"> 「별이 떨어진 자리」</span></button>
   </div>
   <div class="rv" id="rv-v3">
   <div class="result">
@@ -357,6 +358,18 @@ footer .star-mark{color:var(--star);flex:none}
   
 </div>
   </div>
+  <div class="rv" id="rv-v1" hidden>
+    <div class="result">
+    <div class="result-head"><span class="label">첫 시도</span><h2>별이 떨어진 자리</h2></div>
+    <div class="screen">
+      <video controls playsinline preload="none" poster="m/poster_v1.jpg">
+        <source src="m/v1.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="muted meta">1분 3초 · 한국어 나레이션 · 웹툰 그림체를 그대로 살린 첫 시도 영상</p>
+    <p class="goto"><span>이 버전을 만든 과정은 <a href="#process" data-goto="process" data-pv="v1">v1 제작 과정 <span aria-hidden="true">→</span></a>에서 보실 수 있습니다.</span></p>
+    </div>
+  </div>
 </section>
 
 <!-- ===================== 제작 과정 ===================== -->
@@ -364,6 +377,7 @@ footer .star-mark{color:var(--star);flex:none}
   <div class="pvswitch" role="group" aria-label="제작 과정 버전 선택">
     <button type="button" data-pv="v3" aria-pressed="true"><b>v3</b> 콜드 오픈<span class="t"> 「장미의 미소」</span></button>
     <button type="button" data-pv="v2" aria-pressed="false"><b>v2</b> 장면 2<span class="t"> 「대장간 앞의 별」</span></button>
+    <button type="button" data-pv="v1" aria-pressed="false"><b>v1</b> 첫 시도<span class="t"> 「별이 떨어진 자리」</span></button>
   </div>
 
   <div class="pv" id="pv-v3">
@@ -697,6 +711,50 @@ footer .star-mark{color:var(--star);flex:none}
 
   </div>
   </div>
+  <div class="pv" id="pv-v1" hidden>
+  <p class="pv-note muted">v1 때(2026.10.9~10)의 작업 파일을 바탕으로 정리한 과정입니다.</p>
+  <div class="prose intro">
+    <p>v1은 웹툰 1화의 그림을 거의 그대로 살려, 웹툰을 바로 애니메이션으로 옮겨 본 첫 시도입니다. 웹툰 1화 12칸으로 1분 남짓한 오프닝 장면 「별이 떨어진 자리」를 만들었고, 하루 정도 걸렸습니다.</p>
+    <div class="cards">
+      <div class="card"><span class="label">원작 범위</span><span class="big">웹툰 1화 12칸</span><span class="muted">원작에 없는 장면 3개는 새 그림</span></div>
+      <div class="card"><span class="label">길이</span><span class="big">1분 3초</span><span class="muted">15컷 · 한국어 나레이션</span></div>
+      <div class="card"><span class="label">작업 기간</span><span class="big">약 하루</span><span class="muted">2026.10.9 저녁 ~ 10.10 오후</span></div>
+    </div>
+  </div>
+
+  <div class="rail">
+
+  <article class="stage" id="v1s1">
+    <div class="stage-head"><span class="num">1</span><h2>콘티</h2><span class="status ok">완료</span></div>
+    <div class="facts"><span>컷 <b>15컷(S1~S15)</b></span><span>계획 길이 <b>약 1분 10초</b></span></div>
+    <p class="prose">웹툰 1화의 칸을 순서대로 15컷에 배정하고, 컷마다 시작 시간을 정했습니다. 원작에 없는 동작 세 가지(잔해 밖으로 솟는 손, 잔해를 밀어내며 빠져나오는 상체, 쓰레기 속 검 손잡이를 움켜쥐는 손)는 새 그림이 필요한 컷으로 표시했습니다. 중간에 제목 로고 컷(S10)을 넣었습니다.</p>
+  </article>
+
+  <article class="stage" id="v1s2">
+    <div class="stage-head"><span class="num">2</span><h2>화면 배치</h2><span class="status ok">완료</span></div>
+    <p class="prose">웹툰은 세로로 긴 그림이라 16:9 화면에 그대로 들어가지 않습니다. 세로로 긴 칸(밤하늘, 마을, 검)은 화면을 위아래로 훑는 <b>세로 팬</b>으로 보여 주고, 나머지는 칸을 화면 안에 배치한 뒤 빈 곳을 채웠습니다. 일부 컷은 1920×1080으로 넓힌 배경(밤하늘, 하늘, 골목)을 따로 만들었습니다.</p>
+  </article>
+
+  <article class="stage" id="v1s3">
+    <div class="stage-head"><span class="num">3</span><h2>영상 생성</h2><span class="status ok">완료</span></div>
+    <div class="facts"><span>생성한 컷 <b>12개 · 한 컷 4~6초</b></span><span>나머지 <b>세로 팬·정지 화면</b></span></div>
+    <p class="prose">칸 그림(또는 새 그림)을 시작 화면으로 넣어 한 컷씩 4~6초 영상으로 만들었습니다. 손이 솟는 컷(S3)은 시작 그림과 끝 그림을 함께 넣어 움직임의 처음과 끝을 정했습니다.</p>
+    <figure><video src="m/v1_clip_s03.mp4" controls playsinline preload="none" poster="m/v1_clip_s03.jpg"></video><figcaption>컷 S3 원본(5초, 소리 뺌) — 원작에 없어 새로 그린 장면을 영상으로 만든 컷입니다.</figcaption></figure>
+  </article>
+
+  <article class="stage" id="v1s4">
+    <div class="stage-head"><span class="num">4</span><h2>편집·소리·색보정</h2><span class="status ok">완료</span></div>
+    <p class="prose">생성한 컷을 이어 붙인 러프컷을 <b>11번</b> 고쳐 최종본을 만들었습니다. 6번째에 효과음, 7번째에 음악, 10번째에 색보정, 11번째에 목소리를 넣었습니다.</p>
+    <div class="cards">
+      <div class="card"><span class="label">러프컷</span><span class="big mono">v1 → v11</span><span class="muted">1분 1~6초 사이에서 조정 → 최종 1분 3초</span></div>
+      <div class="card"><span class="label">목소리</span><span class="big">나레이션 2줄</span><span class="muted">+ 블라드 숨소리·대사, 제미나 "또또또"</span></div>
+      <div class="card"><span class="label">효과음</span><span class="big">7가지</span><span class="muted">잔해, 땅 울림, 눈 밟는 소리, 겨울바람, 마을 웅성임, 주먹 쥐는 소리, 제목 빛</span></div>
+    </div>
+    <p class="note">음악: Scott Buckley 「The Great Sea」, HarumachiMusic 「Wandering Travelers」</p>
+  </article>
+
+  </div>
+  </div>
 </section>
 
 <!-- ===================== 도구와 비용 ===================== -->
@@ -805,7 +863,7 @@ footer .star-mark{color:var(--star);flex:none}
               <source src="m/v1.mp4" type="video/mp4">
             </video>
           </div>
-          <p class="muted meta" style="margin-top:10px">1분 3초 · 한국어 나레이션 · 첫 시도 영상</p>
+          <p class="muted meta" style="margin-top:10px">1분 3초 · 한국어 나레이션 · 첫 시도 영상. 이 버전의 <a href="#process" data-goto="process" data-pv="v1">제작 과정</a>도 볼 수 있습니다.</p>
         </div>
         <div class="txt">
           <div><h4>시도</h4><p>웹툰의 그림체를 그대로 살려서, 웹툰을 바로 애니메이션으로 만들었습니다.</p></div>
@@ -902,7 +960,7 @@ footer .star-mark{color:var(--star);flex:none}
   // 제작 과정 버전 전환(v3 / v2)
   var pvBtns=[].slice.call(document.querySelectorAll('[data-pv]:not(a)'));
   function showPv(v){
-    ['v3','v2'].forEach(function(k){document.getElementById('pv-'+k).hidden=(k!==v);document.getElementById('rv-'+k).hidden=(k!==v)});
+    ['v3','v2','v1'].forEach(function(k){document.getElementById('pv-'+k).hidden=(k!==v);document.getElementById('rv-'+k).hidden=(k!==v)});
     pvBtns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.pv===v?'true':'false')});
     document.querySelectorAll('#process video,#process audio,#result video').forEach(function(m){ if(m.closest('[hidden]')) m.pause(); });
   }
