@@ -218,7 +218,11 @@ function track(mv,up){const u=ev=>{removeEventListener('pointermove',mv);removeE
 /* desktop files */
 // Project pages (production notes, trial and error, asset gallery, the DeepHold site) sit on the desktop as documents of their own,
 // so each is one double-click (one tap on the iPhone widget) away instead of a link inside an app.
-const DOCS=D.docs.map(d=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.href,thumb:d.thumb,out:d.out,proj:d.project}));
+// Sorted by kind, each kind a column of its own: trial and error, then production records (notes, asset gallery),
+// then ways out (the DeepHold site, GitHub, downloads and any store link); projects keep their order inside a kind.
+const DOC_GROUP={trials:1,notes:2,assets:2,site:3,download:3.1,github:3.2};
+const DOCS=D.docs.map((d,i)=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.href,thumb:d.thumb,out:d.out,proj:d.project,g:DOC_GROUP[d.k.slice(d.project.length+1)]||3.3,i}))
+  .sort((a,b)=>a.g-b.g||a.i-b.i);
 const DESK=[{k:'projects',name:T.projects,kind:'folder'},{k:'about',name:T.files.about,ext:'md'},{k:'rules',name:T.files.rules,ext:'md'},{k:'contact',name:T.files.contact,ext:'vcf'},{k:'history',name:T.files.history,ext:'html'},...DOCS];
 const deskItem=k=>DESK.find(d=>d.k===k);
 function docSvg(ext){const mid=ext==='md'?'<path d="M32 38h36M32 46h36M32 54h28M32 62h32" stroke="#C7C7CC" stroke-width="2.5" stroke-linecap="round"/>'
@@ -248,12 +252,12 @@ $('#statusList').innerHTML=ORDER.map(k=>`<button class="st-row" data-open="${k}"
 // desktop icons and widgets keep each visitor's arrangement (offsets from their default place)
 let deskPos=LS.get('desk',{}),wgPos=LS.get('wg',{});
 const tr=p=>p?`transform:translate(${p.dx}px,${p.dy}px)`:'';
-dicons.innerHTML=DESK.map(d=>`<button class="dicon${d.kind==='link'?' link':''}" data-k="${d.k}" style="${tr(deskPos[d.k])}"><span class="art">${artOf(d.k)}</span><span class="lbl">${esc(d.name)}</span></button>`).join('');
+dicons.innerHTML=DESK.map(d=>`<button class="dicon${d.kind==='link'?' link':''}" data-g="${Math.floor(d.g||0)}" data-k="${d.k}" style="${tr(deskPos[d.k])}"><span class="art">${artOf(d.k)}</span><span class="lbl">${esc(d.name)}</span></button>`).join('');
 // Icons fill columns from the top right, as Finder arranges a desktop; a column ends above the shortcuts widget.
-// The computer's own files fill the first column; project pages start the next one.
+// The computer's own files fill the first column; each kind of project item starts a column of its own.
 function deskRows(){const k=$('.widgets2'),bottom=k&&getComputedStyle(k).display!=='none'?k.getBoundingClientRect().top:innerHeight-110,rows=Math.max(3,Math.floor((bottom-44)/112));
   const icons=[...dicons.querySelectorAll('.dicon')],cols=[];let cur=null,n=0;
-  icons.forEach(el=>{const link=el.classList.contains('link');if(!cur||(link&&!cur.link)||n===(link?rows:5)){cur={link,el:document.createElement('div')};cur.el.className='dcol';cols.push(cur);n=0}cur.el.appendChild(el);n++});
+  icons.forEach(el=>{const g=el.dataset.g;if(!cur||g!==cur.g||n===(g==='0'?5:rows)){cur={g,el:document.createElement('div')};cur.el.className='dcol';cols.push(cur);n=0}cur.el.appendChild(el);n++});
   dicons.replaceChildren(...cols.map(c=>c.el))}
 deskRows();on(window,'resize',deskRows);
 root.querySelectorAll('.wg').forEach(w=>{const p=wgPos[w.dataset.k];if(p)w.style.transform=`translate(${p.dx}px,${p.dy}px)`});
@@ -590,6 +594,7 @@ function iSheet(html,title,src,onReady,cls){
   const close=()=>{if(el.classList.contains('closing'))return;el.classList.add('closing');typeof stop==='function'&&stop();const still=src&&src.isConnected&&!src.closest('.fov')?irect(src):r;
     if(RM)el.remove();else{el.style.pointerEvents='none';el.animate([{transform:getComputedStyle(el).transform,opacity:1},atIcon(still)],{duration:380,easing:'cubic-bezier(.45,0,.75,.95)',fill:'forwards'}).finished.then(()=>el.remove(),()=>el.remove())}
     if(!ios.querySelector('.iappwin:not(.closing)')&&!ios.querySelector('.fov'))home.classList.remove('behind')};
+  el.close=close;
   const hb=el.querySelector('.hbar');let sy=null;
   hb.addEventListener('pointerdown',e=>{sy=e.clientY;hb.setPointerCapture(e.pointerId)});
   hb.addEventListener('pointermove',e=>{if(sy==null)return;const d=Math.min(0,e.clientY-sy);el.style.transform=`translateY(${d*.5}px) scale(${1+d/1400})`;el.style.borderRadius='44px'});
@@ -616,6 +621,16 @@ function iSearch(){const s=document.createElement('div');s.className='isearch';
   inp.addEventListener('input',draw);later(()=>inp.focus(),50);
   const close=()=>{s.classList.remove('on');later(()=>s.remove(),250)};
   s.querySelector('.x').onclick=close;res.addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b){close();R[+b.dataset.i].go('ios')}})}
+
+/* ---------- a page in a Safari window that links back home (← qminlab) closes its window instead of nesting the homepage ---------- */
+const isHome=u=>u.origin===location.origin&&/^\/([a-z]{2}\/?)?$/.test(u.pathname);
+function closeFrame(f){const w=f.closest('.win'),id=w&&Object.keys(wins).find(k=>wins[k].el===w);if(id){closeWin(id);return}f.closest('.iappwin')?.close?.()}
+on(root,'load',e=>{const f=e.target;if(f.tagName!=='IFRAME')return;let win;try{win=f.contentWindow;win.location.pathname}catch{return}
+  // Reached home anyway (a script, a redirect): close it now.
+  if(isHome(win.location)){f.src='about:blank';closeFrame(f);return}
+  // Otherwise catch the click on a home link before the homepage starts loading inside the window.
+  win.document.addEventListener('click',ev=>{const a=ev.target.closest&&ev.target.closest('a[href]');if(!a||a.target==='_blank')return;
+    let u;try{u=new URL(a.href)}catch{return}if(isHome(u)){ev.preventDefault();closeFrame(f)}},true)},{capture:true});
 
 /* ---------- mode: phones get the iPhone, everything wider gets the Mac ---------- */
 const mq=matchMedia('(max-width:720px)');
