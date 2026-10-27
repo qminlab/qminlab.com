@@ -96,8 +96,10 @@ root.innerHTML=`<canvas id="wall" aria-hidden="true"></canvas>
       <div class="page"><div class="iwrap">
         <div class="iw lg"><div class="k">${T.since}</div>${wordHtml('word2')}<p>${brand.join('<br>')}</p></div>
         <div class="igrid" id="igrid"></div>
+        <div class="iw lg idocs p1"></div>
       </div></div>
       <div class="page"><div class="iwrap">
+        <div class="iw lg idocs p2"></div>
         <a class="iw lg gh" href="${GH}" target="_blank" rel="noopener"><div><div class="k">GitHub</div><div class="gh-n" data-ghn style="margin-top:4px"></div><div class="gh-sub" data-ghs>${T.ghLoading}</div></div><div class="contrib" data-contrib="16"></div></a>
       </div></div>
     </div>
@@ -214,26 +216,40 @@ function track(mv,up){const u=ev=>{removeEventListener('pointermove',mv);removeE
   addEventListener('pointermove',mv);addEventListener('pointerup',u);ac.signal.addEventListener('abort',()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',u)})}
 
 /* desktop files */
-const DESK=[{k:'projects',name:T.projects,kind:'folder'},{k:'about',name:T.files.about,ext:'md'},{k:'rules',name:T.files.rules,ext:'md'},{k:'contact',name:T.files.contact,ext:'vcf'},{k:'history',name:T.files.history,ext:'html'}];
+// Project pages (production notes, trial and error, asset gallery, the DeepHold site) sit on the desktop as documents of their own,
+// so each is one double-click (one tap on the iPhone widget) away instead of a link inside an app.
+const DOCS=D.docs.map(d=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.href,proj:d.project}));
+const DESK=[{k:'projects',name:T.projects,kind:'folder'},{k:'about',name:T.files.about,ext:'md'},{k:'rules',name:T.files.rules,ext:'md'},{k:'contact',name:T.files.contact,ext:'vcf'},{k:'history',name:T.files.history,ext:'html'},...DOCS];
 const deskItem=k=>DESK.find(d=>d.k===k);
 function docSvg(ext){const mid=ext==='md'?'<path d="M32 38h36M32 46h36M32 54h28M32 62h32" stroke="#C7C7CC" stroke-width="2.5" stroke-linecap="round"/>'
   :ext==='vcf'?'<circle cx="50" cy="42" r="9" fill="#A1A1A6"/><path d="M34 64c2-8 9-12 16-12s14 4 16 12z" fill="#A1A1A6"/>'
   :'<circle cx="50" cy="49" r="15" fill="none" stroke="#007AFF" stroke-width="2.5"/><path d="M35 49h30M50 34c-6 5-6 25 0 30M50 34c6 5 6 25 0 30" fill="none" stroke="#007AFF" stroke-width="2"/>';
   return `<svg class="mfold" viewBox="0 0 100 100"><path d="M23 4h37l20 20v69a3 3 0 0 1-3 3H23a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#FBFBFD" stroke="rgba(0,0,0,.12)" stroke-width=".8"/><path d="M60 4v17a3 3 0 0 0 3 3h17z" fill="#D8D8DD"/>${mid}<text x="50" y="86" text-anchor="middle" font-family="-apple-system,Helvetica,sans-serif" font-weight="700" font-size="10" fill="#8E8E93">${ext.toUpperCase()}</text></svg>`}
-const artOf=k=>{const d=deskItem(k);if(d)return d.kind==='folder'?FOLDER_SVG:docSvg(d.ext);return macIcon(k)};
-const label=k=>deskItem(k)?.name||P[k]?.short||P[k]?.name||k;
+// A project page: a blank page with the project's app icon on it, the way macOS badges a document with its app.
+const PAGE_SVG='<svg class="mfold" viewBox="0 0 100 100"><path d="M23 4h37l20 20v69a3 3 0 0 1-3 3H23a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#FBFBFD" stroke="rgba(0,0,0,.12)" stroke-width=".8"/><path d="M60 4v17a3 3 0 0 0 3 3h17z" fill="#D8D8DD"/></svg>';
+const linkArt=d=>`<span class="ldoc">${PAGE_SVG}<span class="lbadge">${pIcon(d.proj)}</span></span>`;
+const artOf=k=>{const d=deskItem(k);if(d)return d.kind==='folder'?FOLDER_SVG:d.kind==='link'?linkArt(d):docSvg(d.ext);return macIcon(k)};
+const label=k=>deskItem(k)?.name||P[k]?.name||k;
+const kindOf=d=>d.ext?T.kinds[d.ext]:d.kind==='link'?T.kinds.link:T.kinds.folder;
 const docBody=k=>k==='about'?about():k==='rules'?rules():k==='contact'?contact():history();
-const docView=k=>k==='contact'?contact():k==='history'?history():`<div class="mdoc">${docBody(k)}</div>`;
+const docView=k=>{const d=deskItem(k);return d?.kind==='link'?safPage(d.href,esc(d.name)):k==='contact'?contact():k==='history'?history():`<div class="mdoc">${docBody(k)}</div>`};
 
 /* ================= MAC ================= */
 const mac=$('#mac'),dock=$('#dock'),dicons=$('#dicons');
-$('#statusList').innerHTML=ORDER.map(k=>`<button class="st-row" data-open="${k}">${pIcon(k)}<span>${P[k].name}</span><span class="pill ${P[k].st}">${P[k].stl}</span></button>`).join('');
+$('#statusList').innerHTML=ORDER.map(k=>`<button class="st-row" data-open="${k}">${pIcon(k)}<span>${P[k].name}<small>${P[k].type}</small></span><span class="pill ${P[k].st}">${P[k].stl}</span></button>`).join('');
 ['#word1','#word2'].forEach(id=>{const w=$(id);on(w,'click',()=>w.classList.toggle('open'))});
 
 // desktop icons and widgets keep each visitor's arrangement (offsets from their default place)
 let deskPos=LS.get('desk',{}),wgPos=LS.get('wg',{});
 const tr=p=>p?`transform:translate(${p.dx}px,${p.dy}px)`:'';
-dicons.innerHTML=DESK.map(d=>`<button class="dicon" data-k="${d.k}" style="${tr(deskPos[d.k])}"><span class="art">${artOf(d.k)}</span><span class="lbl">${d.name}</span></button>`).join('');
+dicons.innerHTML=DESK.map(d=>`<button class="dicon${d.kind==='link'?' link':''}" data-k="${d.k}" style="${tr(deskPos[d.k])}"><span class="art">${artOf(d.k)}</span><span class="lbl">${esc(d.name)}</span></button>`).join('');
+// Icons fill columns from the top right, as Finder arranges a desktop; a column ends above the shortcuts widget.
+// The computer's own files fill the first column; project pages start the next one.
+function deskRows(){const k=$('.widgets2'),bottom=k&&getComputedStyle(k).display!=='none'?k.getBoundingClientRect().top:innerHeight-110,rows=Math.max(3,Math.floor((bottom-44)/112));
+  const icons=[...dicons.querySelectorAll('.dicon')],cols=[];let cur=null,n=0;
+  icons.forEach(el=>{const link=el.classList.contains('link');if(!cur||(link&&!cur.link)||n===(link?rows:5)){cur={link,el:document.createElement('div')};cur.el.className='dcol';cols.push(cur);n=0}cur.el.appendChild(el);n++});
+  dicons.replaceChildren(...cols.map(c=>c.el))}
+deskRows();on(window,'resize',deskRows);
 root.querySelectorAll('.wg').forEach(w=>{const p=wgPos[w.dataset.k];if(p)w.style.transform=`translate(${p.dx}px,${p.dy}px)`});
 function dragGroup(e,els,store,key){const sx=e.clientX,sy=e.clientY,base=els.map(el=>({el,p:store[el.dataset.k]||{dx:0,dy:0}}));let moved=false;
   track(ev=>{const dx=ev.clientX-sx,dy=ev.clientY-sy;if(!moved){if(Math.hypot(dx,dy)<4)return;moved=true;els.forEach(el=>el.classList.add('drag'))}
@@ -269,7 +285,8 @@ on(mac,'pointerdown',e=>{if(e.target!==mac||e.button!==0)return;closeMenu();clea
 const DOCK_DEFAULT=['qmin','launch',...ORDER];
 let dockOrd=LS.get('dock',DOCK_DEFAULT);if(!Array.isArray(dockOrd)||dockOrd.length!==DOCK_DEFAULT.length||!DOCK_DEFAULT.every(k=>dockOrd.includes(k)))dockOrd=DOCK_DEFAULT;
 const dockName=k=>({qmin:T.apps.finder,launch:T.apps.launchpad,archive:T.history,trash:T.trash})[k]||P[k].name;
-const dkBtn=(k,fixed)=>`<button class="dk" data-dock="${k}"${fixed?' data-fixed="1"':''} aria-label="${esc(dockName(k))}">${macIcon(k)}<span class="tip">${dockName(k)}</span><span class="dot"></span></button>`;
+const dockType=k=>P[k]?` · ${P[k].type}`:'';
+const dkBtn=(k,fixed)=>`<button class="dk" data-dock="${k}"${fixed?' data-fixed="1"':''} aria-label="${esc(dockName(k)+dockType(k))}">${macIcon(k)}<span class="tip">${dockName(k)}${P[k]?`<small>${dockType(k)}</small>`:''}</span><span class="dot"></span></button>`;
 dock.innerHTML=dockOrd.map(k=>dkBtn(k)).join('')+'<span class="dsep"></span>'+dkBtn('archive',1)+dkBtn('trash',1);
 on(dock,'pointermove',e=>{if(e.pointerType!=='mouse'||dock.querySelector('.dk.drag'))return;dock.querySelectorAll('.dk').forEach(b=>{const r=b.getBoundingClientRect(),d=Math.abs(e.clientX-(r.left+r.width/2));b.style.setProperty('--s',(1+.6*Math.max(0,1-d/160)**2).toFixed(3))})});
 on(dock,'pointerleave',()=>dock.querySelectorAll('.dk').forEach(b=>b.style.setProperty('--s',1)));
@@ -336,7 +353,7 @@ function closeWin(id){const o=wins[id];if(!o)return;delete wins[id];o.stop&&o.st
 
 function macOpenApp(k,srcNode){const a=APPS[k];const d=root.querySelector(`[data-dock="${k}"]`);if(d&&!wins['app:'+k]){d.classList.remove('bounce');void d.offsetWidth;d.classList.add('bounce')}
   openWin('app:'+k,{title:a.title,app:P[k].name,w:a.w,h:a.h+28,cls:'appwin'+(a.dark?' dark':'')+(a.w<500?' narrow':''),html:appBody(k),tools:appTools(k),fromDock:true,after:el=>startApp(k,el)})}
-function macOpen(k,src){const d=deskItem(k);if(!d)return macOpenApp(k,src);if(d.kind==='folder')return macOpenFolder('projects',src);
+function macOpen(k,src){const d=deskItem(k);if(!d)return macOpenApp(k,src);if(d.kind==='folder')return macOpenFolder('projects',src);if(d.kind==='link')return macSaf(d.href,d.name,src);
   const [app,w,h]={about:[T.apps.textedit,640,560],rules:[T.apps.textedit,560,480],contact:[T.apps.contacts,440,430],history:[T.apps.safari,880,580]}[k];
   const html=k==='history'?safHistory():k==='contact'?contact():`<div class="mdoc">${docBody(k)}</div>`;
   openWin('doc:'+k,{title:d.name,app,w,h,html,cls:k==='history'?'safwin':'',src:src?rectOf(src):null})}
@@ -348,7 +365,7 @@ function finder(active){
 function folderBody(id){
   if(id==='trash')return `<div class="paused-doc" style="padding-top:90px"><p>${T.trashEmpty}</p></div>`;
   const items=id==='projects'?ORDER:DESK.map(d=>d.k);
-  return `<div class="fgrid">${items.map(k=>`<button class="fitem" data-item="${k}"><span class="art">${artOf(k)}</span><span class="nm">${label(k)}</span>${P[k]?`<span class="meta"><span class="pill ${P[k].st}">${P[k].stl}</span></span>`:''}</button>`).join('')}</div>`}
+  return `<div class="fgrid">${items.map(k=>`<button class="fitem" data-item="${k}"><span class="art">${artOf(k)}</span><span class="nm">${esc(label(k))}</span>${P[k]?`<span class="meta">${P[k].type}</span><span class="meta"><span class="pill ${P[k].st}">${P[k].stl}</span></span>`:''}</button>`).join('')}</div>`}
 function macOpenFolder(f,srcNode){const o=openWin('finder',{title:navName(f),app:'Finder',w:800,h:500,cls:'finderwin',html:finder(f),src:srcNode?rectOf(srcNode):null});navFinder(o.el,f)}
 function navFinder(el,f){const m=el.querySelector('[data-fmain]');if(!m)return;m.innerHTML=folderBody(f);el.querySelector('[data-ftitle]').textContent=navName(f);
   el.querySelectorAll('[data-nav]').forEach(b=>b.setAttribute('aria-current',b.dataset.nav===f));wins.finder.title=navName(f);
@@ -357,7 +374,7 @@ function macCase(k,src){openWin('case:'+k,{title:T.info(P[k].name),app:'Finder',
 function macSaf(url,title,src){openWin('saf:'+url,{title,app:T.apps.safari,w:Math.min(1180,innerWidth-80),h:Math.min(760,innerHeight-130),cls:'safwin',html:safPage(url,title),src:src?rectOf(src):null})}
 function macArch(v,src){const x=verOf(v);openWin('arch:'+v,{title:x.name,app:T.apps.safari,w:Math.min(1180,innerWidth-80),h:Math.min(760,innerHeight-130),cls:'safwin',html:archived(v),src:src?rectOf(src):null})}
 function info(k){if(P[k])return macCase(k);const d=deskItem(k);
-  openWin('info:'+k,{title:T.info(d.name),app:'Finder',w:300,h:390,html:`<div class="paused-doc"><div style="width:84px;height:84px">${artOf(k)}</div><h2>${d.name}</h2><dl class="kv" style="text-align:left;width:100%"><dt>${T.infoKind}</dt><dd>${d.ext?T.kinds[d.ext]:T.kinds.folder}</dd><dt>${T.infoWhere}</dt><dd>${T.desktop}</dd><dt>${T.infoDate}</dt><dd>${T.modified}</dd></dl></div>`})}
+  openWin('info:'+k,{title:T.info(d.name),app:'Finder',w:300,h:390,html:`<div class="paused-doc"><div style="width:84px;height:84px">${artOf(k)}</div><h2>${d.name}</h2><dl class="kv" style="text-align:left;width:100%"><dt>${T.infoKind}</dt><dd>${kindOf(d)}</dd><dt>${T.infoWhere}</dt><dd>${T.desktop}</dd><dt>${T.infoDate}</dt><dd>${T.modified}</dd></dl></div>`})}
 function quickLook(){if(wins.ql){closeWin('ql');return}const k=sel.keys[0];if(!k)return;const d=deskItem(k);
   const html=P[k]?caseFile(k):d.kind==='folder'?`<div class="paused-doc" style="padding-top:60px"><div style="width:110px;height:110px">${FOLDER_SVG}</div><h2>${T.projects}</h2><p>${T.items(ORDER.length)}</p></div>`:docView(k);
   openWin('ql',{title:label(k),app:T.apps.quicklook,w:600,h:480,html})}
@@ -396,8 +413,8 @@ on($('#mbLogo'),'click',e=>{const r=e.currentTarget.getBoundingClientRect();
 
 /* ---------- search index (Spotlight on mac, search on iOS) ---------- */
 const DOC_WORDS={contact:'email 이메일 연락 contact github vcard',history:'archive 변화 과정 history version 이전 specimen lab open 표본실 열린 실험실',about:'about 소개 김규민 gyumin kim curious mean qmin',rules:'rules 규칙 lab 연구실'};
-const IDX=[...ORDER.map(k=>({grp:T.groups.app,label:P[k].name,meta:`${P[k].type} · ${P[k].stl}`,art:pIcon(k),txt:[P[k].name,P[k].short,P[k].type,P[k].one,P[k].stack,P[k].code].join(' '),go:m=>m==='mac'?macOpenApp(k):iOpenApp(k)})),
-  ...DESK.filter(d=>d.ext).map(d=>({grp:T.groups.doc,label:d.name,meta:T.kinds[d.ext],art:`<span class="sdoc">${docSvg(d.ext)}</span>`,txt:d.name+' '+DOC_WORDS[d.k],go:m=>m==='mac'?macOpen(d.k):iDoc(d.k)})),
+const IDX=[...ORDER.map(k=>({grp:T.groups.app,label:P[k].name,meta:`${P[k].type} · ${P[k].stl}`,art:pIcon(k),txt:[P[k].name,P[k].type,P[k].one,P[k].stack,P[k].code].join(' '),go:m=>m==='mac'?macOpenApp(k):iOpenApp(k)})),
+  ...DESK.filter(d=>d.kind!=='folder').map(d=>({grp:T.groups.doc,label:d.name,meta:d.kind==='link'?P[d.proj].name:kindOf(d),art:`<span class="sdoc">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span>`,txt:d.name+' '+(DOC_WORDS[d.k]||d.href),go:m=>m==='mac'?macOpen(d.k):iDoc(d.k)})),
   ...VERSIONS.filter(v=>!v.now).map(v=>({grp:T.groups.history,label:v.name,meta:v.d,art:pIcon('archive'),txt:v.name+' '+v.p,go:m=>m==='mac'?macArch(v.v):iSheet(archived(v.v),v.name,null,null,'sheetsaf')})),
   ...ORDER.map(k=>({grp:T.groups.case,label:T.info(P[k].name),meta:P[k].code,art:pIcon(k),txt:P[k].name+' case info '+P[k].stack,go:m=>m==='mac'?macCase(k):iSheet(caseFile(k),P[k].name)}))];
 function search(q){q=q.trim().toLowerCase();if(!q)return[];return IDX.filter(x=>x.txt.toLowerCase().includes(q)).slice(0,9)}
@@ -421,8 +438,8 @@ on(window,'pointerdown',e=>{if(spotEl&&!e.target.closest('.spot,#mbSpot'))spotli
 let lpEl=null;
 function launchpad(show){
   if(show&&!lpEl){if(spotEl)spotlight(false);lpEl=document.createElement('div');lpEl.className='lp';
-    const items=[...ORDER.map(k=>({k,label:P[k].short||P[k].name,go:()=>macOpenApp(k)})),{k:'archive',label:T.history,go:()=>macOpen('history')},{k:'gh',label:'GitHub',href:GH}];
-    lpEl.innerHTML=`<div class="lsearch">${searchSvg(1.8)}${T.search}</div><div class="lgrid">${items.map((it,i)=>`<button data-li="${i}"><span class="art">${macIcon(it.k)}</span><span>${it.label}</span></button>`).join('')}</div>`;
+    const items=[...ORDER.map(k=>({k,label:P[k].name,sub:P[k].type,go:()=>macOpenApp(k)})),{k:'archive',label:T.history,go:()=>macOpen('history')},{k:'gh',label:'GitHub',href:GH}];
+    lpEl.innerHTML=`<div class="lsearch">${searchSvg(1.8)}${T.search}</div><div class="lgrid">${items.map((it,i)=>`<button data-li="${i}"><span class="art">${macIcon(it.k)}</span><span>${it.label}${it.sub?`<small>${it.sub}</small>`:''}</span></button>`).join('')}</div>`;
     root.appendChild(lpEl);requestAnimationFrame(()=>lpEl&&lpEl.classList.add('on'));
     lpEl.addEventListener('click',e=>{const b=e.target.closest('[data-li]');const it=b&&items[+b.dataset.li];launchpad(false);if(it){it.href?open(it.href,'_blank','noopener'):later(it.go,120)}})}
   else if(!show&&lpEl){const l=lpEl;lpEl=null;l.classList.remove('on');later(()=>l.remove(),300)}}
@@ -485,13 +502,22 @@ const home=$('#home'),ios=$('#ios'),igrid=$('#igrid'),idock=$('#idock');
 const PAUSED=ORDER.filter(k=>P[k].st==='paused');
 const ifolder=keys=>`<div class="ifold">${keys.slice(0,9).map(k=>`<div class="appic ic-${k}">${GLYPH[k]}</div>`).join('')}</div>`;
 const SYS={files:['files',T.apps.files],safari:['archive',T.history],contacts:['contact',T.contacts],gh:['gh','GitHub']};
+// Under each app: its full name (wrapping to a second line rather than being cut) and what kind of work it is.
+const iLabel=k=>`<span class="nm">${P[k].name}<small>${P[k].type}</small></span>`;
 function iItem(key){const[t,k]=key.split(':');
-  if(t==='app')return P[k]?`<button class="iapp" data-key="${key}">${pIcon(k)}<span>${P[k].short||P[k].name}</span></button>`:'';
+  if(t==='app')return P[k]?`<button class="iapp" data-key="${key}" aria-label="${esc(P[k].name)}, ${P[k].type}">${pIcon(k)}${iLabel(k)}</button>`:'';
   if(t==='fold')return `<button class="iapp" data-key="${key}">${ifolder(PAUSED)}<span>${T.paused}</span></button>`;
   return SYS[t]?`<button class="iapp" data-key="${key}">${icon(SYS[t][0])}<span>${SYS[t][1]}</span></button>`:''}
-const IOS_DEFAULT={grid:[...ORDER.filter(k=>P[k].st!=='paused').map(k=>'app:'+k),...(PAUSED.length?['fold:paused']:[])],dock:['files','safari','contacts','gh']};
+// Paused projects sit in a folder in the Dock, so page 1 has room for the records widget; GitHub is the widget on page 2.
+const IOS_DEFAULT={grid:ORDER.filter(k=>P[k].st!=='paused').map(k=>'app:'+k),dock:['files','safari','contacts',...(PAUSED.length?['fold:paused']:['gh'])]};
 let iord=LS.get('ios',IOS_DEFAULT);{const all=[...(iord.grid||[]),...(iord.dock||[])],def=[...IOS_DEFAULT.grid,...IOS_DEFAULT.dock];if(all.length!==def.length||!def.every(k=>all.includes(k))||iord.dock.length>4)iord=IOS_DEFAULT}
 igrid.innerHTML=iord.grid.map(iItem).join('');idock.innerHTML=iord.dock.map(iItem).join('');
+// The records widget: every project page, one tap each.
+root.querySelectorAll('.idocs').forEach(w=>{if(!DOCS.length)return w.remove();
+  w.innerHTML=`<div class="k">${T.records}</div>${DOCS.map(d=>`<button class="idoc" data-ldoc="${d.k}" aria-label="${esc(d.name)}">${pIcon(d.proj)}<span><b>${esc(d.what)}</b><small>${esc(P[d.proj].name)}</small></span></button>`).join('')}`});
+// Page 1 when the widget clears the search pill on this screen; shorter phones get it at the top of page 2.
+function fitDocs(){const w=$('.idocs.p1');if(!w||!has('ios'))return;home.classList.remove('docs-p2');
+  if(w.getBoundingClientRect().bottom>$('#ipill').getBoundingClientRect().top-6)home.classList.add('docs-p2')}
 function iOpenKey(key,src){const[t,k]=key.split(':');
   if(t==='app')iOpenApp(k,src);else if(t==='fold')iFolder(src);else if(t==='files')iFiles(src);
   else if(t==='safari')iSheet(safHistory(),T.history,src,null,'sheetsaf');
@@ -513,6 +539,7 @@ on(home,'contextmenu',e=>e.preventDefault());
     pill.querySelectorAll('.dts i').forEach((d,j)=>d.classList.toggle('on',j===i));clearTimeout(t);t=later(()=>pill.classList.remove('dots'),1400)},{passive:true})}
 on(home,'click',e=>{if(moved){moved=false;e.preventDefault();return}
   if(jig){if(!e.target.closest('.iapp'))setJiggle(false);e.preventDefault();return}
+  const dc=e.target.closest('[data-ldoc]');if(dc){const d=deskItem(dc.dataset.ldoc);iSheet(safPage(d.href,esc(d.name)),d.name,dc,null,'sheetsaf');return}
   const it=e.target.closest('.iapp');if(it)iOpenKey(it.dataset.key,it)});
 on($('#ipill'),'click',e=>{e.stopPropagation();if(!jig)iSearch()});
 const irect=(n,inner=true)=>{const r=((inner&&n.querySelector('.appic,.ifold'))||n).getBoundingClientRect(),s=ios.getBoundingClientRect();return{x:r.left-s.left,y:r.top-s.top,w:r.width,h:r.height}};
@@ -563,14 +590,15 @@ function iSheet(html,title,src,onReady,cls){
   hb.addEventListener('pointerup',()=>{sy=null;close()});
   return el}
 function iOpenApp(k,src){const a=APPS[k];iSheet(`<div class="ibar">${appTools(k)}</div>`+appBody(k),a.title,src,el=>startApp(k,el),'app'+(a.dark?' dark':''))}
-function iDoc(k,src){iSheet(`<div class="inav"><b>${deskItem(k).name}</b></div>${docView(k)}`,deskItem(k).name,src)}
-function iFiles(src){const el=iSheet(`<div class="files"><h1>qminlab</h1><div class="flist">${DESK.filter(d=>d.ext).map(d=>`<button class="frow" data-doc="${d.k}"><span class="fic">${docSvg(d.ext)}</span><span><b>${d.name}</b><small>${T.modifiedShort} · ${T.kinds[d.ext]}</small></span></button>`).join('')}</div></div>`,T.apps.files,src);
+function iDoc(k,src){const d=deskItem(k);if(d.kind==='link')return iSheet(safPage(d.href,esc(d.name)),d.name,src,null,'sheetsaf');iSheet(`<div class="inav"><b>${deskItem(k).name}</b></div>${docView(k)}`,deskItem(k).name,src)}
+function iFiles(src){const el=iSheet(`<div class="files"><h1>qminlab</h1><div class="flist">${DESK.filter(d=>d.kind!=='folder').map(d=>`<button class="frow" data-doc="${d.k}"><span class="fic">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span><span><b>${esc(d.name)}</b><small>${d.kind==='link'?P[d.proj].name:`${T.modifiedShort} · ${kindOf(d)}`}</small></span></button>`).join('')}</div></div>`,T.apps.files,src);
   const body=el.querySelector('.ibody');body.addEventListener('click',e=>{const b=e.target.closest('[data-doc]');if(!b)return;const d=deskItem(b.dataset.doc);
+    if(d.kind==='link'){iDoc(d.k,b);return}
     const page=document.createElement('div');page.className='ipage';page.innerHTML=`<div class="inav"><button class="back">‹ qminlab</button><b>${d.name}</b></div>${docView(d.k)}`;body.appendChild(page);wire(page,'ios');
     if(!RM)page.animate([{transform:'translateX(100%)'},{transform:'none'}],{duration:SP2.d,easing:SP2.e});
     page.querySelector('.back').onclick=()=>page.animate([{transform:'none'},{transform:'translateX(100%)'}],{duration:RM?1:260,easing:'ease-in',fill:'forwards'}).onfinish=()=>page.remove()})}
 function iFolder(src){const ov=document.createElement('div');ov.className='fov';
-  ov.innerHTML=`<h3>${T.paused}</h3><div class="fpanel">${PAUSED.map(k=>`<button class="iapp" data-fi="${k}">${pIcon(k)}<span>${P[k].short||P[k].name}</span></button>`).join('')}</div>`;
+  ov.innerHTML=`<h3>${T.paused}</h3><div class="fpanel">${PAUSED.map(k=>`<button class="iapp" data-fi="${k}">${pIcon(k)}${iLabel(k)}</button>`).join('')}</div>`;
   ios.appendChild(ov);home.classList.add('behind');const r=irect(src),pr=ov.querySelector('.fpanel');
   pr.style.transformOrigin=`${r.x+30-(ios.offsetWidth-322)/2}px ${r.y+30-pr.offsetTop}px`;requestAnimationFrame(()=>ov.classList.add('on'));
   ov.addEventListener('click',e=>{const b=e.target.closest('[data-fi]');if(b){iOpenApp(b.dataset.fi,b);return}
@@ -585,7 +613,7 @@ function iSearch(){const s=document.createElement('div');s.className='isearch';
 
 /* ---------- mode: phones get the iPhone, everything wider gets the Mac ---------- */
 const mq=matchMedia('(max-width:720px)');
-const mode=()=>root.classList.toggle('ios',mq.matches);
+const mode=()=>{root.classList.toggle('ios',mq.matches);fitDocs()};on(window,'resize',fitDocs);
 on(mq,'change',mode);mode();
 
 

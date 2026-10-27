@@ -85,6 +85,7 @@
 .qos .st-row{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:10px;padding:6px 0;border-top:.5px solid var(--line);font-size:13.5px;width:100%;text-align:left}
 .qos .st-row:first-of-type{border-top:0}
 .qos .st-row .appic{width:24px;height:24px}
+.qos .st-row small{margin-left:7px;font-size:11.5px;color:var(--sub)}
 .qos .pill{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
 .qos .pill.review{background:rgba(255,90,31,.14);color:#C2410C}
 .qos .pill.dev,.qos .pill.making{background:rgba(0,122,255,.12);color:#0062CC}
@@ -102,13 +103,18 @@
 @media (max-height:760px){.qos .wg-gh{display:none}}
 
 /* desktop icons: 64pt art, 12pt label, right-aligned column */
-.qos .dicons{position:absolute;right:16px;top:34px;display:grid;gap:4px;z-index:1}
-.qos .dicon{width:96px;display:grid;justify-items:center;gap:3px;padding:4px 2px;text-align:center}
+.qos .dicons{position:absolute;right:16px;top:34px;display:flex;flex-direction:row-reverse;align-items:flex-start;gap:6px;z-index:1}
+.qos .dcol{display:grid;gap:4px}
+.qos .dicon{width:104px;display:grid;justify-items:center;align-content:start;gap:3px;padding:4px 2px;text-align:center}
 .qos .dicon .art{width:64px;height:64px;padding:3px;border-radius:6px}
-.qos .dicon .lbl{font-size:12px;font-weight:500;padding:1px 5px;border-radius:4px;line-height:1.25;color:#1D1D1F;text-shadow:0 0 6px rgba(255,255,255,.9),0 0 2px rgba(255,255,255,.9)}
+.qos .dicon .lbl{word-break:keep-all;font-size:12px;font-weight:500;padding:1px 5px;border-radius:4px;line-height:1.25;color:#1D1D1F;text-shadow:0 0 6px rgba(255,255,255,.9),0 0 2px rgba(255,255,255,.9)}
 .qos .dicon.sel .art{background:rgba(0,0,0,.1)}
 .qos .dicon.sel .lbl{background:var(--blue);color:#fff;text-shadow:none}
 .qos .mfold{width:100%;height:100%;display:block;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.2))}
+/* a project page: blank page badged with the project's app icon */
+.qos .ldoc{position:relative;display:block;width:100%;height:100%}
+.qos .ldoc .lbadge{position:absolute;left:50%;top:56%;width:46%;height:46%;transform:translate(-50%,-50%)}
+.qos .ldoc .lbadge .appic{width:100%!important;height:100%!important}
 
 /* dock */
 .qos .dock{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);display:flex;align-items:flex-end;padding:4px 5px 5px;border-radius:20px;
@@ -117,6 +123,7 @@
 .qos .dk:focus{outline:none}
 .qos .dk .tip{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:rgba(246,246,246,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:3px 10px;border-radius:6px;font-size:13px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;box-shadow:0 0 0 .5px rgba(0,0,0,.15),0 4px 12px rgba(0,0,0,.12)}
 .qos .dk:hover .tip{opacity:1}
+.qos .dk .tip small{font-size:13px;color:var(--sub)}
 .qos .dk .dot{position:absolute;left:50%;bottom:-4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:rgba(0,0,0,.6);opacity:0;transition:opacity .2s}
 .qos .dk.running .dot{opacity:1}
 .qos .dk.bounce{animation:qos-bounce .75s cubic-bezier(.3,.6,.4,1)}
@@ -380,7 +387,8 @@
 .qos .lp .lsearch svg{width:13px;height:13px}
 .qos .lgrid{display:grid;grid-template-columns:repeat(7,128px);gap:40px 0;justify-items:center;transform:scale(1.12);transition:transform .45s cubic-bezier(.2,.9,.2,1)}
 .qos .lp.on .lgrid{transform:none}
-.qos .lgrid button{display:grid;justify-items:center;gap:8px;font-size:13px;color:#1D1D1F}
+.qos .lgrid button{display:grid;justify-items:center;align-content:start;gap:8px;font-size:13px;color:#1D1D1F;width:120px;text-align:center;word-break:keep-all}
+.qos .lgrid small{display:block;font-size:11.5px;color:var(--sub);margin-top:2px}
 .qos .lgrid .art{width:96px;height:96px}
 @media (max-width:1100px){.qos .lgrid{grid-template-columns:repeat(5,120px)}}
 
@@ -425,7 +433,7 @@
 .qos .pages::-webkit-scrollbar{display:none}
 .qos .home.jiggle .pages{touch-action:none;overflow-x:hidden}
 .qos .page{flex:0 0 100%;scroll-snap-align:start;padding:calc(22px + env(safe-area-inset-top,0px)) max(28.5px,env(safe-area-inset-right,0px)) 0 max(28.5px,env(safe-area-inset-left,0px))}
-.qos .iwrap{display:grid;row-gap:40px;justify-content:center}
+.qos .iwrap{display:grid;row-gap:24px;justify-content:center;align-content:start}
 .qos .iw{width:336px;height:158px;border-radius:24px;padding:15px 16px}
 .qos .iw.lg{background:rgba(255,255,255,.62);color:#1D1D1F}
 .qos .iw .word{font-size:36px;margin:6px 0 8px}
@@ -436,6 +444,23 @@
 .qos .igrid{display:grid;grid-template-columns:repeat(4,64px);justify-content:space-between;row-gap:16px;width:336px}
 .qos .iapp{display:grid;justify-items:center;gap:6px;width:64px;font-size:12px;font-weight:500;text-align:center;line-height:14px;position:relative}
 .qos .iapp>span:last-child{width:84px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+/* project apps: full name (up to two lines, never shortened) and the kind of work under it */
+.qos .iapp{align-content:start}
+.qos .iapp>span.nm{white-space:normal;word-break:keep-all;overflow:visible;display:block}
+.qos .iapp>span.nm small{display:block;margin-top:2px;font-size:10.5px;font-weight:600;line-height:12px;opacity:.82}
+/* records widget: every project page, one tap each */
+.qos .iw.idocs{height:auto;min-height:158px;padding:11px 14px 6px;display:grid;grid-template-columns:1fr 1fr;column-gap:12px;align-content:start}
+/* two columns, so it stays a medium widget; on page 1 when it fits above the search pill, otherwise at the top of page 2 */
+.qos .home:not(.docs-p2) .idocs.p2,.qos .home.docs-p2 .idocs.p1{display:none}
+.qos .idocs.p1{margin-top:-8px}
+.qos .iw.idocs .k{grid-column:1/-1;margin-bottom:2px}
+.qos .idoc{display:flex;align-items:center;gap:8px;padding:5px 0;text-align:left;color:#1D1D1F;border-top:.5px solid rgba(0,0,0,.08);min-width:0}
+.qos .idoc:nth-of-type(-n+2){border-top:0}
+.qos .idoc>span{min-width:0;display:grid}
+.qos .idoc b{font-size:13px;font-weight:600;line-height:16px;word-break:keep-all}
+.qos .idoc small{font-size:11px;line-height:13px;color:rgba(29,29,31,.62);word-break:keep-all}
+.qos .idoc .appic{width:24px;height:24px;flex:none;box-shadow:none!important}
+.qos .idoc:active{opacity:.6}
 .qos .iapp .appic,.qos .iapp .ifold{width:64px;height:64px;transition:transform .2s}
 .qos #ios .iapp .appic{box-shadow:inset 0 1px 1.5px rgba(255,255,255,.35),inset 0 0 0 .5px rgba(255,255,255,.16)}
 .qos .iapp:active .appic{filter:brightness(.85)}
@@ -487,6 +512,7 @@
 .qos .frow:first-child{border-top:0}
 .qos .frow .fic{width:40px;height:48px;flex:none}
 .qos .frow .fic svg{width:100%;height:100%}
+.qos .frow .fic .ldoc{width:100%;height:100%}
 .qos .frow b{display:block;font-size:16px;font-weight:500}.qos .frow small{color:#8E8E93;font-size:13px}
 /* iOS search */
 .qos .isearch{position:absolute;inset:0;z-index:88;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 0;background:rgba(0,0,0,.28);backdrop-filter:blur(30px) saturate(1.5);-webkit-backdrop-filter:blur(30px) saturate(1.5);opacity:0;transition:opacity .25s}
