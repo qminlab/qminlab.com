@@ -218,21 +218,27 @@ function track(mv,up){const u=ev=>{removeEventListener('pointermove',mv);removeE
 /* desktop files */
 // Project pages (production notes, trial and error, asset gallery, the DeepHold site) sit on the desktop as documents of their own,
 // so each is one double-click (one tap on the iPhone widget) away instead of a link inside an app.
-const DOCS=D.docs.map(d=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.href,proj:d.project}));
+const DOCS=D.docs.map(d=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.href,thumb:d.thumb,out:d.out,proj:d.project}));
 const DESK=[{k:'projects',name:T.projects,kind:'folder'},{k:'about',name:T.files.about,ext:'md'},{k:'rules',name:T.files.rules,ext:'md'},{k:'contact',name:T.files.contact,ext:'vcf'},{k:'history',name:T.files.history,ext:'html'},...DOCS];
 const deskItem=k=>DESK.find(d=>d.k===k);
 function docSvg(ext){const mid=ext==='md'?'<path d="M32 38h36M32 46h36M32 54h28M32 62h32" stroke="#C7C7CC" stroke-width="2.5" stroke-linecap="round"/>'
   :ext==='vcf'?'<circle cx="50" cy="42" r="9" fill="#A1A1A6"/><path d="M34 64c2-8 9-12 16-12s14 4 16 12z" fill="#A1A1A6"/>'
   :'<circle cx="50" cy="49" r="15" fill="none" stroke="#007AFF" stroke-width="2.5"/><path d="M35 49h30M50 34c-6 5-6 25 0 30M50 34c6 5 6 25 0 30" fill="none" stroke="#007AFF" stroke-width="2"/>';
   return `<svg class="mfold" viewBox="0 0 100 100"><path d="M23 4h37l20 20v69a3 3 0 0 1-3 3H23a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#FBFBFD" stroke="rgba(0,0,0,.12)" stroke-width=".8"/><path d="M60 4v17a3 3 0 0 0 3 3h17z" fill="#D8D8DD"/>${mid}<text x="50" y="86" text-anchor="middle" font-family="-apple-system,Helvetica,sans-serif" font-weight="700" font-size="10" fill="#8E8E93">${ext.toUpperCase()}</text></svg>`}
-// A project page: a blank page with the project's app icon on it, the way macOS badges a document with its app.
-const PAGE_SVG='<svg class="mfold" viewBox="0 0 100 100"><path d="M23 4h37l20 20v69a3 3 0 0 1-3 3H23a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#FBFBFD" stroke="rgba(0,0,0,.12)" stroke-width=".8"/><path d="M60 4v17a3 3 0 0 0 3 3h17z" fill="#D8D8DD"/></svg>';
-const linkArt=d=>`<span class="ldoc">${PAGE_SVG}<span class="lbadge">${pIcon(d.proj)}</span></span>`;
+// A project page shows as Finder shows a document with a preview: the top of the real page, shrunk, in a thin white frame.
+// A link to somewhere else (GitHub, a download, a store) is a web location file: a page with what it leads to drawn on it.
+const OUT_GLYPH={github:'<path d="M40 40l-11 10 11 10M60 40l11 10-11 10M54 34l-8 32" fill="none" stroke="#1D1D1F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
+  download:'<path d="M50 30v28M38 47l12 12 12-12" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 64v5a3 3 0 0 0 3 3h28a3 3 0 0 0 3-3v-5" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round"/>'};
+const outSvg=kind=>`<svg class="mfold" viewBox="0 0 100 100"><path d="M23 4h37l20 20v69a3 3 0 0 1-3 3H23a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#FBFBFD" stroke="rgba(0,0,0,.12)" stroke-width=".8"/><path d="M60 4v17a3 3 0 0 0 3 3h17z" fill="#D8D8DD"/>${OUT_GLYPH[kind]||'<path d="M40 60l20-20M44 40h16v16" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>'}</svg>`;
+const linkArt=d=>d.out?outSvg(d.out):`<span class="ldoc"><img src="${d.thumb}" alt="" loading="lazy" decoding="async" draggable="false"></span>`;
+const openOut=d=>open(d.href,'_blank','noopener');
 const artOf=k=>{const d=deskItem(k);if(d)return d.kind==='folder'?FOLDER_SVG:d.kind==='link'?linkArt(d):docSvg(d.ext);return macIcon(k)};
 const label=k=>deskItem(k)?.name||P[k]?.name||k;
-const kindOf=d=>d.ext?T.kinds[d.ext]:d.kind==='link'?T.kinds.link:T.kinds.folder;
+const kindOf=d=>d.ext?T.kinds[d.ext]:d.kind==='link'?(d.out?T.kinds.out:T.kinds.link):T.kinds.folder;
+// Quick Look of a web location: what it is and where it goes (other sites refuse to run inside a frame).
+const outView=d=>`<div class="paused-doc"><div style="width:84px;height:84px">${outSvg(d.out)}</div><h2>${esc(d.name)}</h2><p>${esc(d.href.replace(/^https?:\/\//,''))}</p><div class="btns">${ext(d.href,T.open,'btn pri')}</div></div>`;
 const docBody=k=>k==='about'?about():k==='rules'?rules():k==='contact'?contact():history();
-const docView=k=>{const d=deskItem(k);return d?.kind==='link'?safPage(d.href,esc(d.name)):k==='contact'?contact():k==='history'?history():`<div class="mdoc">${docBody(k)}</div>`};
+const docView=k=>{const d=deskItem(k);return d?.out?outView(d):d?.kind==='link'?safPage(d.href,esc(d.name)):k==='contact'?contact():k==='history'?history():`<div class="mdoc">${docBody(k)}</div>`};
 
 /* ================= MAC ================= */
 const mac=$('#mac'),dock=$('#dock'),dicons=$('#dicons');
@@ -353,7 +359,7 @@ function closeWin(id){const o=wins[id];if(!o)return;delete wins[id];o.stop&&o.st
 
 function macOpenApp(k,srcNode){const a=APPS[k];const d=root.querySelector(`[data-dock="${k}"]`);if(d&&!wins['app:'+k]){d.classList.remove('bounce');void d.offsetWidth;d.classList.add('bounce')}
   openWin('app:'+k,{title:a.title,app:P[k].name,w:a.w,h:a.h+28,cls:'appwin'+(a.dark?' dark':'')+(a.w<500?' narrow':''),html:appBody(k),tools:appTools(k),fromDock:true,after:el=>startApp(k,el)})}
-function macOpen(k,src){const d=deskItem(k);if(!d)return macOpenApp(k,src);if(d.kind==='folder')return macOpenFolder('projects',src);if(d.kind==='link')return macSaf(d.href,d.name,src);
+function macOpen(k,src){const d=deskItem(k);if(!d)return macOpenApp(k,src);if(d.kind==='folder')return macOpenFolder('projects',src);if(d.out)return openOut(d);if(d.kind==='link')return macSaf(d.href,d.name,src);
   const [app,w,h]={about:[T.apps.textedit,640,560],rules:[T.apps.textedit,560,480],contact:[T.apps.contacts,440,430],history:[T.apps.safari,880,580]}[k];
   const html=k==='history'?safHistory():k==='contact'?contact():`<div class="mdoc">${docBody(k)}</div>`;
   openWin('doc:'+k,{title:d.name,app,w,h,html,cls:k==='history'?'safwin':'',src:src?rectOf(src):null})}
@@ -514,7 +520,7 @@ let iord=LS.get('ios',IOS_DEFAULT);{const all=[...(iord.grid||[]),...(iord.dock|
 igrid.innerHTML=iord.grid.map(iItem).join('');idock.innerHTML=iord.dock.map(iItem).join('');
 // The records widget: every project page, one tap each.
 root.querySelectorAll('.idocs').forEach(w=>{if(!DOCS.length)return w.remove();
-  w.innerHTML=`<div class="k">${T.records}</div>${DOCS.map(d=>`<button class="idoc" data-ldoc="${d.k}" aria-label="${esc(d.name)}">${pIcon(d.proj)}<span><b>${esc(d.what)}</b><small>${esc(P[d.proj].name)}</small></span></button>`).join('')}`});
+  w.innerHTML=`<div class="k">${T.records}</div>${DOCS.map(d=>`<button class="idoc" data-ldoc="${d.k}" aria-label="${esc(d.name)}">${pIcon(d.proj)}<span><b>${esc(d.what)}${d.out?' ↗':''}</b><small>${esc(P[d.proj].name)}</small></span></button>`).join('')}`});
 // Page 1 when the widget clears the search pill on this screen; shorter phones get it at the top of page 2.
 function fitDocs(){const w=$('.idocs.p1');if(!w||!has('ios'))return;home.classList.remove('docs-p2');
   if(w.getBoundingClientRect().bottom>$('#ipill').getBoundingClientRect().top-6)home.classList.add('docs-p2')}
@@ -539,7 +545,7 @@ on(home,'contextmenu',e=>e.preventDefault());
     pill.querySelectorAll('.dts i').forEach((d,j)=>d.classList.toggle('on',j===i));clearTimeout(t);t=later(()=>pill.classList.remove('dots'),1400)},{passive:true})}
 on(home,'click',e=>{if(moved){moved=false;e.preventDefault();return}
   if(jig){if(!e.target.closest('.iapp'))setJiggle(false);e.preventDefault();return}
-  const dc=e.target.closest('[data-ldoc]');if(dc){const d=deskItem(dc.dataset.ldoc);iSheet(safPage(d.href,esc(d.name)),d.name,dc,null,'sheetsaf');return}
+  const dc=e.target.closest('[data-ldoc]');if(dc){iDoc(dc.dataset.ldoc,dc);return}
   const it=e.target.closest('.iapp');if(it)iOpenKey(it.dataset.key,it)});
 on($('#ipill'),'click',e=>{e.stopPropagation();if(!jig)iSearch()});
 const irect=(n,inner=true)=>{const r=((inner&&n.querySelector('.appic,.ifold'))||n).getBoundingClientRect(),s=ios.getBoundingClientRect();return{x:r.left-s.left,y:r.top-s.top,w:r.width,h:r.height}};
@@ -590,7 +596,7 @@ function iSheet(html,title,src,onReady,cls){
   hb.addEventListener('pointerup',()=>{sy=null;close()});
   return el}
 function iOpenApp(k,src){const a=APPS[k];iSheet(`<div class="ibar">${appTools(k)}</div>`+appBody(k),a.title,src,el=>startApp(k,el),'app'+(a.dark?' dark':''))}
-function iDoc(k,src){const d=deskItem(k);if(d.kind==='link')return iSheet(safPage(d.href,esc(d.name)),d.name,src,null,'sheetsaf');iSheet(`<div class="inav"><b>${deskItem(k).name}</b></div>${docView(k)}`,deskItem(k).name,src)}
+function iDoc(k,src){const d=deskItem(k);if(d.out)return openOut(d);if(d.kind==='link')return iSheet(safPage(d.href,esc(d.name)),d.name,src,null,'sheetsaf');iSheet(`<div class="inav"><b>${deskItem(k).name}</b></div>${docView(k)}`,deskItem(k).name,src)}
 function iFiles(src){const el=iSheet(`<div class="files"><h1>qminlab</h1><div class="flist">${DESK.filter(d=>d.kind!=='folder').map(d=>`<button class="frow" data-doc="${d.k}"><span class="fic">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span><span><b>${esc(d.name)}</b><small>${d.kind==='link'?P[d.proj].name:`${T.modifiedShort} · ${kindOf(d)}`}</small></span></button>`).join('')}</div></div>`,T.apps.files,src);
   const body=el.querySelector('.ibody');body.addEventListener('click',e=>{const b=e.target.closest('[data-doc]');if(!b)return;const d=deskItem(b.dataset.doc);
     if(d.kind==='link'){iDoc(d.k,b);return}

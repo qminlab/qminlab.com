@@ -110,10 +110,9 @@ h1,h2,h3,h4,h5,p,dl,dd{margin:0}
 .dicon.sel .art{background:rgba(0,0,0,.1)}
 .dicon.sel .lbl{background:var(--blue);color:#fff;text-shadow:none}
 .mfold{width:100%;height:100%;display:block;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.2))}
-/* a project page: blank page badged with the project's app icon */
-.ldoc{position:relative;display:block;width:100%;height:100%}
-.ldoc .lbadge{position:absolute;left:50%;top:56%;width:46%;height:46%;transform:translate(-50%,-50%)}
-.ldoc .lbadge .appic{width:100%!important;height:100%!important}
+/* a project page: Finder-style preview thumbnail (16:10, thin white frame, soft shadow) */
+.ldoc{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.ldoc img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border:2px solid #fff;border-radius:1px;box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 1px 3px rgba(0,0,0,.25);background:#1D1D1F}
 
 /* dock */
 .dock{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);display:flex;align-items:flex-end;padding:4px 5px 5px;border-radius:20px;
@@ -448,17 +447,17 @@ h1,h2,h3,h4,h5,p,dl,dd{margin:0}
 .iapp>span.nm{white-space:normal;word-break:keep-all;overflow:visible;display:block}
 .iapp>span.nm small{display:block;margin-top:2px;font-size:10.5px;font-weight:600;line-height:12px;opacity:.82}
 /* records widget: every project page, one tap each */
-.iw.idocs{height:auto;min-height:158px;padding:11px 14px 6px;display:grid;grid-template-columns:1fr 1fr;column-gap:12px;align-content:start}
+.iw.idocs{height:auto;min-height:158px;padding:11px 12px 6px;display:grid;grid-template-columns:repeat(3,1fr);column-gap:8px;align-content:start}
 /* two columns, so it stays a medium widget; on page 1 when it fits above the search pill, otherwise at the top of page 2 */
 .home:not(.docs-p2) .idocs.p2,.home.docs-p2 .idocs.p1{display:none}
 .idocs.p1{margin-top:-8px}
 .iw.idocs .k{grid-column:1/-1;margin-bottom:2px}
-.idoc{display:flex;align-items:center;gap:8px;padding:5px 0;text-align:left;color:#1D1D1F;border-top:.5px solid rgba(0,0,0,.08);min-width:0}
-.idoc:nth-of-type(-n+2){border-top:0}
+.idoc{display:flex;align-items:center;gap:6px;padding:4px 0;text-align:left;color:#1D1D1F;border-top:.5px solid rgba(0,0,0,.08);min-width:0}
+.idoc:nth-of-type(-n+3){border-top:0}
 .idoc>span{min-width:0;display:grid}
-.idoc b{font-size:13px;font-weight:600;line-height:16px;word-break:keep-all}
-.idoc small{font-size:11px;line-height:13px;color:rgba(29,29,31,.62);word-break:keep-all}
-.idoc .appic{width:24px;height:24px;flex:none;box-shadow:none!important}
+.idoc b{font-size:12px;font-weight:600;line-height:15px;word-break:keep-all}
+.idoc small{font-size:10.5px;line-height:12px;color:rgba(29,29,31,.62);word-break:keep-all}
+.idoc .appic{width:20px;height:20px;flex:none;box-shadow:none!important}
 .idoc:active{opacity:.6}
 .iapp .appic,.iapp .ifold{width:64px;height:64px;transition:transform .2s}
 #ios .iapp .appic{box-shadow:inset 0 1px 1.5px rgba(255,255,255,.35),inset 0 0 0 .5px rgba(255,255,255,.16)}
