@@ -218,11 +218,10 @@ function track(mv,up){const u=ev=>{removeEventListener('pointermove',mv);removeE
 /* desktop files */
 // Project pages (production notes, trial and error, asset gallery, the DeepHold site) sit on the desktop as documents of their own,
 // so each is one double-click (one tap on the iPhone widget) away instead of a link inside an app.
-// Sorted by kind, each kind a column of its own: trial and error, then production records (notes, asset gallery),
-// then ways out (the DeepHold site, GitHub, downloads and any store link); projects keep their order inside a kind.
-const DOC_GROUP={trials:1,notes:2,assets:2,site:3,download:3.1,github:3.2};
-const DOCS=D.docs.map((d,i)=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.href,thumb:d.thumb,out:d.out,proj:d.project,g:DOC_GROUP[d.k.slice(d.project.length+1)]||3.3,i}))
-  .sort((a,b)=>a.g-b.g||a.i-b.i);
+// One column per project (in the projects' order); inside it: the site, the notes and records, trial and error, then links elsewhere.
+const DOC_RANK={site:1,notes:2,assets:3,trials:4,download:5,github:6};
+const DOCS=D.docs.map((d,i)=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.href,thumb:d.thumb,out:d.out,proj:d.project,g:ORDER.indexOf(d.project)+1,r:DOC_RANK[d.k.slice(d.project.length+1)]||7,i}))
+  .sort((a,b)=>a.g-b.g||a.r-b.r||a.i-b.i);
 const DESK=[{k:'projects',name:T.projects,kind:'folder'},{k:'about',name:T.files.about,ext:'md'},{k:'rules',name:T.files.rules,ext:'md'},{k:'contact',name:T.files.contact,ext:'vcf'},{k:'history',name:T.files.history,ext:'html'},...DOCS];
 const deskItem=k=>DESK.find(d=>d.k===k);
 function docSvg(ext){const mid=ext==='md'?'<path d="M32 38h36M32 46h36M32 54h28M32 62h32" stroke="#C7C7CC" stroke-width="2.5" stroke-linecap="round"/>'
@@ -252,9 +251,9 @@ $('#statusList').innerHTML=ORDER.map(k=>`<button class="st-row" data-open="${k}"
 // desktop icons and widgets keep each visitor's arrangement (offsets from their default place)
 let deskPos=LS.get('desk',{}),wgPos=LS.get('wg',{});
 const tr=p=>p?`transform:translate(${p.dx}px,${p.dy}px)`:'';
-dicons.innerHTML=DESK.map(d=>`<button class="dicon${d.kind==='link'?' link':''}" data-g="${Math.floor(d.g||0)}" data-k="${d.k}" style="${tr(deskPos[d.k])}"><span class="art">${artOf(d.k)}</span><span class="lbl">${esc(d.name)}</span></button>`).join('');
+dicons.innerHTML=DESK.map(d=>`<button class="dicon${d.kind==='link'?' link':''}" data-g="${d.g||0}" data-k="${d.k}" style="${tr(deskPos[d.k])}"><span class="art">${artOf(d.k)}</span><span class="lbl">${esc(d.name)}</span></button>`).join('');
 // Icons fill columns from the top right, as Finder arranges a desktop; a column ends above the shortcuts widget.
-// The computer's own files fill the first column; each kind of project item starts a column of its own.
+// The computer's own files fill the first column; each project's items start a column of their own.
 function deskRows(){const k=$('.widgets2'),bottom=k&&getComputedStyle(k).display!=='none'?k.getBoundingClientRect().top:innerHeight-110,rows=Math.max(3,Math.floor((bottom-44)/112));
   const icons=[...dicons.querySelectorAll('.dicon')],cols=[];let cur=null,n=0;
   icons.forEach(el=>{const g=el.dataset.g;if(!cur||g!==cur.g||n===(g==='0'?5:rows)){cur={g,el:document.createElement('div')};cur.el.className='dcol';cols.push(cur);n=0}cur.el.appendChild(el);n++});
