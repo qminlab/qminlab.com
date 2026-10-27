@@ -222,8 +222,12 @@ function track(mv,up){const u=ev=>{removeEventListener('pointermove',mv);removeE
 const DOC_RANK={site:1,notes:2,assets:3,trials:4,download:5,github:6};
 const DOCS=D.docs.map((d,i)=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.href,thumb:d.thumb,out:d.out,proj:d.project,g:ORDER.indexOf(d.project)+1,r:DOC_RANK[d.k.slice(d.project.length+1)]||7,i}))
   .sort((a,b)=>a.g-b.g||a.r-b.r||a.i-b.i);
-const DESK=[{k:'projects',name:T.projects,kind:'folder'},{k:'about',name:T.files.about,ext:'md'},{k:'rules',name:T.files.rules,ext:'md'},{k:'contact',name:T.files.contact,ext:'vcf'},{k:'history',name:T.files.history,ext:'html'},...DOCS];
-const deskItem=k=>DESK.find(d=>d.k===k);
+// Each project with pages or links gets a folder on the desktop holding its app and those items.
+const PFOLDERS=ORDER.filter(k=>DOCS.some(d=>d.proj===k)).map(k=>({k:'f-'+k,name:P[k].name,kind:'folder',proj:k,g:1}));
+const DESK=[{k:'projects',name:T.projects,kind:'folder'},{k:'about',name:T.files.about,ext:'md'},{k:'rules',name:T.files.rules,ext:'md'},{k:'contact',name:T.files.contact,ext:'vcf'},{k:'history',name:T.files.history,ext:'html'},...PFOLDERS];
+const ALL=[...DESK,...DOCS];
+const deskItem=k=>ALL.find(d=>d.k===k);
+const folderItems=id=>id==='projects'?ORDER:id.startsWith('f-')?[id.slice(2),...DOCS.filter(d=>d.proj===id.slice(2)).map(d=>d.k)]:DESK.map(d=>d.k);
 function docSvg(ext){const mid=ext==='md'?'<path d="M32 38h36M32 46h36M32 54h28M32 62h32" stroke="#C7C7CC" stroke-width="2.5" stroke-linecap="round"/>'
   :ext==='vcf'?'<circle cx="50" cy="42" r="9" fill="#A1A1A6"/><path d="M34 64c2-8 9-12 16-12s14 4 16 12z" fill="#A1A1A6"/>'
   :'<circle cx="50" cy="49" r="15" fill="none" stroke="#007AFF" stroke-width="2.5"/><path d="M35 49h30M50 34c-6 5-6 25 0 30M50 34c6 5 6 25 0 30" fill="none" stroke="#007AFF" stroke-width="2"/>';
@@ -235,7 +239,9 @@ const OUT_GLYPH={github:'<path d="M40 40l-11 10 11 10M60 40l11 10-11 10M54 34l-8
 const outSvg=kind=>`<svg class="mfold" viewBox="0 0 100 100"><path d="M23 4h37l20 20v69a3 3 0 0 1-3 3H23a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#FBFBFD" stroke="rgba(0,0,0,.12)" stroke-width=".8"/><path d="M60 4v17a3 3 0 0 0 3 3h17z" fill="#D8D8DD"/>${OUT_GLYPH[kind]||'<path d="M40 60l20-20M44 40h16v16" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>'}</svg>`;
 const linkArt=d=>d.out?outSvg(d.out):`<span class="ldoc"><img src="${d.thumb}" alt="" loading="lazy" decoding="async" draggable="false"></span>`;
 const openOut=d=>open(d.href,'_blank','noopener');
-const artOf=k=>{const d=deskItem(k);if(d)return d.kind==='folder'?FOLDER_SVG:d.kind==='link'?linkArt(d):docSvg(d.ext);return macIcon(k)};
+// A project folder carries its app's symbol pressed into the front, as macOS folders can show a symbol.
+const pFolder=d=>`<span class="pfold">${FOLDER_SVG}<span class="pglyph">${GLYPH[d.proj]}</span></span>`;
+const artOf=k=>{const d=deskItem(k);if(d)return d.kind==='folder'?(d.proj?pFolder(d):FOLDER_SVG):d.kind==='link'?linkArt(d):docSvg(d.ext);return macIcon(k)};
 const label=k=>deskItem(k)?.name||P[k]?.name||k;
 const kindOf=d=>d.ext?T.kinds[d.ext]:d.kind==='link'?(d.out?T.kinds.out:T.kinds.link):T.kinds.folder;
 // Quick Look of a web location: what it is and where it goes (other sites refuse to run inside a frame).
@@ -253,7 +259,7 @@ let deskPos=LS.get('desk',{}),wgPos=LS.get('wg',{});
 const tr=p=>p?`transform:translate(${p.dx}px,${p.dy}px)`:'';
 dicons.innerHTML=DESK.map(d=>`<button class="dicon${d.kind==='link'?' link':''}" data-g="${d.g||0}" data-k="${d.k}" style="${tr(deskPos[d.k])}"><span class="art">${artOf(d.k)}</span><span class="lbl">${esc(d.name)}</span></button>`).join('');
 // Icons fill columns from the top right, as Finder arranges a desktop; a column ends above the shortcuts widget.
-// The computer's own files fill the first column; each project's items start a column of their own.
+// The computer's own files fill the first column; the project folders start the next.
 function deskRows(){const k=$('.widgets2'),bottom=k&&getComputedStyle(k).display!=='none'?k.getBoundingClientRect().top:innerHeight-110,rows=Math.max(3,Math.floor((bottom-44)/112));
   const icons=[...dicons.querySelectorAll('.dicon')],cols=[];let cur=null,n=0;
   icons.forEach(el=>{const g=el.dataset.g;if(!cur||g!==cur.g||n===(g==='0'?5:rows)){cur={g,el:document.createElement('div')};cur.el.className='dcol';cols.push(cur);n=0}cur.el.appendChild(el);n++});
@@ -362,18 +368,18 @@ function closeWin(id){const o=wins[id];if(!o)return;delete wins[id];o.stop&&o.st
 
 function macOpenApp(k,srcNode){const a=APPS[k];const d=root.querySelector(`[data-dock="${k}"]`);if(d&&!wins['app:'+k]){d.classList.remove('bounce');void d.offsetWidth;d.classList.add('bounce')}
   openWin('app:'+k,{title:a.title,app:P[k].name,w:a.w,h:a.h+28,cls:'appwin'+(a.dark?' dark':'')+(a.w<500?' narrow':''),html:appBody(k),tools:appTools(k),fromDock:true,after:el=>startApp(k,el)})}
-function macOpen(k,src){const d=deskItem(k);if(!d)return macOpenApp(k,src);if(d.kind==='folder')return macOpenFolder('projects',src);if(d.out)return openOut(d);if(d.kind==='link')return macSaf(d.href,d.name,src);
+function macOpen(k,src){const d=deskItem(k);if(!d)return macOpenApp(k,src);if(d.kind==='folder')return macOpenFolder(d.k,src);if(d.out)return openOut(d);if(d.kind==='link')return macSaf(d.href,d.name,src);
   const [app,w,h]={about:[T.apps.textedit,640,560],rules:[T.apps.textedit,560,480],contact:[T.apps.contacts,440,430],history:[T.apps.safari,880,580]}[k];
   const html=k==='history'?safHistory():k==='contact'?contact():`<div class="mdoc">${docBody(k)}</div>`;
   openWin('doc:'+k,{title:d.name,app,w,h,html,cls:k==='history'?'safwin':'',src:src?rectOf(src):null})}
-const NAV=[{id:'desktop',name:T.desktop},{id:'projects',name:T.projects},{id:'trash',name:T.trash}];
+const NAV=[{id:'desktop',name:T.desktop},{id:'projects',name:T.projects},...PFOLDERS.map(f=>({id:f.k,name:f.name})),{id:'trash',name:T.trash}];
 const navName=id=>NAV.find(n=>n.id===id).name;
 function finder(active){
   return `<div class="finder"><div class="side"><h4>${T.favorites}</h4>${NAV.map(f=>`<button data-nav="${f.id}" aria-current="${f.id===active}">${SIDE_FOLDER}${f.name}</button>`).join('')}</div>
   <div class="fpane"><div class="ftool"><span class="nav">${CHEV}<span style="transform:scaleX(-1);display:inline-block">${CHEV}</span></span><b data-ftitle>${navName(active)}</b></div><div class="fmain" data-fmain>${folderBody(active)}</div></div></div>`}
 function folderBody(id){
   if(id==='trash')return `<div class="paused-doc" style="padding-top:90px"><p>${T.trashEmpty}</p></div>`;
-  const items=id==='projects'?ORDER:DESK.map(d=>d.k);
+  const items=folderItems(id);
   return `<div class="fgrid">${items.map(k=>`<button class="fitem" data-item="${k}"><span class="art">${artOf(k)}</span><span class="nm">${esc(label(k))}</span>${P[k]?`<span class="meta">${P[k].type}</span><span class="meta"><span class="pill ${P[k].st}">${P[k].stl}</span></span>`:''}</button>`).join('')}</div>`}
 function macOpenFolder(f,srcNode){const o=openWin('finder',{title:navName(f),app:'Finder',w:800,h:500,cls:'finderwin',html:finder(f),src:srcNode?rectOf(srcNode):null});navFinder(o.el,f)}
 function navFinder(el,f){const m=el.querySelector('[data-fmain]');if(!m)return;m.innerHTML=folderBody(f);el.querySelector('[data-ftitle]').textContent=navName(f);
@@ -385,7 +391,7 @@ function macArch(v,src){const x=verOf(v);openWin('arch:'+v,{title:x.name,app:T.a
 function info(k){if(P[k])return macCase(k);const d=deskItem(k);
   openWin('info:'+k,{title:T.info(d.name),app:'Finder',w:300,h:390,html:`<div class="paused-doc"><div style="width:84px;height:84px">${artOf(k)}</div><h2>${d.name}</h2><dl class="kv" style="text-align:left;width:100%"><dt>${T.infoKind}</dt><dd>${kindOf(d)}</dd><dt>${T.infoWhere}</dt><dd>${T.desktop}</dd><dt>${T.infoDate}</dt><dd>${T.modified}</dd></dl></div>`})}
 function quickLook(){if(wins.ql){closeWin('ql');return}const k=sel.keys[0];if(!k)return;const d=deskItem(k);
-  const html=P[k]?caseFile(k):d.kind==='folder'?`<div class="paused-doc" style="padding-top:60px"><div style="width:110px;height:110px">${FOLDER_SVG}</div><h2>${T.projects}</h2><p>${T.items(ORDER.length)}</p></div>`:docView(k);
+  const html=P[k]?caseFile(k):d.kind==='folder'?`<div class="paused-doc" style="padding-top:60px"><div style="width:110px;height:110px">${artOf(k)}</div><h2>${esc(d.name)}</h2><p>${T.items(folderItems(k).length)}</p></div>`:docView(k);
   openWin('ql',{title:label(k),app:T.apps.quicklook,w:600,h:480,html})}
 
 /* shared wiring for content inside windows/sheets */
@@ -423,7 +429,7 @@ on($('#mbLogo'),'click',e=>{const r=e.currentTarget.getBoundingClientRect();
 /* ---------- search index (Spotlight on mac, search on iOS) ---------- */
 const DOC_WORDS={contact:'email 이메일 연락 contact github vcard',history:'archive 변화 과정 history version 이전 specimen lab open 표본실 열린 실험실',about:'about 소개 김규민 gyumin kim curious mean qmin',rules:'rules 규칙 lab 연구실'};
 const IDX=[...ORDER.map(k=>({grp:T.groups.app,label:P[k].name,meta:`${P[k].type} · ${P[k].stl}`,art:pIcon(k),txt:[P[k].name,P[k].type,P[k].one,P[k].stack,P[k].code].join(' '),go:m=>m==='mac'?macOpenApp(k):iOpenApp(k)})),
-  ...DESK.filter(d=>d.kind!=='folder').map(d=>({grp:T.groups.doc,label:d.name,meta:d.kind==='link'?P[d.proj].name:kindOf(d),art:`<span class="sdoc">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span>`,txt:d.name+' '+(DOC_WORDS[d.k]||d.href),go:m=>m==='mac'?macOpen(d.k):iDoc(d.k)})),
+  ...ALL.filter(d=>d.kind!=='folder').map(d=>({grp:T.groups.doc,label:d.name,meta:d.kind==='link'?P[d.proj].name:kindOf(d),art:`<span class="sdoc">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span>`,txt:d.name+' '+(DOC_WORDS[d.k]||d.href),go:m=>m==='mac'?macOpen(d.k):iDoc(d.k)})),
   ...VERSIONS.filter(v=>!v.now).map(v=>({grp:T.groups.history,label:v.name,meta:v.d,art:pIcon('archive'),txt:v.name+' '+v.p,go:m=>m==='mac'?macArch(v.v):iSheet(archived(v.v),v.name,null,null,'sheetsaf')})),
   ...ORDER.map(k=>({grp:T.groups.case,label:T.info(P[k].name),meta:P[k].code,art:pIcon(k),txt:P[k].name+' case info '+P[k].stack,go:m=>m==='mac'?macCase(k):iSheet(caseFile(k),P[k].name)}))];
 function search(q){q=q.trim().toLowerCase();if(!q)return[];return IDX.filter(x=>x.txt.toLowerCase().includes(q)).slice(0,9)}
@@ -601,7 +607,7 @@ function iSheet(html,title,src,onReady,cls){
   return el}
 function iOpenApp(k,src){const a=APPS[k];iSheet(`<div class="ibar">${appTools(k)}</div>`+appBody(k),a.title,src,el=>startApp(k,el),'app'+(a.dark?' dark':''))}
 function iDoc(k,src){const d=deskItem(k);if(d.out)return openOut(d);if(d.kind==='link')return iSheet(safPage(d.href,esc(d.name)),d.name,src,null,'sheetsaf');iSheet(`<div class="inav"><b>${deskItem(k).name}</b></div>${docView(k)}`,deskItem(k).name,src)}
-function iFiles(src){const el=iSheet(`<div class="files"><h1>qminlab</h1><div class="flist">${DESK.filter(d=>d.kind!=='folder').map(d=>`<button class="frow" data-doc="${d.k}"><span class="fic">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span><span><b>${esc(d.name)}</b><small>${d.kind==='link'?P[d.proj].name:`${T.modifiedShort} · ${kindOf(d)}`}</small></span></button>`).join('')}</div></div>`,T.apps.files,src);
+function iFiles(src){const el=iSheet(`<div class="files"><h1>qminlab</h1><div class="flist">${ALL.filter(d=>d.kind!=='folder').map(d=>`<button class="frow" data-doc="${d.k}"><span class="fic">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span><span><b>${esc(d.name)}</b><small>${d.kind==='link'?P[d.proj].name:`${T.modifiedShort} · ${kindOf(d)}`}</small></span></button>`).join('')}</div></div>`,T.apps.files,src);
   const body=el.querySelector('.ibody');body.addEventListener('click',e=>{const b=e.target.closest('[data-doc]');if(!b)return;const d=deskItem(b.dataset.doc);
     if(d.kind==='link'){iDoc(d.k,b);return}
     const page=document.createElement('div');page.className='ipage';page.innerHTML=`<div class="inav"><button class="back">‹ qminlab</button><b>${d.name}</b></div>${docView(d.k)}`;body.appendChild(page);wire(page,'ios');
