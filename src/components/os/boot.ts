@@ -29,6 +29,8 @@ const has = (c) => root.classList.contains(c);
 
 /* ---------- data ---------- */
 const P = D.projects, ORDER = D.order;
+// The studio's browser mini games, on their own site (one link, from the desktop and the iPhone home screen).
+const GAMES = 'https://games.qminlab.com/';
 const SEARCH = ['M10.2 10.2l3.6 3.6', '<circle cx="6.8" cy="6.8" r="4.6"/>'];
 const searchSvg = (w) => `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round">${SEARCH[1]}<path d="${SEARCH[0]}"/></svg>`;
 const GLYPH={
@@ -44,6 +46,7 @@ const GLYPH={
   trash:'<svg viewBox="0 0 24 24"><path d="M6 6.5h12l-1.2 14a1.6 1.6 0 0 1-1.6 1.5H8.8a1.6 1.6 0 0 1-1.6-1.5z" fill="rgba(255,255,255,.75)" stroke="rgba(0,0,0,.28)" stroke-width=".6"/><path d="M5 5.5h14" stroke="rgba(0,0,0,.4)" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 9v10M12 9v10M14.5 9v10" stroke="rgba(0,0,0,.22)" stroke-width=".6"/></svg>',
   rules:'<svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2" fill="#FF5A1F"/><circle cx="6" cy="12" r="2" fill="#0A84FF"/><circle cx="6" cy="17" r="2" fill="#30D158"/><path d="M10 7h9M10 12h9M10 17h9" stroke="#C7C7CC" stroke-width="1.4"/></svg>',
   contact:'<svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4" fill="#F2F2F7"/><path d="M4.5 21c.8-4 4-6 7.5-6s6.7 2 7.5 6z" fill="#F2F2F7"/></svg>',
+  games:'<svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10.5" rx="5.25" fill="#ECE8DE"/><path d="M7.5 10v4.5M5.25 12.25h4.5" stroke="#0C0D0B" stroke-width="1.6" stroke-linecap="round"/><circle cx="15.6" cy="13.4" r="1.25" fill="#FF5A1F"/><circle cx="17.9" cy="11.1" r="1.25" fill="#0C0D0B"/></svg>',
   gh:'<svg viewBox="0 0 24 24">'+[...Array(20)].map((_,i)=>`<rect x="${3+(i%5)*3.8}" y="${4+Math.floor(i/5)*4.2}" width="3" height="3" rx=".7" fill="#FF5A1F" fill-opacity="${[.2,.5,.9,.35,.7][(i*7)%5]}"/>`).join('')+'</svg>',
   launch:'<svg viewBox="0 0 24 24">'+['#FF453A','#FF9F0A','#FFD60A','#30D158','#64D2FF','#0A84FF','#BF5AF2','#FF375F','#AC8E68'].map((c,i)=>`<rect x="${4.5+(i%3)*5.5}" y="${4.5+Math.floor(i/3)*5.5}" width="4" height="4" rx="1" fill="${c}"/>`).join('')+'</svg>',
 };
@@ -224,7 +227,7 @@ const DOCS=D.docs.map((d,i)=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.
   .sort((a,b)=>a.g-b.g||a.r-b.r||a.i-b.i);
 // Each project with pages or links gets a folder on the desktop holding its app and those items.
 const PFOLDERS=ORDER.filter(k=>DOCS.some(d=>d.proj===k)).map(k=>({k:'f-'+k,name:P[k].name,kind:'folder',proj:k,g:1}));
-const DESK=[{k:'projects',name:T.projects,kind:'folder'},{k:'about',name:T.files.about,ext:'md'},{k:'rules',name:T.files.rules,ext:'md'},{k:'contact',name:T.files.contact,ext:'vcf'},{k:'history',name:T.files.history,ext:'html'},...PFOLDERS];
+const DESK=[{k:'projects',name:T.projects,kind:'folder'},{k:'about',name:T.files.about,ext:'md'},{k:'rules',name:T.files.rules,ext:'md'},{k:'contact',name:T.files.contact,ext:'vcf'},{k:'history',name:T.files.history,ext:'html'},...PFOLDERS,{k:'games',name:T.files.games,kind:'link',href:GAMES,out:'games',g:2}];
 const ALL=[...DESK,...DOCS];
 const deskItem=k=>ALL.find(d=>d.k===k);
 const folderItems=id=>id==='projects'?ORDER:id.startsWith('f-')?[id.slice(2),...DOCS.filter(d=>d.proj===id.slice(2)).map(d=>d.k)]:DESK.map(d=>d.k);
@@ -234,9 +237,12 @@ function docSvg(ext){const mid=ext==='md'?'<path d="M32 38h36M32 46h36M32 54h28M
   return `<svg class="mfold" viewBox="0 0 100 100"><path d="M23 4h37l20 20v69a3 3 0 0 1-3 3H23a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#FBFBFD" stroke="rgba(0,0,0,.12)" stroke-width=".8"/><path d="M60 4v17a3 3 0 0 0 3 3h17z" fill="#D8D8DD"/>${mid}<text x="50" y="86" text-anchor="middle" font-family="-apple-system,Helvetica,sans-serif" font-weight="700" font-size="10" fill="#8E8E93">${ext.toUpperCase()}</text></svg>`}
 // A project page shows as Finder shows a document with a preview: the top of the real page, shrunk, in a thin white frame.
 // A link to somewhere else (GitHub, a download, a store) is a web location file: a page with what it leads to drawn on it.
-const OUT_GLYPH={github:'<path d="M40 40l-11 10 11 10M60 40l11 10-11 10M54 34l-8 32" fill="none" stroke="#1D1D1F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
+const OUT_GLYPH={games:'<rect x="28" y="38" width="44" height="26" rx="13" fill="none" stroke="#FF5A1F" stroke-width="4"/><path d="M40 45v12M34 51h12" stroke="#FF5A1F" stroke-width="4" stroke-linecap="round"/><circle cx="58" cy="55" r="3" fill="#FF5A1F"/><circle cx="63" cy="47" r="3" fill="#FF5A1F"/>',
+  github:'<path d="M40 40l-11 10 11 10M60 40l11 10-11 10M54 34l-8 32" fill="none" stroke="#1D1D1F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
   download:'<path d="M50 30v28M38 47l12 12 12-12" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 64v5a3 3 0 0 0 3 3h28a3 3 0 0 0 3-3v-5" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round"/>'};
 const outSvg=kind=>`<svg class="mfold" viewBox="0 0 100 100"><path d="M23 4h37l20 20v69a3 3 0 0 1-3 3H23a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#FBFBFD" stroke="rgba(0,0,0,.12)" stroke-width=".8"/><path d="M60 4v17a3 3 0 0 0 3 3h17z" fill="#D8D8DD"/>${OUT_GLYPH[kind]||'<path d="M40 60l20-20M44 40h16v16" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>'}</svg>`;
+// Whose link it is: the project's name, or for a studio-wide link (the games site) where it leads.
+const linkOwner=d=>d.proj?P[d.proj].name:d.href.replace(/^https?:\/\/|\/$/g,'');
 const linkArt=d=>d.out?outSvg(d.out):`<span class="ldoc"><img src="${d.thumb}" alt="" loading="lazy" decoding="async" draggable="false"></span>`;
 const openOut=d=>open(d.href,'_blank','noopener');
 // A project folder carries its app's symbol pressed into the front, as macOS folders can show a symbol.
@@ -429,7 +435,7 @@ on($('#mbLogo'),'click',e=>{const r=e.currentTarget.getBoundingClientRect();
 /* ---------- search index (Spotlight on mac, search on iOS) ---------- */
 const DOC_WORDS={contact:'email 이메일 연락 contact github vcard',history:'archive 변화 과정 history version 이전 specimen lab open 표본실 열린 실험실',about:'about 소개 김규민 gyumin kim curious mean qmin',rules:'rules 규칙 lab 연구실'};
 const IDX=[...ORDER.map(k=>({grp:T.groups.app,label:P[k].name,meta:`${P[k].type} · ${P[k].stl}`,art:pIcon(k),txt:[P[k].name,P[k].type,P[k].one,P[k].stack,P[k].code].join(' '),go:m=>m==='mac'?macOpenApp(k):iOpenApp(k)})),
-  ...ALL.filter(d=>d.kind!=='folder').map(d=>({grp:T.groups.doc,label:d.name,meta:d.kind==='link'?P[d.proj].name:kindOf(d),art:`<span class="sdoc">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span>`,txt:d.name+' '+(DOC_WORDS[d.k]||d.href),go:m=>m==='mac'?macOpen(d.k):iDoc(d.k)})),
+  ...ALL.filter(d=>d.kind!=='folder').map(d=>({grp:T.groups.doc,label:d.name,meta:d.kind==='link'?linkOwner(d):kindOf(d),art:`<span class="sdoc">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span>`,txt:d.name+' '+(DOC_WORDS[d.k]||d.href),go:m=>m==='mac'?macOpen(d.k):iDoc(d.k)})),
   ...VERSIONS.filter(v=>!v.now).map(v=>({grp:T.groups.history,label:v.name,meta:v.d,art:pIcon('archive'),txt:v.name+' '+v.p,go:m=>m==='mac'?macArch(v.v):iSheet(archived(v.v),v.name,null,null,'sheetsaf')})),
   ...ORDER.map(k=>({grp:T.groups.case,label:T.info(P[k].name),meta:P[k].code,art:pIcon(k),txt:P[k].name+' case info '+P[k].stack,go:m=>m==='mac'?macCase(k):iSheet(caseFile(k),P[k].name)}))];
 function search(q){q=q.trim().toLowerCase();if(!q)return[];return IDX.filter(x=>x.txt.toLowerCase().includes(q)).slice(0,9)}
@@ -516,7 +522,7 @@ on(window,'keydown',e=>{if(has('ios'))return;
 const home=$('#home'),ios=$('#ios'),igrid=$('#igrid'),idock=$('#idock');
 const PAUSED=ORDER.filter(k=>P[k].st==='paused');
 const ifolder=keys=>`<div class="ifold">${keys.slice(0,9).map(k=>`<div class="appic ic-${k}">${GLYPH[k]}</div>`).join('')}</div>`;
-const SYS={files:['files',T.apps.files],safari:['archive',T.history],contacts:['contact',T.contacts],gh:['gh','GitHub']};
+const SYS={files:['files',T.apps.files],safari:['archive',T.history],contacts:['contact',T.contacts],gh:['gh','GitHub'],games:['games',T.files.games]};
 // Under each app: its full name (wrapping to a second line rather than being cut) and what kind of work it is.
 const iLabel=k=>`<span class="nm">${P[k].name}<small>${P[k].type}</small></span>`;
 function iItem(key){const[t,k]=key.split(':');
@@ -524,7 +530,7 @@ function iItem(key){const[t,k]=key.split(':');
   if(t==='fold')return `<button class="iapp" data-key="${key}">${ifolder(PAUSED)}<span>${T.paused}</span></button>`;
   return SYS[t]?`<button class="iapp" data-key="${key}">${icon(SYS[t][0])}<span>${SYS[t][1]}</span></button>`:''}
 // Paused projects sit in a folder in the Dock, so page 1 has room for the records widget; GitHub is the widget on page 2.
-const IOS_DEFAULT={grid:ORDER.filter(k=>P[k].st!=='paused').map(k=>'app:'+k),dock:['files','safari','contacts',...(PAUSED.length?['fold:paused']:['gh'])]};
+const IOS_DEFAULT={grid:[...ORDER.filter(k=>P[k].st!=='paused').map(k=>'app:'+k),'games'],dock:['files','safari','contacts',...(PAUSED.length?['fold:paused']:['gh'])]};
 let iord=LS.get('ios',IOS_DEFAULT);{const all=[...(iord.grid||[]),...(iord.dock||[])],def=[...IOS_DEFAULT.grid,...IOS_DEFAULT.dock];if(all.length!==def.length||!def.every(k=>all.includes(k))||iord.dock.length>4)iord=IOS_DEFAULT}
 igrid.innerHTML=iord.grid.map(iItem).join('');idock.innerHTML=iord.dock.map(iItem).join('');
 // The records widget: every project page, one tap each.
@@ -536,7 +542,7 @@ function fitDocs(){const w=$('.idocs.p1');if(!w||!has('ios'))return;home.classLi
 function iOpenKey(key,src){const[t,k]=key.split(':');
   if(t==='app')iOpenApp(k,src);else if(t==='fold')iFolder(src);else if(t==='files')iFiles(src);
   else if(t==='safari')iSheet(safHistory(),T.history,src,null,'sheetsaf');
-  else if(t==='contacts')iSheet(contact(),T.contacts,src);else if(t==='gh')open(GH,'_blank','noopener')}
+  else if(t==='contacts')iSheet(contact(),T.contacts,src);else if(t==='gh')open(GH,'_blank','noopener');else if(t==='games')open(GAMES,'_blank','noopener')}
 
 let jig=false,lpT=0,st=null,moved=false;
 function setJiggle(v){jig=v;home.classList.toggle('jiggle',v);let d=ios.querySelector('.done');
@@ -607,7 +613,7 @@ function iSheet(html,title,src,onReady,cls){
   return el}
 function iOpenApp(k,src){const a=APPS[k];iSheet(`<div class="ibar">${appTools(k)}</div>`+appBody(k),a.title,src,el=>startApp(k,el),'app'+(a.dark?' dark':''))}
 function iDoc(k,src){const d=deskItem(k);if(d.out)return openOut(d);if(d.kind==='link')return iSheet(safPage(d.href,esc(d.name)),d.name,src,null,'sheetsaf');iSheet(`<div class="inav"><b>${deskItem(k).name}</b></div>${docView(k)}`,deskItem(k).name,src)}
-function iFiles(src){const el=iSheet(`<div class="files"><h1>qminlab</h1><div class="flist">${ALL.filter(d=>d.kind!=='folder').map(d=>`<button class="frow" data-doc="${d.k}"><span class="fic">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span><span><b>${esc(d.name)}</b><small>${d.kind==='link'?P[d.proj].name:`${T.modifiedShort} · ${kindOf(d)}`}</small></span></button>`).join('')}</div></div>`,T.apps.files,src);
+function iFiles(src){const el=iSheet(`<div class="files"><h1>qminlab</h1><div class="flist">${ALL.filter(d=>d.kind!=='folder').map(d=>`<button class="frow" data-doc="${d.k}"><span class="fic">${d.kind==='link'?linkArt(d):docSvg(d.ext)}</span><span><b>${esc(d.name)}</b><small>${d.kind==='link'?linkOwner(d):`${T.modifiedShort} · ${kindOf(d)}`}</small></span></button>`).join('')}</div></div>`,T.apps.files,src);
   const body=el.querySelector('.ibody');body.addEventListener('click',e=>{const b=e.target.closest('[data-doc]');if(!b)return;const d=deskItem(b.dataset.doc);
     if(d.kind==='link'){iDoc(d.k,b);return}
     const page=document.createElement('div');page.className='ipage';page.innerHTML=`<div class="inav"><button class="back">‹ qminlab</button><b>${d.name}</b></div>${docView(d.k)}`;body.appendChild(page);wire(page,'ios');
