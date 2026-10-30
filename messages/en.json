@@ -29,13 +29,13 @@
       "Stay curious.",
       "Build what you mean."
     ],
-    "body": "qminlab is the one-person AI studio of Gyumin Kim (김규민). Working as an AI creator in Daegu, South Korea, since 2026 I have built and shipped apps, a desktop game, animation and work tools myself with generative AI: Claude Code, the Claude API, Seedance, ElevenLabs and more. Main work: the friend-finding app Weming (in App Store review, Google Play closed testing), the PC game DeepHold, the AI animation The Stellar Swordmaster, and Claude Wait Board, which shows the status of Claude Code tasks. Every project keeps a public case file and its process on GitHub.",
-    "bodyMobile": "qminlab is the one-person AI studio of Gyumin Kim (김규민). Working as an AI creator in Daegu, South Korea, since 2026 I have built and shipped apps, a desktop game, animation and work tools myself with generative AI: Claude Code, the Claude API, Seedance, ElevenLabs and more. Main work: the friend-finding app Weming (in App Store review, Google Play closed testing), the PC game DeepHold, the AI animation The Stellar Swordmaster, and Claude Wait Board, which shows the status of Claude Code tasks. Every project keeps a public case file and its process on GitHub.",
+    "body": "qminlab is the one-person AI studio of Gyumin Kim (김규민). Working as an AI creator in Daegu, South Korea, since 2026 I have built and shipped apps, a desktop game, animation and work tools myself with generative AI: Claude Code, the Claude API, Seedance, ElevenLabs and more. Main work: the friend-finding app Weming (awaiting release on the App Store, Google Play closed testing), the PC game DeepHold, the AI animation The Stellar Swordmaster, and Claude Wait Board, which shows the status of Claude Code tasks. Every project keeps a public case file and its process on GitHub.",
+    "bodyMobile": "qminlab is the one-person AI studio of Gyumin Kim (김규민). Working as an AI creator in Daegu, South Korea, since 2026 I have built and shipped apps, a desktop game, animation and work tools myself with generative AI: Claude Code, the Claude API, Seedance, ElevenLabs and more. Main work: the friend-finding app Weming (awaiting release on the App Store, Google Play closed testing), the PC game DeepHold, the AI animation The Stellar Swordmaster, and Claude Wait Board, which shows the status of Claude Code tasks. Every project keeps a public case file and its process on GitHub.",
     "ctaOpen": "OPEN THE SPECIMENS ↓",
     "ctaIndex": "FULL INDEX",
     "stats": [
       "SPECIMENS",
-      "IN REVIEW",
+      "AWAITING RELEASE",
       "IN PROGRESS",
       "PAUSED"
     ],
@@ -96,7 +96,7 @@
     "ANY": "ANY GENRE"
   },
   "status": {
-    "review": "IN REVIEW",
+    "ready": "AWAITING RELEASE",
     "dev": "IN DEVELOPMENT",
     "making": "IN PRODUCTION",
     "live": "RELEASED",
@@ -104,7 +104,7 @@
     "paused": "PAUSED"
   },
   "statusMobile": {
-    "review": "IN REVIEW",
+    "ready": "AWAITING RELEASE",
     "dev": "IN DEV",
     "making": "IN PROD",
     "live": "RELEASED",
@@ -116,13 +116,13 @@
       "code": "QL-001",
       "name": "Weming",
       "type": "APP",
-      "st": "review",
+      "st": "ready",
       "one": "A friend-finding app, built by a solo developer who finds code easier than people.",
       "tip": "← THE PHONE IS LIVE. TAP THE TABS, THEN TRY INSTANT CHAT.",
       "tipMobile": "↑ The phone above actually works. Tap the tabs and try a random chat.",
       "platform": "iOS\nAndroid",
-      "stage": "App Store review\nGoogle Play closed test",
-      "stageLine": "iOS in App Store review · Android in Google Play closed test",
+      "stage": "App Store: awaiting release\nGoogle Play closed test",
+      "stageLine": "iOS awaiting App Store release · Android in Google Play closed test",
       "stack": "React Native, Expo, TypeScript, Firebase (Auth · Firestore · Storage · Cloud Functions), RevenueCat",
       "form": "IPHONE · LIVE DEMO",
       "dims": "SCREEN 393 × 852 PT"
@@ -235,7 +235,7 @@
     "key": "STATUS KEY",
     "keys": [
       "RELEASED",
-      "IN REVIEW",
+      "AWAITING RELEASE",
       "IN DEVELOPMENT",
       "PAUSED",
       "IN USE"

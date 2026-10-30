@@ -55,7 +55,7 @@
 
 /* status pills (shared look across the site) */
 .ix-pill { display: inline-flex; align-items: center; padding: 7px 14px; border-radius: 999px; border: 1px solid currentColor; font-family: var(--ix-mono); font-size: 12px; letter-spacing: .06em; white-space: nowrap; line-height: 1.2; }
-.ix-pill--review { background: var(--ix-accent); border-color: var(--ix-accent); color: var(--ix-ink); }
+.ix-pill--ready { background: var(--ix-accent); border-color: var(--ix-accent); color: var(--ix-ink); }
 .ix-pill--dev, .ix-pill--making { color: var(--ix-bone); }
 .ix-pill--use { color: var(--ix-accent); }
 .ix-pill--paused { color: var(--ix-muted); border-style: dashed; }

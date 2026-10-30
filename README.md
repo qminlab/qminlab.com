@@ -28,7 +28,7 @@ qminlab은 김규민의 1인 AI 제작 스튜디오입니다. 앱, 게임, 애�
 
 | | 이름 | 종류 | 상태 |
 |---|---|---|---|
-| QL-001 | **위밍** Weming | 앱 · iOS / Android | 심사 중 |
+| QL-001 | **위밍** Weming | 앱 · iOS / Android | 출시 대기중 |
 | QL-004 | **딥홀드** DeepHold | 2.5D 도트 액션 게임 · PC | 개발 중 |
 | QL-006 | **별을 품은 소드마스터** The Stellar Swordmaster · [제작노트](https://qminlab.com/notes/sword-master-rsa5m/) | AI 애니메이션 | 제작 중 |
 | QL-005 | **Claude 대기판** Claude Wait Board | 아이패드 작업 현황판 | 사용 중 |

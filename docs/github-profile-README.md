@@ -2,7 +2,7 @@
 
 <a href="https://qminlab.com"><img src="https://qminlab.com/gh/hero.svg" width="100%" alt="Q MIN: qminlab, AI creator. 궁금함으로 시작해, 의미 있게 만듭니다."></a>
 
-<img src="https://qminlab.com/gh/ticker.svg" width="100%" alt="NOW: 딥홀드 v0.6 친구 테스트 빌드, 위밍 App Store 심사 중, 소드마스터 266컷 제작 중">
+<img src="https://qminlab.com/gh/ticker.svg" width="100%" alt="NOW: 딥홀드 v0.6 친구 테스트 빌드, 위밍 App Store 출시 대기중, 소드마스터 266컷 제작 중">
 
 </div>
 
@@ -17,7 +17,7 @@
 
 <p>
 <a href="https://qminlab.com/ko/deephold/"><img src="https://qminlab.com/gh/card-deephold.svg" width="49%" alt="딥홀드 DeepHold: 2.5D 도트 액션 게임, 개발 중"></a>
-<a href="https://github.com/qminlab/weming"><img src="https://qminlab.com/gh/card-weming.svg" width="49%" alt="위밍 Weming: 친구 찾기 앱, App Store 심사 중"></a>
+<a href="https://github.com/qminlab/weming"><img src="https://qminlab.com/gh/card-weming.svg" width="49%" alt="위밍 Weming: 친구 찾기 앱, App Store 출시 대기중"></a>
 </p>
 <p>
 <a href="https://qminlab.com/notes/sword-master-rsa5m/"><img src="https://qminlab.com/gh/card-sword.svg" width="49%" alt="별을 품은 소드마스터: AI 애니메이션, 제작 중, 제작노트 보기"></a>
