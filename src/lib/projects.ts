@@ -8,10 +8,10 @@ export type Project = {
   versions?: { v: string; title: string; tried: string; why?: string; now?: string }[];
 };
 
-/** Hero stat line: total · in review · in progress (dev or making) · paused. */
+/** Hero stat line: total · awaiting release · in progress (dev or making) · paused. */
 export const heroCounts = (ps: Project[]) => [
   ps.length,
-  ps.filter((p) => p.st === 'review').length,
+  ps.filter((p) => p.st === 'ready').length,
   ps.filter((p) => p.st === 'dev' || p.st === 'making').length,
   ps.filter((p) => p.st === 'paused').length,
 ];

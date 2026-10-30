@@ -2,11 +2,11 @@
 import type { CSSProperties } from 'react';
 import { ACCENT, BONE, INK, MONO, MONO_KR, MUTED, type Status } from '@/lib/tokens';
 
-/** Rounded status pill (shared Open Lab rule): review = accent fill, dev/making = bone outline, use = accent outline,
+/** Rounded status pill (shared Open Lab rule): ready = accent fill, dev/making = bone outline, use = accent outline,
  *  paused = muted dashed outline, live = bone fill. */
 export function StatusPill({ st, label, ko, small }: { st: Status; label: string; ko: boolean; small?: boolean }) {
   const s: CSSProperties =
-    st === 'review' ? { background: ACCENT, color: INK, border: `1px solid ${ACCENT}` }
+    st === 'ready' ? { background: ACCENT, color: INK, border: `1px solid ${ACCENT}` }
       : st === 'live' ? { background: BONE, color: INK, border: `1px solid ${BONE}` }
         : st === 'use' ? { color: ACCENT, border: `1px solid ${ACCENT}` }
           : st === 'paused' ? { color: MUTED, border: `1px dashed ${MUTED}` }

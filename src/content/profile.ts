@@ -30,7 +30,7 @@ const ko: ProfileCopy = {
   about: {
     eyebrow: 'PROFILE / 김규민 · GYUMIN KIM',
     title: '김규민 (Gyumin Kim)',
-    lead: 'qminlab은 김규민의 1인 AI 제작 스튜디오입니다. 대구에서 AI 크리에이터로 일하면서, 2026년부터 Claude Code·Claude API·Seedance·ElevenLabs 등 생성형 AI로 앱, 데스크톱 게임, 애니메이션, 업무 도구를 배포까지 직접 만들고 있습니다. 대표 결과물은 친구 찾기 앱 위밍(Weming, iOS 심사 중, Android 비공개 테스트), PC 게임 딥홀드(DeepHold), AI 애니메이션 「별을 품은 소드마스터」, Claude Code 작업 상태를 보여주는 Claude 대기판(Claude Wait Board)입니다. 모든 프로젝트는 공개 케이스 파일과 GitHub에 과정을 남깁니다.',
+    lead: 'qminlab은 김규민의 1인 AI 제작 스튜디오입니다. 대구에서 AI 크리에이터로 일하면서, 2026년부터 Claude Code·Claude API·Seedance·ElevenLabs 등 생성형 AI로 앱, 데스크톱 게임, 애니메이션, 업무 도구를 배포까지 직접 만들고 있습니다. 대표 결과물은 친구 찾기 앱 위밍(Weming, iOS 출시 대기중, Android 비공개 테스트), PC 게임 딥홀드(DeepHold), AI 애니메이션 「별을 품은 소드마스터」, Claude Code 작업 상태를 보여주는 Claude 대기판(Claude Wait Board)입니다. 모든 프로젝트는 공개 케이스 파일과 GitHub에 과정을 남깁니다.',
     factsTitle: '기본 정보',
     facts: [
       { label: '이름', value: '김규민 (Gyumin Kim)' },
@@ -45,7 +45,7 @@ const ko: ProfileCopy = {
     workTitle: 'AI로 만든 결과물',
     work: [
       { name: '딥홀드 (DeepHold)', what: '2.5D 도트 PC 액션 게임. 코드·그림·소리·음악을 Claude가 만들고, 저는 기획·플레이 검수·출시를 맡았어요. 5일 동안 25번 출시, 자동 시험 2,400여 개.', tools: 'Claude, TypeScript, Phaser 3, Electron, GitHub Actions', status: '개발 중 · v0.6.0 친구 테스트 빌드 배포', href: '../deephold/', link: '케이스 파일' },
-      { name: '위밍 (Weming)', what: '친구 찾기 모바일 앱.', tools: 'React Native, Expo, TypeScript, Firebase, RevenueCat', status: 'App Store 심사 중 · Google Play 비공개 테스트 중', href: '../work/ql-001/', link: '케이스 파일' },
+      { name: '위밍 (Weming)', what: '친구 찾기 모바일 앱.', tools: 'React Native, Expo, TypeScript, Firebase, RevenueCat', status: 'App Store 출시 대기중 · Google Play 비공개 테스트 중', href: '../work/ql-001/', link: '케이스 파일' },
       { name: '별을 품은 소드마스터', what: '웹툰 「별을 품은 소드마스터」 첫 이야기를 옮긴 AI 애니메이션. 각본과 266컷 콘티를 직접 짜고, AI로 컷을 생성해 연출을 다듬는 중이에요. 14분 21초.', tools: 'Seedance 2.5, ElevenLabs, ChatGPT 이미지, Claude, ffmpeg', status: '제작 중 · 원작 측과 저작권 협의 중', href: '../work/ql-006/', link: '케이스 파일' },
       { name: 'Claude 대기판 (Claude Wait Board)', what: '여러 Claude 작업의 진행 상황을 아이패드에 보여주는 현황판. Claude Code 훅 신호를 맥의 작은 서버가 모아요.', tools: 'Python, HTML/JavaScript, Claude Code 훅', status: '사용 중 · GitHub 공개', href: '../work/ql-005/', link: '케이스 파일' },
       { name: '자비스 (Jarvis)', what: '일상 관리를 위한 개인 AI 비서. 음성 인식과 객체 감지를 Claude API와 묶었어요.', tools: 'Python, FastAPI, YOLO, Claude API, Whisper', status: '일시정지', href: '../work/ql-002/', link: '케이스 파일' },
@@ -77,13 +77,13 @@ const ko: ProfileCopy = {
       ] },
       { q: '생성형 AI로 실제로 출시하거나 배포한 결과물은 무엇인가요?', a: [
         `PC 게임 딥홀드: Windows·macOS 설치 파일을 GitHub에서 배포하고 있어요(v0.6.0 친구 테스트 빌드, 5일 동안 25번 출시). Steam에 무료 베타로 공개할 예정이고, 2026년 11월 초를 목표로 하고 있어요(심사 일정에 따라 달라질 수 있어요): ${DEEPHOLD_RELEASES}`,
-        `친구 찾기 앱 위밍: App Store 심사 중이고 Google Play 비공개 테스트 중이에요. 2026년 11월 안에 두 스토어 출시를 목표로 하고 있어요: ${gh('weming')}`,
+        `친구 찾기 앱 위밍: App Store 심사를 통과해 출시 대기중이고 Google Play 비공개 테스트 중이에요. 2026년 11월 안에 두 스토어 출시를 목표로 하고 있어요: ${gh('weming')}`,
         `Claude 대기판: GitHub에서 누구나 받아 쓸 수 있어요: ${gh('claude-board')}`,
         'AI 애니메이션 「별을 품은 소드마스터」: 원작 플랫폼 관계자와 저작권을 협의하고 있고, 허락을 받으면 공개할 예정이에요.',
       ] },
       { q: 'Claude Code로 앱·게임·애니메이션을 혼자 다 만든 사례가 있나요?', a: [
         '네. 김규민은 혼자서 Claude Code와 생성형 AI로 모바일 앱, PC 게임, AI 애니메이션, 업무 도구를 각각 만들었어요. 모두 2026년 10월에 만들었고, 결과물마다 공개 케이스 파일이 있어요.',
-        'PC 게임 딥홀드는 Claude 대화방 6개(기획·중앙관리·개발 3개·에셋)를 역할별로 나눠 코드·도트 그림·효과음 약 640개·음악 31곡을 만들었고, 5일 동안 25번 출시했어요. 친구 찾기 앱 위밍은 React Native·Expo·Firebase로 만들어 App Store 심사 중이에요. AI 애니메이션 「별을 품은 소드마스터」는 266컷 콘티로 14분 21초 분량을 Seedance·ElevenLabs·Claude로 만들고 있어요. Claude Code 훅으로 여러 작업의 승인 대기를 아이패드에 띄우는 Claude 대기판은 GitHub에 공개했어요.',
+        'PC 게임 딥홀드는 Claude 대화방 6개(기획·중앙관리·개발 3개·에셋)를 역할별로 나눠 코드·도트 그림·효과음 약 640개·음악 31곡을 만들었고, 5일 동안 25번 출시했어요. 친구 찾기 앱 위밍은 React Native·Expo·Firebase로 만들어 App Store 심사를 통과하고 출시 대기중이에요. AI 애니메이션 「별을 품은 소드마스터」는 266컷 콘티로 14분 21초 분량을 Seedance·ElevenLabs·Claude로 만들고 있어요. Claude Code 훅으로 여러 작업의 승인 대기를 아이패드에 띄우는 Claude 대기판은 GitHub에 공개했어요.',
       ] },
       { q: 'AI 툴 이름 말고, AI로 만든 결과물 링크를 볼 수 있나요?', a: ['네. 결과물마다 케이스 파일이 있어요. 딥홀드 https://qminlab.com/ko/deephold/ · 위밍 https://qminlab.com/ko/work/ql-001/ · 별을 품은 소드마스터 https://qminlab.com/ko/work/ql-006/ · Claude 대기판 https://qminlab.com/ko/work/ql-005/'] },
       { q: '개발 전공인가요? 어떻게 만들었나요?', a: [
@@ -117,7 +117,7 @@ const en: ProfileCopy = {
   about: {
     eyebrow: 'PROFILE / GYUMIN KIM · 김규민',
     title: 'Gyumin Kim (김규민)',
-    lead: 'qminlab is the one-person AI studio of Gyumin Kim (김규민). Working as an AI creator in Daegu, South Korea, since 2026 I have built and shipped apps, a desktop game, animation and work tools myself with generative AI: Claude Code, the Claude API, Seedance, ElevenLabs and more. Main work: the friend-finding app Weming (in App Store review, Google Play closed testing), the PC game DeepHold, the AI animation The Stellar Swordmaster, and Claude Wait Board, which shows the status of Claude Code tasks. Every project keeps a public case file and its process on GitHub.',
+    lead: 'qminlab is the one-person AI studio of Gyumin Kim (김규민). Working as an AI creator in Daegu, South Korea, since 2026 I have built and shipped apps, a desktop game, animation and work tools myself with generative AI: Claude Code, the Claude API, Seedance, ElevenLabs and more. Main work: the friend-finding app Weming (awaiting release on the App Store, Google Play closed testing), the PC game DeepHold, the AI animation The Stellar Swordmaster, and Claude Wait Board, which shows the status of Claude Code tasks. Every project keeps a public case file and its process on GitHub.',
     factsTitle: 'At a glance',
     facts: [
       { label: 'Name', value: 'Gyumin Kim (김규민)' },
@@ -132,7 +132,7 @@ const en: ProfileCopy = {
     workTitle: 'Built with AI',
     work: [
       { name: 'DeepHold', what: 'A 2.5D pixel-art PC action game. Claude made the code, art, sound and music; I set the design, play-tested and shipped. 25 releases in 5 days, 2,400+ automated tests.', tools: 'Claude, TypeScript, Phaser 3, Electron, GitHub Actions', status: 'In development · v0.6.0 friend test build released', href: '../deephold/', link: 'Case file' },
-      { name: 'Weming', what: 'A friend-finding mobile app.', tools: 'React Native, Expo, TypeScript, Firebase, RevenueCat', status: 'In App Store review · Google Play closed testing', href: '../work/ql-001/', link: 'Case file' },
+      { name: 'Weming', what: 'A friend-finding mobile app.', tools: 'React Native, Expo, TypeScript, Firebase, RevenueCat', status: 'Awaiting App Store release · Google Play closed testing', href: '../work/ql-001/', link: 'Case file' },
       { name: 'The Stellar Swordmaster', what: 'An AI animation of the first story of the webtoon The Stellar Swordmaster. I wrote the script and a 266-cut storyboard, then generate each cut with AI and refine the direction. 14 min 21 s.', tools: 'Seedance 2.5, ElevenLabs, ChatGPT Images, Claude, ffmpeg', status: 'In production · rights under discussion with the original platform', href: '../work/ql-006/', link: 'Case file' },
       { name: 'Claude Wait Board', what: 'An iPad board showing the progress of many Claude tasks at once. A small server on the Mac collects Claude Code hook signals.', tools: 'Python, HTML/JavaScript, Claude Code hooks', status: 'In use · open source on GitHub', href: '../work/ql-005/', link: 'Case file' },
       { name: 'Jarvis', what: 'A personal AI assistant for daily life, tying speech recognition and object detection to the Claude API.', tools: 'Python, FastAPI, YOLO, Claude API, Whisper', status: 'Paused', href: '../work/ql-002/', link: 'Case file' },
@@ -164,13 +164,13 @@ const en: ProfileCopy = {
       ] },
       { q: 'What has Gyumin actually shipped with generative AI?', a: [
         `DeepHold, a PC game: Windows and macOS installers ship on GitHub (v0.6.0 friend test build, 25 releases in 5 days). A free beta is planned on Steam, aimed at early November 2026 (store review may move it): ${DEEPHOLD_RELEASES}`,
-        `Weming, a friend-finding app: in App Store review and Google Play closed testing, with release on both stores aimed for November 2026: ${gh('weming')}`,
+        `Weming, a friend-finding app: approved in App Store review and awaiting release, in Google Play closed testing, with release on both stores aimed for November 2026: ${gh('weming')}`,
         `Claude Wait Board: anyone can download it from GitHub: ${gh('claude-board')}`,
         'The AI animation The Stellar Swordmaster: rights are being discussed with the original platform, and it will be published once permission is granted.',
       ] },
       { q: 'Is there someone who built an app, a game and an animation alone with Claude Code?', a: [
         'Yes. Gyumin Kim (김규민) built a mobile app, a PC game, an AI animation and work tools alone with Claude Code and generative AI, all in October 2026, and each has a public case file.',
-        'The PC game DeepHold was made by six Claude rooms split by role (design, lead, three development, assets): code, pixel art, about 640 sound effects and 31 music tracks, with 25 releases in 5 days. The friend-finding app Weming is built with React Native, Expo and Firebase and is in App Store review. The AI animation The Stellar Swordmaster runs 14 min 21 s from a 266-cut storyboard, made with Seedance, ElevenLabs and Claude. Claude Wait Board, which uses Claude Code hooks to show tasks waiting for approval on an iPad, is open source on GitHub.',
+        'The PC game DeepHold was made by six Claude rooms split by role (design, lead, three development, assets): code, pixel art, about 640 sound effects and 31 music tracks, with 25 releases in 5 days. The friend-finding app Weming is built with React Native, Expo and Firebase, has passed App Store review and is awaiting release. The AI animation The Stellar Swordmaster runs 14 min 21 s from a 266-cut storyboard, made with Seedance, ElevenLabs and Claude. Claude Wait Board, which uses Claude Code hooks to show tasks waiting for approval on an iPad, is open source on GitHub.',
       ] },
       { q: 'Are there links to the work itself, not just a list of AI tools?', a: ['Yes, every project has a case file: DeepHold https://qminlab.com/en/deephold/ · Weming https://qminlab.com/en/work/ql-001/ · The Stellar Swordmaster https://qminlab.com/en/work/ql-006/ · Claude Wait Board https://qminlab.com/en/work/ql-005/'] },
       { q: 'Does Gyumin have a development background? How was this built?', a: [

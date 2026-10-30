@@ -20,9 +20,9 @@ export const XRAY = (cell: number) =>
 
 export const EASE_SWAP = 'cubic-bezier(.7,0,.2,1)';
 
-export type Status = 'review' | 'dev' | 'making' | 'live' | 'use' | 'paused';
+export type Status = 'ready' | 'dev' | 'making' | 'live' | 'use' | 'paused';
 export const pill = (st: Status) =>
-  st === 'review'
+  st === 'ready'
     ? { bg: ACCENT, fg: INK, bd: ACCENT }
     : st === 'live'
       ? { bg: BONE, fg: INK, bd: BONE }
