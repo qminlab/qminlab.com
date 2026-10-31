@@ -19,7 +19,7 @@ export const NAVER_VERIFY = 'b0bc7b52249b189ee77b3211fd147baecdccc672';
 export const OG_IMAGE = { url: '/og.png', width: 1200, height: 630, alt: '김규민 (Gyumin Kim) · qminlab' };
 
 /** Date the facts on the profile, FAQ and case pages were last checked by hand (shown on those pages). */
-export const UPDATED = '2026-10-22';
+export const UPDATED = '2026-10-31';
 
 export const PERSON = {
   ko: { name: '김규민', role: 'AI 크리에이터', city: '대구' },

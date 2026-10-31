@@ -114,7 +114,7 @@ const appIcon = (key, x, y, s, extra = '') => {
 /* ---------- ticker ---------- */
 {
   const W = 1280, H = 54;
-  const items = ['NOW', '딥홀드 v0.6 친구 테스트 빌드', '위밍 App Store 출시 대기중', '소드마스터 266컷 제작 중', 'Claude 대기판 매일 사용 중', 'qminlab.com 오픈소스 공개'];
+  const items = ['NOW', '딥홀드 v0.6 친구 테스트 빌드', '위밍 App Store 출시', '소드마스터 266컷 제작 중', 'Claude 대기판 매일 사용 중', 'qminlab.com 오픈소스 공개'];
   const run = items.map((t, i) => (i === 0 ? `<tspan fill="${ACCENT}" font-weight="800">${t}</tspan>` : t)).join('   ✦   ') + '   ✦   ';
   const body = `
 <defs><clipPath id="c"><rect width="${W}" height="${H}" rx="14"/></clipPath></defs>
@@ -146,6 +146,7 @@ section('tools', 'FILE 003 / 연구실 도구', '쓰는 도구', 'TOOLBELT');
 /* ---------- work cards ---------- */
 const STATUS = {
   ready: { c: '#FFB020', ko: '출시 대기중' },
+  live: { c: '#3DDC84', ko: '출시' },
   dev: { c: ACCENT, ko: '개발 중' },
   making: { c: '#A98BFF', ko: '제작 중' },
   use: { c: '#3DDC84', ko: '사용 중' },
@@ -200,7 +201,7 @@ const columns = ['#5B6FD8', '#E2574C', '#3DB36B'].map((c, i) => {
   return `<rect x="${x}" y="84" width="66" height="8" rx="4" fill="${c}"/>${tiles}${blink}`;
 }).join('');
 
-card('weming', { code: 'QL-001', type: 'APP', ko: '위밍', en: 'Weming', st: 'ready', status: 'App Store 출시 대기중 · Google Play 테스트', pillW: 380,
+card('weming', { code: 'QL-001', type: 'APP', ko: '위밍', en: 'Weming', st: 'live', status: 'App Store 출시 · Google Play 심사 중', pillW: 360,
   one: ['사람 만나는 것보다 코드 짜는 게 더 쉬운', '1인 개발자가 만든 친구 찾기 앱'], bg: ['#5A4CF0', '#9B4FF2', '#F0448F'], ink: '#FFFFFF', sub: 'rgba(255,255,255,.72)', art: bubbles });
 card('deephold', { code: 'QL-004', type: 'GAME', ko: '딥홀드', en: 'DeepHold', st: 'dev', status: '개발 중 · v0.6 친구 테스트', pillW: 250,
   one: ['던전에서 캐 온 자원으로 내 던전을 짓고,', '친구가 도전하는 2.5D 도트 액션 게임'], bg: ['#2A1E14', '#120D09'], ink: '#F3E6CF', sub: 'rgba(243,230,207,.6)', art: bricks + torch });
