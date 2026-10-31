@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="620" height="340" viewBox="0 0 620 340" role="img" aria-label="QL-001 위밍 (Weming): 사람 만나는 것보다 코드 짜는 게 더 쉬운 1인 개발자가 만든 친구 찾기 앱 · App Store 출시 대기중 · Google Play 테스트">
-<title>QL-001 위밍 (Weming): 사람 만나는 것보다 코드 짜는 게 더 쉬운 1인 개발자가 만든 친구 찾기 앱 · App Store 출시 대기중 · Google Play 테스트</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="340" viewBox="0 0 620 340" role="img" aria-label="QL-001 위밍 (Weming): 사람 만나는 것보다 코드 짜는 게 더 쉬운 1인 개발자가 만든 친구 찾기 앱 · App Store 출시 · Google Play 테스트">
+<title>QL-001 위밍 (Weming): 사람 만나는 것보다 코드 짜는 게 더 쉬운 1인 개발자가 만든 친구 찾기 앱 · App Store 출시 · Google Play 테스트</title>
 
 <defs>
   <linearGradient id="bg-weming" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5A4CF0"/><stop offset="0.5" stop-color="#9B4FF2"/><stop offset="1" stop-color="#F0448F"/></linearGradient>
@@ -23,10 +23,10 @@
   <text x="40" y="174" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="40" font-weight="800" fill="#FFFFFF" letter-spacing="-.5">위밍<tspan font-size="20" font-weight="600" fill="rgba(255,255,255,.72)" dx="12">Weming</tspan></text>
   <text x="40" y="214" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="20" fill="#FFFFFF" fill-opacity=".86"><tspan x="40" dy="0">사람 만나는 것보다 코드 짜는 게 더 쉬운</tspan><tspan x="40" dy="30">1인 개발자가 만든 친구 찾기 앱</tspan></text>
   <g transform="translate(40 274)">
-    <rect width="380" height="34" rx="17" fill="#FFFFFF" fill-opacity=".1"/>
-    <circle cx="20" cy="17" r="5" fill="#FFB020"><animate attributeName="opacity" values="1;.25;1" dur="1.8s" repeatCount="indefinite"/></circle>
-    <circle cx="20" cy="17" r="5" fill="none" stroke="#FFB020"><animate attributeName="r" values="5;12" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1.8s" repeatCount="indefinite"/></circle>
-    <text x="36" y="23" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">App Store 출시 대기중 · Google Play 테스트</text>
+    <rect width="320" height="34" rx="17" fill="#FFFFFF" fill-opacity=".1"/>
+    <circle cx="20" cy="17" r="5" fill="#3DDC84"><animate attributeName="opacity" values="1;.25;1" dur="1.8s" repeatCount="indefinite"/></circle>
+    <circle cx="20" cy="17" r="5" fill="none" stroke="#3DDC84"><animate attributeName="r" values="5;12" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0" dur="1.8s" repeatCount="indefinite"/></circle>
+    <text x="36" y="23" font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',Helvetica,Arial,sans-serif" font-size="16" font-weight="600" fill="#FFFFFF">App Store 출시 · Google Play 테스트</text>
   </g>
   <g transform="translate(546 274)"><circle cx="17" cy="17" r="17" fill="#FFFFFF" fill-opacity=".1"/><path d="M11 17h12M18 12l5 5-5 5" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
 </g>
