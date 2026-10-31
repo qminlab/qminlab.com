@@ -12,7 +12,7 @@ import { gh, SITE } from './identity';
 export { GITHUB, GH_USER } from './identity';
 
 export const LINKS: Record<string, ProjectLink[]> = {
-  'QL-001': [{ kind: 'github', href: gh('weming') }, { kind: 'trials', href: `${SITE}/{locale}/trials/weming/` }],
+  'QL-001': [{ kind: 'appstore', href: 'https://apps.apple.com/kr/app/%EC%9C%84%EB%B0%8D/id6818257959' }, { kind: 'github', href: gh('weming') }, { kind: 'trials', href: `${SITE}/{locale}/trials/weming/` }],
   'QL-004': [{ kind: 'download', href: gh('deephold-releases/releases/latest') }, { kind: 'trials', href: `${SITE}/{locale}/trials/deephold/` }, { kind: 'assets', href: `${SITE}/deephold-assets/` }],
   'QL-005': [{ kind: 'github', href: gh('claude-board') }, { kind: 'trials', href: `${SITE}/{locale}/trials/claude-board/` }],
   'QL-006': [{ kind: 'notes', href: `${SITE}/notes/sword-master-rsa5m/` }],

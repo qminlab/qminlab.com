@@ -222,7 +222,7 @@ function track(mv,up){const u=ev=>{removeEventListener('pointermove',mv);removeE
 // Project pages (production notes, trial and error, asset gallery, the DeepHold site) sit on the desktop as documents of their own,
 // so each is one double-click (one tap on the iPhone widget) away instead of a link inside an app.
 // One column per project (in the projects' order); inside it: the site, the notes and records, trial and error, then links elsewhere.
-const DOC_RANK={site:1,notes:2,assets:3,trials:4,download:5,github:6};
+const DOC_RANK={site:1,notes:2,assets:3,trials:4,appstore:5,download:5,github:6};
 const DOCS=D.docs.map((d,i)=>({k:d.k,name:d.name,what:d.what,kind:'link',href:d.href,thumb:d.thumb,out:d.out,proj:d.project,g:ORDER.indexOf(d.project)+1,r:DOC_RANK[d.k.slice(d.project.length+1)]||7,i}))
   .sort((a,b)=>a.g-b.g||a.r-b.r||a.i-b.i);
 // Each project with pages or links gets a folder on the desktop holding its app and those items.
@@ -239,6 +239,7 @@ function docSvg(ext){const mid=ext==='md'?'<path d="M32 38h36M32 46h36M32 54h28M
 // A link to somewhere else (GitHub, a download, a store) is a web location file: a page with what it leads to drawn on it.
 const OUT_GLYPH={games:'<rect x="28" y="38" width="44" height="26" rx="13" fill="none" stroke="#FF5A1F" stroke-width="4"/><path d="M40 45v12M34 51h12" stroke="#FF5A1F" stroke-width="4" stroke-linecap="round"/><circle cx="58" cy="55" r="3" fill="#FF5A1F"/><circle cx="63" cy="47" r="3" fill="#FF5A1F"/>',
   github:'<path d="M40 40l-11 10 11 10M60 40l11 10-11 10M54 34l-8 32" fill="none" stroke="#1D1D1F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
+  appstore:'<path d="M44 32l-16 30M56 32l16 30M33 52h34" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round"/>',
   download:'<path d="M50 30v28M38 47l12 12 12-12" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 64v5a3 3 0 0 0 3 3h28a3 3 0 0 0 3-3v-5" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round"/>'};
 const outSvg=kind=>`<svg class="mfold" viewBox="0 0 100 100"><path d="M23 4h37l20 20v69a3 3 0 0 1-3 3H23a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" fill="#FBFBFD" stroke="rgba(0,0,0,.12)" stroke-width=".8"/><path d="M60 4v17a3 3 0 0 0 3 3h17z" fill="#D8D8DD"/>${OUT_GLYPH[kind]||'<path d="M40 60l20-20M44 40h16v16" fill="none" stroke="#007AFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>'}</svg>`;
 // Whose link it is: the project's name, or for a studio-wide link (the games site) where it leads.
