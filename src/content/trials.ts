@@ -249,7 +249,7 @@ const weming: Record<'ko' | 'en', TrialPage> = {
     code: 'QL-001',
     name: '위밍',
     meta: {
-      title: '위밍 시행착오 — 첫 MVP부터 App Store 심사 통과까지 · qminlab',
+      title: '위밍 시행착오 — 첫 MVP부터 App Store 출시까지 · qminlab',
       description: '친구 찾기 앱 위밍을 9월 30일부터 만들며 겪은 일. 첫 MVP, 출시 준비, 두 번의 App Store 거절과 고친 방법, Google Play 테스트까지 버전별로 적었어요.',
     },
     eyebrow: 'FILE QL-001 / 앱 / 시행착오',
@@ -262,7 +262,7 @@ const weming: Record<'ko' | 'en', TrialPage> = {
       { n: '1,041', l: '턴 (한 대화, 9.30 ~ 10.8)' },
       { n: 'v152', l: '대화에서 낸 마지막 판 번호' },
       { n: '2', l: '번 App Store 거절' },
-      { n: '9', l: '번째 빌드로 심사 통과 · 출시 대기중' },
+      { n: '9', l: '번째 빌드로 App Store 출시' },
     ],
     versions: [
       {
@@ -331,7 +331,7 @@ const weming: Record<'ko' | 'en', TrialPage> = {
           '새로 설치 → 로그인 화면 위에 추적 창 → 거부 → 로그인 화면까지 8초짜리 실기기 녹화를 찍어 심사 답변에 붙였어요.',
           '거절된 제출 상태에서는 인앱 상품 칸이 안 보이고 다시 제출도 막혀 있어서, 거절 건을 취소하고 새 초안에 앱과 상품을 모두 담아 10월 21일 다시 냈어요.',
           'Android는 10월 23일 Google Play 프로덕션 출시 신청이 접수됐어요.',
-          '그리고 App Store 심사를 통과했어요. 지금은 출시 대기중이에요.',
+          '그리고 App Store 심사를 통과해 출시했어요.',
         ],
         now: true,
       },
@@ -357,7 +357,7 @@ const weming: Record<'ko' | 'en', TrialPage> = {
     code: 'QL-001',
     name: 'Weming',
     meta: {
-      title: 'Weming: trial and error, from first MVP to App Store approval · qminlab',
+      title: 'Weming: trial and error, from first MVP to App Store release · qminlab',
       description: 'What happened while building Weming, a friend-finding app, since September 30: the first MVP, getting ready to ship, two App Store rejections and how each was fixed, and the Google Play tests.',
     },
     eyebrow: 'FILE QL-001 / APP / TRIAL AND ERROR',
@@ -370,7 +370,7 @@ const weming: Record<'ko' | 'en', TrialPage> = {
       { n: '1,041', l: 'turns in one chat (9.30 – 10.8)' },
       { n: 'v152', l: 'last change number in that chat' },
       { n: '2', l: 'App Store rejections' },
-      { n: '9th', l: 'build passed review · awaiting release' },
+      { n: '9th', l: 'build, out on the App Store' },
     ],
     versions: [
       {
@@ -439,7 +439,7 @@ const weming: Record<'ko' | 'en', TrialPage> = {
           'An 8-second recording on a real phone (fresh install → tracking prompt over the login screen → deny → login screen) went into the reply to review.',
           'While a submission sits rejected, the in-app products section disappears and resubmitting is blocked, so the rejected submission was cancelled and the app and products went into a new draft, resubmitted on October 21.',
           'On Android, the request for Google Play production access was received on October 23.',
-          'Then it passed App Store review. It is now awaiting release.',
+          'Then it passed App Store review and was released.',
         ],
         now: true,
       },
