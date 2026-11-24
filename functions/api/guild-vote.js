@@ -1,6 +1,6 @@
 // Cloudflare Pages Function behind /guild-vote/: a one-off poll where guild members pick the guild emblem.
-// Each member votes once for one emblem (1-8) and one banner (1-8). The poll opens with the first vote and
-// closes DURATION_MS later. Votes live in a D1 database bound as GUILD_VOTE_DB (Pages → Settings → Bindings).
+// Each member votes once for one emblem (1-8) and one banner (1-8). The poll is open until CLOSES_AT.
+// Votes live in a D1 database bound as GUILD_VOTE_DB (Pages → Settings → Bindings).
 // GET  → current standings. POST { nickname, icon, banner } → casts a vote, then returns the standings.
 // Who picked what is never returned, only who has voted.
 //
@@ -18,7 +18,7 @@ const MEMBERS = [
   '성민', '젤리말랑', '설요', '헤론', '우현준', '재밌낭이거',
 ];
 const OPTIONS = 8; // emblems and banners both come in eight
-const DURATION_MS = 3 * 24 * 60 * 60 * 1000;
+const CLOSES_AT = Date.parse('2026-11-27T00:00:00+09:00'); // midnight between Nov 26 and 27, Korea time
 
 const COOKIE = 'gv_device';
 
@@ -112,8 +112,6 @@ function ranking(rows, field) {
 async function standings(db, now) {
   const { results } = await db.prepare('SELECT nickname, icon, banner, voted_at FROM guild_votes').all();
   const rows = results.filter((r) => MEMBERS.includes(r.nickname));
-  const startedAt = rows.length ? Math.min(...rows.map((r) => r.voted_at)) : null;
-  const endsAt = startedAt === null ? null : startedAt + DURATION_MS;
   const icons = ranking(rows, 'icon');
   const banners = ranking(rows, 'banner');
   return {
@@ -124,10 +122,8 @@ async function standings(db, now) {
     iconOrder: icons.order,
     banners: banners.count,
     bannerOrder: banners.order,
-    startedAt,
-    endsAt,
-    durationMs: DURATION_MS,
-    closed: endsAt !== null && now >= endsAt,
+    endsAt: CLOSES_AT,
+    closed: now >= CLOSES_AT,
   };
 }
 

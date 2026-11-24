@@ -547,12 +547,9 @@
     if (state.closed) {
       b.textContent = '투표 마감';
       sub.nodeValue = formatWhen(state.endsAt) + '에 끝났어요';
-    } else if (state.endsAt) {
+    } else {
       b.textContent = '마감까지 ' + formatLeft(state.endsAt - nowMs());
       sub.nodeValue = formatWhen(state.endsAt) + ' 마감';
-    } else {
-      b.textContent = '투표 대기 중';
-      sub.nodeValue = '첫 투표부터 3일간 진행돼요';
     }
     el.appendChild(b); el.appendChild(sub);
   }
@@ -566,7 +563,7 @@
   }
   function formatWhen(ts) {
     try {
-      return new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', weekday: 'short', hour: 'numeric', minute: '2-digit' }).format(new Date(ts));
+      return new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(ts));
     } catch (e) { return new Date(ts).toLocaleString(); }
   }
 
@@ -773,7 +770,7 @@
   }, POLL_MS);
   setInterval(function () {
     if (!state) return;
-    if (!state.closed && state.endsAt && nowMs() >= state.endsAt) load();   // 마감 시각을 넘기면 결과 화면으로
+    if (!state.closed && nowMs() >= state.endsAt) load();   // 마감 시각을 넘기면 결과 화면으로
     else renderStatus();
   }, 15000);
   document.addEventListener('visibilitychange', function () {
