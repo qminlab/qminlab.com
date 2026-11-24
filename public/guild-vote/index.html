@@ -312,7 +312,7 @@
           </div>
         </div>
 
-        <h2><label for="nick">1. 닉네임</label> <small>닉네임마다 한 번만 투표할 수 있어요</small></h2>
+        <h2><label for="nick">1. 닉네임</label> <small>한 사람이 한 번만 투표할 수 있어요</small></h2>
         <select class="field" id="nick">
           <option value="">내 닉네임 고르기</option>
         </select>
@@ -333,6 +333,12 @@
         <div class="pv" id="pv-done"></div>
         <h3 id="done-title">투표 완료!</h3>
         <p id="done-text"></p>
+        <button type="button" class="btn jump" data-go="rank">현재 순위 보기</button>
+      </div>
+
+      <div class="card center" id="blocked" hidden>
+        <h3 id="blocked-title">이미 투표했어요</h3>
+        <p id="blocked-text"></p>
         <button type="button" class="btn jump" data-go="rank">현재 순위 보기</button>
       </div>
 
@@ -385,7 +391,7 @@
     </section>
   </main>
 
-  <footer>길드원 전용 투표 페이지</footer>
+  <footer>길드원 전용 투표 페이지<br>중복 투표를 막으려고 기기 표시와, 접속 주소를 알아볼 수 없게 바꾼 값을 저장해요.</footer>
 </div>
 
 <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -511,17 +517,25 @@
     if (!state) return;
     $('loading').hidden = true; $('loading-rank').hidden = true;
     var done = !!mine;
-    if (!tabChosen && (done || state.closed)) setTab('rank', false);
+    var blocked = !done && !!state.blocked;     // 이 기기나 같은 인터넷에서 이미 투표가 나왔다
+    if (!tabChosen && (done || blocked || state.closed)) setTab('rank', false);
     renderStatus();
     $('closed').hidden = !state.closed;
     $('done').hidden = state.closed || !done;
-    $('form').hidden = state.closed || done;
+    $('blocked').hidden = state.closed || !blocked;
+    $('form').hidden = state.closed || done || blocked;
+    if (!state.closed && blocked) {
+      $('blocked-title').textContent = state.blocked === 'ip' ? '이 인터넷에서 이미 투표했어요' : '이 기기에서 이미 투표했어요';
+      $('blocked-text').textContent = state.blocked === 'ip'
+        ? '같은 와이파이·인터넷 연결에서는 한 번만 투표할 수 있어요. 순위는 계속 볼 수 있어요.'
+        : '한 기기에서는 한 번만 투표할 수 있어요. 순위는 계속 볼 수 있어요.';
+    }
     if (!state.closed && done) {
       preview($('pv-done'), mine.icon, mine.banner);
       $('done-title').textContent = mine.nick + ' 님, 투표 완료!';
       $('done-text').textContent = '도안 ' + iconLabel(mine.icon) + ' · 깃발 ' + bannerLabel(mine.banner);
     }
-    if (!state.closed && !done) { syncMembers(); renderForm(); }
+    if (!state.closed && !done && !blocked) { syncMembers(); renderForm(); }
     renderRank();
   }
 
@@ -721,6 +735,9 @@
         } else if (err === 'already_voted') {
           accept(res.body); sel.nick = '';
           toast(mineNow.nick + ' 닉네임은 이미 투표했어요');
+        } else if (err === 'device_voted' || err === 'ip_voted') {
+          accept(res.body);
+          toast(err === 'ip_voted' ? '이 인터넷에서는 이미 투표가 완료됐어요' : '이 기기에서는 이미 투표했어요');
         } else if (err === 'closed') {
           accept(res.body);
           toast('투표가 마감되었어요');
