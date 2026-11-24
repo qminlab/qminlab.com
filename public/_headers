@@ -1,3 +1,7 @@
 # Past homepages kept for the "Version history" window: viewable, but not search results of their own.
 /archive/*
   X-Robots-Tag: noindex
+
+# Guild emblem poll: a private page for guild members, not a search result.
+/guild-vote/*
+  X-Robots-Tag: noindex
