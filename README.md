@@ -91,6 +91,7 @@ scripts/                예전 버전 다시 빌드하기 등
 - `index.js` 는 `/` 로 들어온 방문자를 언어에 맞게 `/ko/` 또는 `/en/` 으로 보냅니다. 헤더에서 고른 언어, 브라우저 언어, 접속 국가 순서로 봐요.
 - `api/github.js` 는 데스크톱 GitHub 위젯에 [github.com/qminlab](https://github.com/qminlab) 의 기여 기록을 한 시간 단위로 캐시해서 전해 줍니다.
 - `notes/` 는 이 저장소에 없는 비공개 페이지로 요청을 넘겨 줍니다.
+- `api/guild-vote.js` 는 `/guild-vote/` 길드 아이콘 투표의 표를 받고 집계합니다. D1 데이터베이스를 `GUILD_VOTE_DB` 라는 이름으로 연결해야 동작해요.
 
 ## 배포
 
