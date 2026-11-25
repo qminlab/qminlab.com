@@ -17,6 +17,13 @@
   .daybar { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; }
   .daynote { margin: 10px 0 0; font-weight: 600; color: var(--text-soft); }
   .picker-tools { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; margin-top: 14px; }
+  textarea.field { display: block; resize: vertical; min-height: 88px; line-height: 1.6; }
+  .names-acts { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+  .names-acts .hint { margin: 0; }
+  #names-result .alert { margin: 12px 0 0; }
+  .fixes { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+  .fixes li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .fixes .chip { color: var(--text); }
   .checks { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
   /* One toggle per member: an outline when absent, lit when present. */
   .check {
@@ -108,7 +115,16 @@
           </div>
           <p class="daynote" id="daynote"></p>
 
-          <div class="picker-tools">
+          <h2><label for="names">참석한 닉네임</label> <small>띄어쓰기로 나열해요</small></h2>
+          <textarea class="field" id="names" rows="3" placeholder="살인중독 베이비 아트7 누르 바서주" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+          <div class="names-acts">
+            <span class="hint" id="names-count"></span>
+            <button type="button" class="btn" id="apply">참석 적용</button>
+          </div>
+          <div id="names-result" aria-live="polite"></div>
+
+          <h2>참석 명단 <small>눌러서 넣거나 뺄 수 있어요</small></h2>
+          <div class="picker-tools" style="margin-top:0">
             <input class="field" id="find" type="search" placeholder="닉네임 찾기" autocomplete="off" aria-label="닉네임 찾기">
             <button type="button" class="btn ghost small" id="all">모두 선택</button>
             <button type="button" class="btn ghost small" id="none">모두 해제</button>
@@ -121,7 +137,7 @@
 
           <div class="savebar">
             <b id="picked">0명 참석</b>
-            <button type="button" class="btn" id="save">저장</button>
+            <button type="button" class="btn ghost" id="save">저장</button>
           </div>
         </section>
 
@@ -290,7 +306,94 @@
   function count() {
     var n = Object.keys(present).length;
     $('picked').textContent = n + '명 참석' + (dirty ? ' · 저장 안 됨' : '');
+    $('save').className = dirty ? 'btn' : 'btn ghost';      // filled only while the list has unsaved changes
   }
+
+  // ───── Attendance by sentence: nicknames separated by spaces, one raid each ─────
+  function norm(t) { return (t.normalize ? t.normalize('NFC') : t).toLowerCase(); }
+  function readNames(text) {
+    var byName = {}, seen = {}, found = [], unknown = [];
+    active().forEach(function (m) { byName[norm(m.nickname)] = m; });
+    text.split(/[\s,]+/).forEach(function (t) {
+      var k = norm(t); if (!k || seen[k]) return; seen[k] = 1;
+      if (byName[k]) found.push(byName[k]); else unknown.push(t);
+    });
+    return { found: found, unknown: unknown };
+  }
+  function distance(a, b) {                               // edit distance, for "did you mean"
+    var prev = [], i, j;
+    for (j = 0; j <= b.length; j++) prev[j] = j;
+    for (i = 1; i <= a.length; i++) {
+      var row = [i];
+      for (j = 1; j <= b.length; j++) row[j] = Math.min(prev[j] + 1, row[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = row;
+    }
+    return prev[b.length];
+  }
+  function guesses(token, taken) {
+    var k = norm(token);
+    return active().filter(function (m) { return !taken[m.uid]; }).map(function (m) {
+      var n = norm(m.nickname), d = distance(k, n);
+      if (k.length >= 2 && (n.indexOf(k) >= 0 || k.indexOf(n) >= 0)) d = Math.min(d, 1);
+      return { m: m, d: d };
+    }).filter(function (g) { return g.d <= Math.max(1, Math.floor(k.length / 3)); })
+      .sort(function (a, b) { return a.d - b.d; }).slice(0, 3).map(function (g) { return g.m; });
+  }
+  function namesHint() {
+    var r = readNames($('names').value);
+    $('names-count').textContent = r.found.length || r.unknown.length
+      ? r.found.length + '명 확인' + (r.unknown.length ? ' · 못 찾은 닉네임 ' + r.unknown.length + '개' : '') : '';
+  }
+  $('names').addEventListener('input', function () { $('names-result').textContent = ''; namesHint(); });
+  function swapToken(from, to) {
+    $('names').value = $('names').value.split(/([\s,]+)/).map(function (t) { return t === from ? to : t; }).join('');
+    namesHint(); applyNames();
+  }
+  function applyNames() {
+    var date = $('date').value, r = readNames($('names').value), box = $('names-result');
+    box.textContent = '';
+    if (!date) return;
+    if (!r.found.length && !r.unknown.length) { box.appendChild(el('p', 'hint', '참석한 닉네임을 띄어쓰기로 적어 주세요.')); $('names').focus(); return; }
+    if (r.unknown.length) {
+      // Nothing is saved while a name is unreadable, so nobody is dropped without the admin noticing.
+      var a = el('div', 'alert'), ul = el('ul', 'fixes'), taken = {};
+      r.found.forEach(function (m) { taken[m.uid] = 1; });
+      a.appendChild(el('b', '', '못 찾은 닉네임이 있어 아직 저장하지 않았어요'));
+      a.appendChild(el('span', '', '고쳐 적거나 비슷한 닉네임을 눌러 주세요.'));
+      r.unknown.forEach(function (t) {
+        var li = el('li'); li.appendChild(el('span', '', '"' + t + '"'));
+        var g = guesses(t, taken);
+        if (!g.length) li.appendChild(el('span', 'hint', '비슷한 닉네임이 없어요'));
+        g.forEach(function (m) {
+          var b = el('button', 'chip', m.nickname); b.type = 'button';
+          b.addEventListener('click', function () { swapToken(t, m.nickname); });
+          li.appendChild(b);
+        });
+        ul.appendChild(li);
+      });
+      a.appendChild(ul); box.appendChild(a);
+      return;
+    }
+    var fresh = r.found.filter(function (m) { return !present[m.uid]; }).length, next = {};
+    Object.keys(present).forEach(function (u) { next[u] = 1; });
+    r.found.forEach(function (m) { next[m.uid] = 1; });
+    $('apply').disabled = true;
+    api('/admin/day', { method: 'PUT', json: { date: date, present: Object.keys(next) } }).then(function (res) {
+      $('apply').disabled = false;
+      if (!res.ok) {
+        var bad = el('div', 'alert');
+        bad.appendChild(el('b', '', '저장하지 못했어요'));
+        bad.appendChild(el('span', '', res.body.error === 'bad_date' ? '오늘 이후 날짜는 저장할 수 없어요.' : res.status === 401 ? '로그인이 풀렸어요. 새로 고침해 주세요.' : '잠시 뒤에 다시 시도해 주세요.'));
+        box.appendChild(bad); return;
+      }
+      var ok = el('div', 'alert ok');
+      ok.appendChild(el('b', '', dateLabel(date) + ' ' + r.found.length + '명 적용했어요'));
+      ok.appendChild(el('span', '', (fresh < r.found.length ? '새로 ' + fresh + '명, 이미 들어 있던 ' + (r.found.length - fresh) + '명. ' : '') + '이 날짜 참석은 모두 ' + res.body.present.length + '명이에요.'));
+      $('names').value = ''; namesHint();
+      loadDay(date).then(function () { box.appendChild(ok); }); loadDays();
+    });
+  }
+  $('apply').addEventListener('click', applyNames);
   function loadDay(date) {
     return api('/admin/day?date=' + date).then(function (r) {
       if (!r.ok) return;
@@ -298,7 +401,7 @@
       r.body.present.forEach(function (u) { present[u] = 1; });
       var items = $('checks').children;
       for (var i = 0; i < items.length; i++) items[i].firstChild.setAttribute('aria-pressed', String(!!present[items[i].firstChild.dataset.uid]));
-      $('daynote').textContent = dateLabel(date) + ' — ' + (r.body.saved ? '저장된 기록이 있어요 (' + r.body.present.length + '명). 고쳐서 다시 저장할 수 있어요.' : '아직 기록이 없어요. 참여한 길드원을 눌러 고르세요.');
+      $('daynote').textContent = dateLabel(date) + ' — ' + (r.body.saved ? '저장된 기록이 있어요 (' + r.body.present.length + '명). 고쳐서 다시 저장할 수 있어요.' : '아직 기록이 없어요. 참석한 닉네임을 적어 주세요.');
       $('wipe').hidden = !r.body.saved;
       count(); markDay();
     });
@@ -320,7 +423,7 @@
   function pickDate(date) {
     if (!date) return;
     if (dirty && date !== loadedDate) toast(dateLabel(loadedDate) + ' 입력은 저장하지 않고 넘어왔어요');
-    $('date').value = date; loadDay(date); window.scrollTo(0, 0);
+    $('date').value = date; $('names-result').textContent = ''; loadDay(date); window.scrollTo(0, 0);
   }
   $('date').addEventListener('change', function (e) { if (e.target.value) pickDate(e.target.value); });
   $('today').addEventListener('click', function () { pickDate(kstToday()); });

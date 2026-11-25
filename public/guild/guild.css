@@ -34,7 +34,7 @@ body {
   line-height: 1.5;
   -webkit-tap-highlight-color: transparent;
 }
-button, select, input { font: inherit; color: inherit; }
+button, select, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 [hidden] { display: none !important; }
 img { max-width: 100%; }
