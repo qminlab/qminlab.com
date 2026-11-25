@@ -86,7 +86,6 @@ a { color: var(--light); }
 .menu.bottom a, .menu.bottom button { padding: 14px 2px 12px; font-size: 0.86rem; min-height: 52px; }
 .menu.bottom [aria-current="page"] { box-shadow: inset 0 2px 0 var(--light); }
 @media (max-width: 380px) { .menu.bottom a, .menu.bottom button { font-size: 0.8rem; } }
-.menu .soon { font-size: 0.68rem; font-weight: 600; color: var(--text-mute); border: 1px solid var(--line-strong); border-radius: 3px; padding: 0 5px; line-height: 1.5; }
 @media (min-width: 760px) { .menu.bottom { display: none; } }
 @media (max-width: 759px) { .menu.side { display: none; } }
 

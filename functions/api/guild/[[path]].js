@@ -5,6 +5,11 @@
 //   GET  /api/guild/state                      members and raid counts (total, this month, this week)
 //   GET  /api/guild/img/{char|face}/{uid}      a member's updated picture
 //   POST /api/guild/update                     a member (once a day) or the admin uploads a new character picture
+//   GET  /api/guild/posts[?before=id]          strategy posts, newest first
+//   GET  /api/guild/posts/{id}                 one post with its pictures and comments
+//   POST /api/guild/posts                      write a post (a member must be chosen); POST .../{id} edits, DELETE removes
+//   POST /api/guild/posts/{id}/comments        comment; DELETE /api/guild/comments/{id} removes
+//   GET  /api/guild/posts/img/{id}             a picture attached to a post
 //   /api/guild/admin/...                       password set-up, login, attendance by day, pending updates, roster
 //
 // The admin password is chosen by the admin on first visit and stored only as a salted PBKDF2 hash.
@@ -23,6 +28,10 @@ const dayStart = (now) => Math.floor(now / DAY_MS) * DAY_MS;
 // person lock another out). Those are capped per network address instead.
 const USES_TURN = "NOT (status = 'rejected' AND reason = 'nickname')";
 const MISMATCHES_PER_DAY = 3;
+// Strategy posts: what a post may hold, and how much one network address may write in a day.
+const POST = { title: 60, body: 5000, source: 200, link: 300, links: 3, images: 4, image: 500_000, comment: 500, page: 30 };
+const POSTS_PER_DAY = 5;
+const COMMENTS_PER_DAY = 40;
 // Vision models tried in order until one returns something readable.
 const VISION_MODELS = ['@cf/mistralai/mistral-small-3.1-24b-instruct'];
 
@@ -38,6 +47,7 @@ export async function onRequest({ request, env, params }) {
     const img = /^\/img\/(char|face)\/([A-Za-z0-9]+)$/.exec(path);
     if (method === 'GET' && img) return picture(ctx, img[1], img[2]);
     if (method === 'POST' && path === '/update') return update(ctx);
+    if (path === '/posts' || path.startsWith('/posts/') || path.startsWith('/comments/')) return posts(ctx, method, path);
 
     if (path.startsWith('/admin/')) return admin(ctx, method, path.slice('/admin'.length));
     return json({ error: 'not_found' }, 404);
@@ -65,6 +75,15 @@ async function database(env, request) {
     db.prepare(
       'CREATE TABLE IF NOT EXISTS guild_updates (id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL, status TEXT NOT NULL, reason TEXT, read_json TEXT, shot BLOB, char BLOB, face BLOB, ip_hash TEXT, created_at INTEGER NOT NULL, decided_at INTEGER)',
     ),
+    db.prepare(
+      'CREATE TABLE IF NOT EXISTS guild_posts (id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL, title TEXT NOT NULL, body TEXT NOT NULL, links TEXT NOT NULL, source TEXT, key_hash TEXT, ip_hash TEXT, created_at INTEGER NOT NULL, updated_at INTEGER, deleted_at INTEGER)',
+    ),
+    db.prepare('CREATE TABLE IF NOT EXISTS guild_post_images (id INTEGER PRIMARY KEY AUTOINCREMENT, post_id INTEGER NOT NULL, pos INTEGER NOT NULL, body BLOB NOT NULL)'),
+    db.prepare(
+      'CREATE TABLE IF NOT EXISTS guild_comments (id INTEGER PRIMARY KEY AUTOINCREMENT, post_id INTEGER NOT NULL, uid TEXT NOT NULL, body TEXT NOT NULL, key_hash TEXT, ip_hash TEXT, created_at INTEGER NOT NULL, deleted_at INTEGER)',
+    ),
+    db.prepare('CREATE INDEX IF NOT EXISTS guild_post_images_post ON guild_post_images (post_id, pos)'),
+    db.prepare('CREATE INDEX IF NOT EXISTS guild_comments_post ON guild_comments (post_id, id)'),
   ]);
   // First run: fill the roster from the file that ships with the site.
   const any = await db.prepare('SELECT 1 FROM guild_members LIMIT 1').first();
@@ -391,6 +410,209 @@ async function update(ctx) {
       { status, reason: reason ?? null, read: seen, onFile: { level: member.level, power: member.power }, member: memberView(fresh), resetAt: since + DAY_MS, usage: read.usage ?? null },
       status === 'rejected' ? 409 : 200,
     );
+  } catch (err) {
+    if (err instanceof HttpError) return json({ error: err.code }, err.status);
+    throw err;
+  }
+}
+
+// ───────────────────────── strategy posts ─────────────────────────
+//
+// There are no accounts: the author is the member chosen on the device, and the device keeps a random key. Only the
+// device that wrote a post or comment (its key) or the admin can remove it; only its device can edit a post.
+
+// Text as typed: one newline style, no control characters, no trailing space.
+const tidyText = (v) => String(v ?? '').replace(/\r\n?/g, '\n').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '').trim();
+
+function tidyLinks(v) {
+  let list = v;
+  if (typeof v === 'string') {
+    try {
+      list = JSON.parse(v);
+    } catch {
+      list = v.split(/\s+/);
+    }
+  }
+  const out = [];
+  for (const raw of [].concat(list || [])) {
+    const text = String(raw || '').trim();
+    if (!text) continue;
+    let url;
+    try {
+      url = new URL(text);
+    } catch {
+      throw new HttpError(400, 'bad_link');
+    }
+    if ((url.protocol !== 'http:' && url.protocol !== 'https:') || url.href.length > POST.link) throw new HttpError(400, 'bad_link');
+    out.push(url.href);
+  }
+  if (out.length > POST.links) throw new HttpError(400, 'too_many_links');
+  return out;
+}
+
+function postFields(get) {
+  const title = tidyText(get('title')).replace(/\s+/g, ' ');
+  const body = tidyText(get('body'));
+  const source = tidyText(get('source')).replace(/\s+/g, ' ');
+  if (title.length < 2 || title.length > POST.title) throw new HttpError(400, 'bad_title');
+  if (!body || body.length > POST.body) throw new HttpError(400, 'bad_body');
+  if (source.length > POST.source) throw new HttpError(400, 'bad_source');
+  return { title, body, source: source || null, links: tidyLinks(get('links')) };
+}
+
+async function posts(ctx, method, path) {
+  const { request, db, now } = ctx;
+  const hashKey = async (k) => (/^[a-f0-9]{32,64}$/.test(k || '') ? sha256('post|' + k) : null);
+  const mine = await hashKey(request.headers.get('X-Guild-Key'));
+  const owns = (row) => !!mine && row.key_hash === mine;
+  const activeMember = (uid) => db.prepare('SELECT uid FROM guild_members WHERE uid = ? AND active = 1').bind(String(uid || '')).first();
+  const jsonBody = async () => {
+    try {
+      return (await request.json()) || {};
+    } catch {
+      return {};
+    }
+  };
+  try {
+    // A picture attached to a post
+    const img = /^\/posts\/img\/(\d+)$/.exec(path);
+    if (method === 'GET' && img) {
+      const row = await db.prepare('SELECT body FROM guild_post_images WHERE id = ?').bind(Number(img[1])).first();
+      if (!row) return json({ error: 'not_found' }, 404);
+      const bytes = toBytes(row.body);
+      return new Response(bytes, {
+        headers: { 'Content-Type': mimeOf(bytes) || 'application/octet-stream', 'Cache-Control': 'public, max-age=31536000, immutable', 'X-Content-Type-Options': 'nosniff' },
+      });
+    }
+
+    if (method === 'GET' && path === '/posts') {
+      const before = Number(ctx.url.searchParams.get('before')) || 0;
+      const { results } = await db
+        .prepare(
+          `SELECT p.id, p.uid, m.nickname, p.title, substr(p.body, 1, 160) AS excerpt, p.created_at, p.key_hash,
+                  (SELECT COUNT(*) FROM guild_comments c WHERE c.post_id = p.id AND c.deleted_at IS NULL) AS comments,
+                  (SELECT COUNT(*) FROM guild_post_images i WHERE i.post_id = p.id) AS images,
+                  (SELECT i.id FROM guild_post_images i WHERE i.post_id = p.id ORDER BY i.pos LIMIT 1) AS thumb
+           FROM guild_posts p LEFT JOIN guild_members m ON m.uid = p.uid
+           WHERE p.deleted_at IS NULL AND (? = 0 OR p.id < ?) ORDER BY p.id DESC LIMIT ?`,
+        )
+        .bind(before, before, POST.page + 1)
+        .all();
+      return json(
+        {
+          posts: results.slice(0, POST.page).map((r) => ({
+            id: r.id, uid: r.uid, nickname: r.nickname, title: r.title, excerpt: r.excerpt.replace(/\s+/g, ' '), createdAt: r.created_at,
+            comments: r.comments, images: r.images, thumb: r.thumb ? `/api/guild/posts/img/${r.thumb}` : null, mine: owns(r),
+          })),
+          more: results.length > POST.page,
+          admin: await session(ctx),
+        },
+        200,
+      );
+    }
+
+    // Write a post
+    if (method === 'POST' && path === '/posts') {
+      let form;
+      try {
+        form = await request.formData();
+      } catch {
+        return json({ error: 'bad_request' }, 400);
+      }
+      if (!(await activeMember(form.get('uid')))) return json({ error: 'not_member' }, 403);
+      const key = await hashKey(form.get('key'));
+      if (!key) return json({ error: 'bad_key' }, 400);
+      const fields = postFields((k) => form.get(k));
+      const files = form.getAll('image').filter((f) => f && typeof f !== 'string');
+      if (files.length > POST.images) return json({ error: 'too_many_images' }, 400);
+      const pictures = [];
+      for (const f of files) {
+        if (f.size > POST.image) return json({ error: 'too_large_image' }, 413);
+        const bytes = new Uint8Array(await f.arrayBuffer());
+        if (!mimeOf(bytes)) return json({ error: 'bad_image' }, 400);
+        pictures.push(bytes);
+      }
+      const who = await ipHash(db, request);
+      if (who) {
+        const recent = await db.prepare('SELECT COUNT(*) AS n FROM guild_posts WHERE ip_hash = ? AND created_at > ?').bind(who, now - DAY_MS).first();
+        if (recent.n >= POSTS_PER_DAY) return json({ error: 'too_many' }, 429);
+      }
+      const made = await db
+        .prepare('INSERT INTO guild_posts (uid, title, body, links, source, key_hash, ip_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+        .bind(String(form.get('uid')), fields.title, fields.body, JSON.stringify(fields.links), fields.source, key, who, now)
+        .run();
+      const id = made.meta.last_row_id;
+      if (pictures.length) await db.batch(pictures.map((bytes, i) => db.prepare('INSERT INTO guild_post_images (post_id, pos, body) VALUES (?, ?, ?)').bind(id, i, bytes)));
+      return json({ ok: true, id }, 200);
+    }
+
+    const one = /^\/posts\/(\d+)$/.exec(path);
+    const forComments = /^\/posts\/(\d+)\/comments$/.exec(path);
+    const postId = Number((one || forComments || [])[1]);
+    const post = postId
+      ? await db.prepare('SELECT p.*, m.nickname FROM guild_posts p LEFT JOIN guild_members m ON m.uid = p.uid WHERE p.id = ? AND p.deleted_at IS NULL').bind(postId).first()
+      : null;
+    if ((one || forComments) && !post) return json({ error: 'not_found' }, 404);
+
+    if (one && method === 'GET') {
+      const [pics, notes] = await db.batch([
+        db.prepare('SELECT id FROM guild_post_images WHERE post_id = ? ORDER BY pos').bind(postId),
+        db.prepare('SELECT c.id, c.uid, m.nickname, c.body, c.created_at, c.key_hash FROM guild_comments c LEFT JOIN guild_members m ON m.uid = c.uid WHERE c.post_id = ? AND c.deleted_at IS NULL ORDER BY c.id').bind(postId),
+      ]);
+      return json(
+        {
+          post: {
+            id: post.id, uid: post.uid, nickname: post.nickname, title: post.title, body: post.body, links: JSON.parse(post.links || '[]'), source: post.source,
+            createdAt: post.created_at, updatedAt: post.updated_at, images: pics.results.map((r) => `/api/guild/posts/img/${r.id}`), mine: owns(post),
+          },
+          comments: notes.results.map((c) => ({ id: c.id, uid: c.uid, nickname: c.nickname, body: c.body, createdAt: c.created_at, mine: owns(c) })),
+          admin: await session(ctx),
+        },
+        200,
+      );
+    }
+    // Edit the words of a post: its own device only. Pictures stay as they are.
+    if (one && method === 'POST') {
+      if (!owns(post)) return json({ error: 'not_yours' }, 403);
+      const b = await jsonBody();
+      const fields = postFields((k) => b[k]);
+      await db.prepare('UPDATE guild_posts SET title = ?, body = ?, links = ?, source = ?, updated_at = ? WHERE id = ?').bind(fields.title, fields.body, JSON.stringify(fields.links), fields.source, now, postId).run();
+      return json({ ok: true, id: postId }, 200);
+    }
+    if (one && method === 'DELETE') {
+      if (!owns(post) && !(await session(ctx))) return json({ error: 'not_yours' }, 403);
+      await db.batch([
+        db.prepare('UPDATE guild_posts SET deleted_at = ? WHERE id = ?').bind(now, postId),
+        db.prepare('DELETE FROM guild_post_images WHERE post_id = ?').bind(postId),
+      ]);
+      return json({ ok: true }, 200);
+    }
+
+    if (forComments && method === 'POST') {
+      const b = await jsonBody();
+      if (!(await activeMember(b.uid))) return json({ error: 'not_member' }, 403);
+      const key = await hashKey(b.key);
+      if (!key) return json({ error: 'bad_key' }, 400);
+      const text = tidyText(b.body);
+      if (!text || text.length > POST.comment) return json({ error: 'bad_body' }, 400);
+      const who = await ipHash(db, request);
+      if (who) {
+        const recent = await db.prepare('SELECT COUNT(*) AS n FROM guild_comments WHERE ip_hash = ? AND created_at > ?').bind(who, now - DAY_MS).first();
+        if (recent.n >= COMMENTS_PER_DAY) return json({ error: 'too_many' }, 429);
+      }
+      const made = await db.prepare('INSERT INTO guild_comments (post_id, uid, body, key_hash, ip_hash, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(postId, String(b.uid), text, key, who, now).run();
+      return json({ ok: true, id: made.meta.last_row_id }, 200);
+    }
+
+    const note = /^\/comments\/(\d+)$/.exec(path);
+    if (note && method === 'DELETE') {
+      const row = await db.prepare('SELECT id, key_hash FROM guild_comments WHERE id = ? AND deleted_at IS NULL').bind(Number(note[1])).first();
+      if (!row) return json({ error: 'not_found' }, 404);
+      if (!owns(row) && !(await session(ctx))) return json({ error: 'not_yours' }, 403);
+      await db.prepare('UPDATE guild_comments SET deleted_at = ? WHERE id = ?').bind(now, row.id).run();
+      return json({ ok: true }, 200);
+    }
+    return json({ error: 'not_found' }, 404);
   } catch (err) {
     if (err instanceof HttpError) return json({ error: err.code }, err.status);
     throw err;
