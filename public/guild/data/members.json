@@ -1,0 +1,515 @@
+{
+ "asOf": "2026-11-25",
+ "members": [
+  {
+   "uid": "400031203388",
+   "nickname": "배찌",
+   "cls": "투사",
+   "classLevel": 118,
+   "level": 72,
+   "power": 1120000,
+   "w": 204,
+   "h": 299
+  },
+  {
+   "uid": "400031203838",
+   "nickname": "전통",
+   "cls": "주술사",
+   "classLevel": 77,
+   "level": 72,
+   "power": 798000,
+   "w": 228,
+   "h": 299
+  },
+  {
+   "uid": "400031204044",
+   "nickname": "단단카우",
+   "cls": "주술사",
+   "classLevel": 80,
+   "level": 73,
+   "power": 725000,
+   "w": 199,
+   "h": 294
+  },
+  {
+   "uid": "400031203951",
+   "nickname": "초코시루",
+   "cls": "주술사",
+   "classLevel": 78,
+   "level": 71,
+   "power": 649000,
+   "w": 264,
+   "h": 299
+  },
+  {
+   "uid": "400031201698",
+   "nickname": "라이트유저",
+   "cls": "주술사",
+   "classLevel": 59,
+   "level": 72,
+   "power": 631000,
+   "w": 237,
+   "h": 300
+  },
+  {
+   "uid": "400031202759",
+   "nickname": "경원",
+   "cls": "주술사",
+   "classLevel": 68,
+   "level": 72,
+   "power": 617000,
+   "w": 246,
+   "h": 300
+  },
+  {
+   "uid": "400031204764",
+   "nickname": "살인중독",
+   "cls": "기사",
+   "classLevel": 74,
+   "level": 71,
+   "power": 593000,
+   "w": 212,
+   "h": 289
+  },
+  {
+   "uid": "400031204298",
+   "nickname": "암거나함",
+   "cls": "주술사",
+   "classLevel": 60,
+   "level": 71,
+   "power": 531000,
+   "w": 225,
+   "h": 286
+  },
+  {
+   "uid": "400031200357",
+   "nickname": "모루모루",
+   "cls": "주술사",
+   "classLevel": 56,
+   "level": 72,
+   "power": 472000,
+   "w": 211,
+   "h": 324
+  },
+  {
+   "uid": "400031204560",
+   "nickname": "정철",
+   "cls": "투사",
+   "classLevel": 48,
+   "level": 71,
+   "power": 472000,
+   "w": 213,
+   "h": 297
+  },
+  {
+   "uid": "400031200476",
+   "nickname": "다움",
+   "cls": "투사",
+   "classLevel": 62,
+   "level": 71,
+   "power": 463000,
+   "w": 239,
+   "h": 288
+  },
+  {
+   "uid": "400031200750",
+   "nickname": "베이비",
+   "cls": "기사",
+   "classLevel": 50,
+   "level": 71,
+   "power": 460000,
+   "w": 210,
+   "h": 269
+  },
+  {
+   "uid": "400031203606",
+   "nickname": "육식전문가",
+   "cls": "투사",
+   "classLevel": 59,
+   "level": 71,
+   "power": 455000,
+   "w": 219,
+   "h": 281
+  },
+  {
+   "uid": "400031202011",
+   "nickname": "용군빠",
+   "cls": "주술사",
+   "classLevel": 59,
+   "level": 71,
+   "power": 439000,
+   "w": 223,
+   "h": 274
+  },
+  {
+   "uid": "400031201685",
+   "nickname": "바나나쥬스",
+   "cls": "주술사",
+   "classLevel": 59,
+   "level": 71,
+   "power": 423000,
+   "w": 221,
+   "h": 287
+  },
+  {
+   "uid": "400031203219",
+   "nickname": "으아악극혐",
+   "cls": "투사",
+   "classLevel": 50,
+   "level": 71,
+   "power": 421000,
+   "w": 231,
+   "h": 292
+  },
+  {
+   "uid": "400031200751",
+   "nickname": "아트7",
+   "cls": "투사",
+   "classLevel": 54,
+   "level": 71,
+   "power": 421000,
+   "w": 206,
+   "h": 289
+  },
+  {
+   "uid": "400031204561",
+   "nickname": "성민",
+   "cls": "투사",
+   "classLevel": 57,
+   "level": 70,
+   "power": 413000,
+   "w": 209,
+   "h": 288
+  },
+  {
+   "uid": "400031201647",
+   "nickname": "에멘탈",
+   "cls": "주술사",
+   "classLevel": 52,
+   "level": 71,
+   "power": 413000,
+   "w": 228,
+   "h": 285
+  },
+  {
+   "uid": "400031204641",
+   "nickname": "슈롱",
+   "cls": "투사",
+   "classLevel": 55,
+   "level": 71,
+   "power": 409000,
+   "w": 210,
+   "h": 262
+  },
+  {
+   "uid": "400031204546",
+   "nickname": "진서",
+   "cls": "기사",
+   "classLevel": 57,
+   "level": 71,
+   "power": 406000,
+   "w": 242,
+   "h": 296
+  },
+  {
+   "uid": "400031203752",
+   "nickname": "누르",
+   "cls": "주술사",
+   "classLevel": 48,
+   "level": 71,
+   "power": 405000,
+   "w": 208,
+   "h": 282
+  },
+  {
+   "uid": "400031204517",
+   "nickname": "로킨",
+   "cls": "기사",
+   "classLevel": 55,
+   "level": 71,
+   "power": 404000,
+   "w": 219,
+   "h": 263
+  },
+  {
+   "uid": "400031203954",
+   "nickname": "유이고니",
+   "cls": "주술사",
+   "classLevel": 48,
+   "level": 71,
+   "power": 401000,
+   "w": 208,
+   "h": 282
+  },
+  {
+   "uid": "400031202547",
+   "nickname": "suubung",
+   "cls": "기사",
+   "classLevel": 51,
+   "level": 71,
+   "power": 396000,
+   "w": 245,
+   "h": 271
+  },
+  {
+   "uid": "400031202881",
+   "nickname": "냐냥펀치",
+   "cls": "투사",
+   "classLevel": 47,
+   "level": 70,
+   "power": 393000,
+   "w": 208,
+   "h": 282
+  },
+  {
+   "uid": "400031203365",
+   "nickname": "으넹이",
+   "cls": "현자",
+   "classLevel": 43,
+   "level": 70,
+   "power": 391000,
+   "w": 223,
+   "h": 278
+  },
+  {
+   "uid": "400031200226",
+   "nickname": "헤론",
+   "cls": "투사",
+   "classLevel": 50,
+   "level": 70,
+   "power": 388000,
+   "w": 237,
+   "h": 300
+  },
+  {
+   "uid": "400031201738",
+   "nickname": "범스테드",
+   "cls": "주술사",
+   "classLevel": 49,
+   "level": 70,
+   "power": 386000,
+   "w": 221,
+   "h": 302
+  },
+  {
+   "uid": "400031203002",
+   "nickname": "미나리백합탕",
+   "cls": "투사",
+   "classLevel": 52,
+   "level": 71,
+   "power": 384000,
+   "w": 231,
+   "h": 326
+  },
+  {
+   "uid": "400031200759",
+   "nickname": "평사",
+   "cls": "투사",
+   "classLevel": 53,
+   "level": 71,
+   "power": 383000,
+   "w": 211,
+   "h": 272
+  },
+  {
+   "uid": "400031202037",
+   "nickname": "연인",
+   "cls": "투사",
+   "classLevel": 42,
+   "level": 71,
+   "power": 384000,
+   "w": 217,
+   "h": 271
+  },
+  {
+   "uid": "400031202780",
+   "nickname": "바서주",
+   "cls": "현자",
+   "classLevel": 47,
+   "level": 70,
+   "power": 371000,
+   "w": 205,
+   "h": 277
+  },
+  {
+   "uid": "400031204221",
+   "nickname": "이런날",
+   "cls": "기사",
+   "classLevel": 47,
+   "level": 70,
+   "power": 358000,
+   "w": 219,
+   "h": 279
+  },
+  {
+   "uid": "400031200059",
+   "nickname": "아이티나",
+   "cls": "주술사",
+   "classLevel": 48,
+   "level": 70,
+   "power": 356000,
+   "w": 204,
+   "h": 279
+  },
+  {
+   "uid": "400031202202",
+   "nickname": "젤리말랑",
+   "cls": "투사",
+   "classLevel": 52,
+   "level": 70,
+   "power": 354000,
+   "w": 215,
+   "h": 274
+  },
+  {
+   "uid": "400031200636",
+   "nickname": "역천",
+   "cls": "기사",
+   "classLevel": 51,
+   "level": 70,
+   "power": 333000,
+   "w": 225,
+   "h": 276
+  },
+  {
+   "uid": "400031202235",
+   "nickname": "달인123",
+   "cls": "투사",
+   "classLevel": 44,
+   "level": 69,
+   "power": 326000,
+   "w": 240,
+   "h": 288
+  },
+  {
+   "uid": "400031203309",
+   "nickname": "설요",
+   "cls": "현자",
+   "classLevel": 50,
+   "level": 70,
+   "power": 319000,
+   "w": 231,
+   "h": 284
+  },
+  {
+   "uid": "400031202161",
+   "nickname": "으니긋",
+   "cls": "투사",
+   "classLevel": 44,
+   "level": 70,
+   "power": 319000,
+   "w": 237,
+   "h": 305
+  },
+  {
+   "uid": "400031202240",
+   "nickname": "착하게살자",
+   "cls": "현자",
+   "classLevel": 49,
+   "level": 70,
+   "power": 317000,
+   "w": 215,
+   "h": 279
+  },
+  {
+   "uid": "400031204529",
+   "nickname": "푸탕",
+   "cls": "현자",
+   "classLevel": 51,
+   "level": 70,
+   "power": 316000,
+   "w": 219,
+   "h": 293
+  },
+  {
+   "uid": "400031200184",
+   "nickname": "마잔향",
+   "cls": "투사",
+   "classLevel": 69,
+   "level": 70,
+   "power": 315000,
+   "w": 212,
+   "h": 271
+  },
+  {
+   "uid": "400031200451",
+   "nickname": "조금만하자",
+   "cls": "투사",
+   "classLevel": 44,
+   "level": 70,
+   "power": 313000,
+   "w": 233,
+   "h": 279
+  },
+  {
+   "uid": "400031203333",
+   "nickname": "로재혁",
+   "cls": "주술사",
+   "classLevel": 40,
+   "level": 70,
+   "power": 301000,
+   "w": 229,
+   "h": 278
+  },
+  {
+   "uid": "400031202582",
+   "nickname": "나쁜남",
+   "cls": "주술사",
+   "classLevel": 45,
+   "level": 68,
+   "power": 295000,
+   "w": 216,
+   "h": 276
+  },
+  {
+   "uid": "400031203468",
+   "nickname": "꿍꽁",
+   "cls": "주술사",
+   "classLevel": 47,
+   "level": 67,
+   "power": 290000,
+   "w": 223,
+   "h": 302
+  },
+  {
+   "uid": "400031202485",
+   "nickname": "히키히",
+   "cls": "투사",
+   "classLevel": 40,
+   "level": 69,
+   "power": 285000,
+   "w": 219,
+   "h": 276
+  },
+  {
+   "uid": "400031204589",
+   "nickname": "공도",
+   "cls": "기사",
+   "classLevel": 49,
+   "level": 65,
+   "power": 281000,
+   "w": 219,
+   "h": 263
+  },
+  {
+   "uid": "400031203690",
+   "nickname": "케닌",
+   "cls": "투사",
+   "classLevel": 44,
+   "level": 70,
+   "power": 277000,
+   "w": 239,
+   "h": 280
+  },
+  {
+   "uid": "400031201160",
+   "nickname": "우현준",
+   "cls": "투사",
+   "classLevel": 38,
+   "level": 66,
+   "power": 237000,
+   "w": 235,
+   "h": 259
+  }
+ ]
+}
