@@ -67,6 +67,7 @@
   .rule .tag { flex: none; font-size: 0.74rem; color: var(--light); border: 1px solid rgba(242, 226, 174, 0.5); border-radius: 3px; padding: 1px 7px; }
   .rule b { color: var(--light); font-weight: 700; }
   .rule small { color: var(--text-mute); font-size: 0.76rem; white-space: nowrap; }
+  .rule .go { margin-left: auto; border: 0; background: none; padding: 4px 0; color: var(--light); font-size: 0.8rem; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
   .cut { display: flex; align-items: center; gap: 10px; padding: 9px 6px; color: var(--light); font-size: 0.78rem; white-space: nowrap; }
   .cut::before, .cut::after { content: ""; flex: 1; height: 1px; background: rgba(242, 226, 174, 0.45); }
   .row .note { display: block; font-size: 0.74rem; color: var(--light); }
@@ -182,7 +183,7 @@
           <li class="spot p3" id="spot3"></li>
         </ol>
       </div>
-      <p class="rule"><span class="tag">길드 규칙</span><span>하루 미접속 시 강퇴 · <b>레이드 참여율 상위 30명은 제외</b> <small>누적 순위 기준</small></span></p>
+      <p class="rule"><span class="tag">길드 규칙</span><span>하루 미접속 시 강퇴 · <b>레이드 참여율 상위 30명은 제외</b> <small>이번 달 순위 기준</small></span><button type="button" class="go" id="rule-go">이번 달 순위 보기</button></p>
       <div class="meta"><span id="raid-days"></span><span id="raid-rule">횟수가 같으면 전투력 높은 순</span></div>
 
       <div class="thead" aria-hidden="true"><span>순위</span><span></span><span>길드원</span><span>레이드 참여</span></div>
@@ -373,9 +374,9 @@
 
   // ───── 레이드 랭킹 ─────
   var SAFE = 30;
-  function ranked() {
+  function ranked(p) {
     return state.members.slice().sort(function (a, b) {
-      return count(b) - count(a) || (b.power || 0) - (a.power || 0) || a.nickname.localeCompare(b.nickname, 'ko');
+      return count(b, p) - count(a, p) || (b.power || 0) - (a.power || 0) || a.nickname.localeCompare(b.nickname, 'ko');
     });
   }
   function spot(elm, m, place) {
@@ -409,11 +410,13 @@
       ? label + ' 레이드 기록 ' + days + '일' + (state.raid.lastDate ? ' · 마지막 ' + dateLabel(state.raid.lastDate) : '')
       : label + ' 레이드 기록이 아직 없어요 — 지금은 전투력순이에요';
     var rows = $('rows'); rows.textContent = '';
-    // The inactivity rule spares the top SAFE of the cumulative ranking; mark where that ends.
-    var safeOn = period === 'total' && state.raid.days.total > 0 && list.length > SAFE;
+    // The inactivity rule spares the top SAFE of this month's ranking; mark where that ends on the month tab.
+    var month = period === 'month' ? list : ranked('month');
+    var safeOn = state.raid.days.month > 0 && month.length > SAFE;
+    $('rule-go').hidden = period === 'month';
     for (var i = 3; i < list.length; i++) {
       rows.appendChild(rowEl(list[i], i + 1));
-      if (safeOn && i === SAFE - 1) rows.appendChild(el('li', 'cut', '여기까지 강퇴 제외 · 상위 ' + SAFE + '명'));
+      if (safeOn && period === 'month' && i === SAFE - 1) rows.appendChild(el('li', 'cut', '여기까지 강퇴 제외 · 이번 달 상위 ' + SAFE + '명'));
     }
     // 내 순위는 화면 아래에 따라다닌다
     var mine = $('mine'); mine.textContent = '';
@@ -423,9 +426,12 @@
     if (at >= 0) {
       var r = rowEl(list[at], at + 1); r.className += ' me';
       if (safeOn) {
-        var gap = count(list[SAFE - 1]) - count(list[at]);
-        r.querySelector('.who').appendChild(at < SAFE ? el('span', 'note', '강퇴 제외')
-          : el('span', 'note out', gap > 0 ? SAFE + '위와 ' + gap + '회 차이' : SAFE + '위와 같은 횟수'));
+        // Always this month's standing, whichever tab is open.
+        var mAt = 0; while (month[mAt].uid !== me) mAt++;
+        var gap = count(month[SAFE - 1], 'month') - count(month[mAt], 'month');
+        var where = period === 'month' ? '' : '이번 달 ' + (mAt + 1) + '위 · ';
+        r.querySelector('.who').appendChild(mAt < SAFE ? el('span', 'note', where + '강퇴 제외')
+          : el('span', 'note out', where + (gap > 0 ? SAFE + '위와 ' + gap + '회 차이' : SAFE + '위와 같은 횟수')));
       }
       var ol = el('ol', 'rows'); ol.style.margin = '0'; ol.appendChild(r); mine.appendChild(ol);
     }
@@ -434,6 +440,7 @@
     var p = d.split('-'), dt = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
     return (+p[1]) + '월 ' + (+p[2]) + '일(' + '일월화수목금토'[dt.getUTCDay()] + ')';
   }
+  $('rule-go').addEventListener('click', function () { document.querySelector('[data-period="month"]').click(); });
   var segs = document.querySelectorAll('[data-period]');
   for (var s = 0; s < segs.length; s++) segs[s].addEventListener('click', function (e) {
     period = e.currentTarget.dataset.period;
