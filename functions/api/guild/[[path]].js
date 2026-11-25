@@ -4,7 +4,7 @@
 //
 //   GET  /api/guild/state                      members and raid counts (total, this month, this week)
 //   GET  /api/guild/img/{char|face}/{uid}      a member's updated picture
-//   POST /api/guild/update                     a member (or the admin) uploads a new character picture
+//   POST /api/guild/update                     a member (once a day) or the admin uploads a new character picture
 //   /api/guild/admin/...                       password set-up, login, attendance by day, pending updates, roster
 //
 // The admin password is chosen by the admin on first visit and stored only as a salted PBKDF2 hash.
@@ -15,6 +15,14 @@ const SESSION_DAYS = 30;
 const COOKIE = 'guild_admin';
 const MAX = { head: 900_000, shot: 900_000, char: 600_000, face: 120_000 };
 const UPDATES_PER_HOUR = 8;
+const DAY_MS = 86_400_000;
+// A member can change their own character once a day, so that reading screenshots stays inside the Workers AI free
+// allocation. The day follows that allocation: it turns over at 00:00 UTC, which is 9 a.m. in Korea.
+const dayStart = (now) => Math.floor(now / DAY_MS) * DAY_MS;
+// Someone else's screenshot does not use up the member's turn (anyone can pick any nickname, so it would let one
+// person lock another out). Those are capped per network address instead.
+const USES_TURN = "NOT (status = 'rejected' AND reason = 'nickname')";
+const MISMATCHES_PER_DAY = 3;
 // Vision models tried in order until one returns something readable.
 const VISION_MODELS = ['@cf/mistralai/mistral-small-3.1-24b-instruct'];
 
@@ -113,19 +121,25 @@ async function state({ db, now }) {
   const monthStart = today.slice(0, 8) + '01';
   const dow = (new Date(now + KST_MS).getUTCDay() + 6) % 7; // Monday = 0
   const weekStart = kstDate(now - dow * 86_400_000);
-  const [members, total, month, week, days] = await db.batch([
+  const since = dayStart(now);
+  const [members, total, month, week, days, turns] = await db.batch([
     db.prepare('SELECT * FROM guild_members WHERE active = 1'),
     db.prepare('SELECT uid, COUNT(*) AS n FROM guild_raid_attend GROUP BY uid'),
     db.prepare('SELECT uid, COUNT(*) AS n FROM guild_raid_attend WHERE date >= ? GROUP BY uid').bind(monthStart),
     db.prepare('SELECT uid, COUNT(*) AS n FROM guild_raid_attend WHERE date >= ? GROUP BY uid').bind(weekStart),
     db.prepare('SELECT date FROM guild_raid_days ORDER BY date'),
+    db.prepare(`SELECT uid, status, reason, char IS NOT NULL AS kept FROM guild_updates WHERE created_at >= ? AND ${USES_TURN} ORDER BY id`).bind(since),
   ]);
+  // Who has used today's self-update: 'used', or 'ask' when it was judged older and the admin can still be asked.
+  const used = {};
+  for (const t of turns.results) used[t.uid] = t.status === 'rejected' && t.reason === 'older' && t.kept ? 'ask' : 'used';
   const map = (res) => Object.fromEntries(res.results.map((r) => [r.uid, r.n]));
   const dates = days.results.map((r) => r.date);
   return {
     now,
     today,
     members: members.results.map(memberView),
+    selfUpdate: { perDay: 1, resetAt: since + DAY_MS, used },
     raid: {
       total: map(total),
       month: map(month),
@@ -304,29 +318,56 @@ async function update(ctx) {
     const uid = String(form.get('uid') || '');
     const member = await db.prepare('SELECT * FROM guild_members WHERE uid = ? AND active = 1').bind(uid).first();
     if (!member) return json({ error: 'not_member' }, 404);
-    const char = await fileBytes(form, 'char', MAX.char, true);
-    const face = await fileBytes(form, 'face', MAX.face, true);
-
     // The admin can replace anyone's picture and numbers without the checks.
     if (form.get('as_admin') === '1') {
       if (!(await session(ctx))) return json({ error: 'not_admin' }, 401);
+      const char = await fileBytes(form, 'char', MAX.char, true);
+      const face = await fileBytes(form, 'face', MAX.face, true);
       const cls = CLASSES.includes(form.get('cls')) ? form.get('cls') : null;
       await applyUpdate(db, uid, { level: levelValue(form.get('level')), power: powerValue(form.get('power')), cls }, char, face, now);
       const fresh = await db.prepare('SELECT * FROM guild_members WHERE uid = ?').bind(uid).first();
       return json({ status: 'applied', member: memberView(fresh) }, 200);
     }
 
+    // One self-update per member per day.
+    const ask = form.get('ask') === '1';
+    const since = dayStart(now);
+    const turn = await db
+      .prepare(`SELECT id, status, reason, read_json, char IS NOT NULL AS kept FROM guild_updates WHERE uid = ? AND created_at >= ? AND ${USES_TURN} ORDER BY id DESC LIMIT 1`)
+      .bind(uid, since)
+      .first();
+    if (turn) {
+      // "Ask the admin" continues today's turn: the pictures were kept, so nothing is uploaded or read again.
+      if (ask && turn.status === 'rejected' && turn.reason === 'older' && turn.kept) {
+        await db.batch([
+          db.prepare("DELETE FROM guild_updates WHERE uid = ? AND status = 'pending'").bind(uid),
+          db.prepare("UPDATE guild_updates SET status = 'pending', decided_at = NULL WHERE id = ?").bind(turn.id),
+        ]);
+        const was = JSON.parse(turn.read_json || '{}');
+        return json({ status: 'pending', reason: 'older', read: { nickname: was.nickname ?? null, level: was.level ?? null, power: was.power ?? null, cls: was.cls ?? null }, onFile: { level: member.level, power: member.power }, member: memberView(member) }, 200);
+      }
+      return json({ error: 'daily_limit', resetAt: since + DAY_MS }, 429);
+    }
+
+    const char = await fileBytes(form, 'char', MAX.char, true);
+    const face = await fileBytes(form, 'face', MAX.face, true);
     const head = await fileBytes(form, 'head', MAX.head, true);
     const shot = await fileBytes(form, 'shot', MAX.shot, false);
     const who = await ipHash(db, request);
     if (who) {
-      const recent = await db.prepare('SELECT COUNT(*) AS n FROM guild_updates WHERE ip_hash = ? AND created_at > ?').bind(who, now - 3_600_000).first();
-      if (recent.n >= UPDATES_PER_HOUR) return json({ error: 'too_many' }, 429);
+      const [recent, wrong] = await db.batch([
+        db.prepare('SELECT COUNT(*) AS n FROM guild_updates WHERE ip_hash = ? AND created_at > ?').bind(who, now - 3_600_000),
+        db.prepare("SELECT COUNT(*) AS n FROM guild_updates WHERE ip_hash = ? AND created_at >= ? AND status = 'rejected' AND reason = 'nickname'").bind(who, since),
+      ]);
+      if (recent.results[0].n >= UPDATES_PER_HOUR) return json({ error: 'too_many' }, 429);
+      if (wrong.results[0].n >= MISMATCHES_PER_DAY) return json({ error: 'mismatch_limit', resetAt: since + DAY_MS }, 429);
     }
 
     const read = await readShot(env, head);
     const seen = { nickname: read.nickname ?? null, level: read.level ?? null, power: read.power ?? null, cls: read.cls ?? null };
-    const { status, reason } = judge(read, member, form.get('ask') === '1');
+    const { status, reason } = judge(read, member, ask);
+    // Pictures kept for an earlier day's "older" verdict are no longer needed once that day is over.
+    const tidy = db.prepare("UPDATE guild_updates SET shot = NULL, char = NULL, face = NULL WHERE status = 'rejected' AND char IS NOT NULL AND created_at < ?").bind(since);
 
     const log = (extra) =>
       db
@@ -338,13 +379,16 @@ async function update(ctx) {
       await log([null, null, null]).run();
     } else if (status === 'pending') {
       // One waiting request per member: a newer one replaces the older.
-      await db.batch([db.prepare("DELETE FROM guild_updates WHERE uid = ? AND status = 'pending'").bind(uid), log([shot ?? head, char, face])]);
+      await db.batch([db.prepare("DELETE FROM guild_updates WHERE uid = ? AND status = 'pending'").bind(uid), log([shot ?? head, char, face]), tidy]);
+    } else if (reason === 'older') {
+      // Kept until the day turns over, so the member can ask the admin to look without uploading again.
+      await db.batch([log([shot ?? head, char, face]), tidy]);
     } else {
       await log([null, null, null]).run();
     }
     const fresh = await db.prepare('SELECT * FROM guild_members WHERE uid = ?').bind(uid).first();
     return json(
-      { status, reason: reason ?? null, read: seen, onFile: { level: member.level, power: member.power }, member: memberView(fresh) },
+      { status, reason: reason ?? null, read: seen, onFile: { level: member.level, power: member.power }, member: memberView(fresh), resetAt: since + DAY_MS },
       status === 'rejected' ? 409 : 200,
     );
   } catch (err) {

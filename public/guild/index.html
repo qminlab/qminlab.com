@@ -228,10 +228,14 @@
           <li>그 캡처를 아래에 올리면 닉네임·레벨·전투력을 읽어 본인 화면인지, 최신인지 확인해요.</li>
           <li>확인되면 캐릭터 모습과 정보가 바로 바뀌어요.</li>
         </ol>
-        <div class="drop">
+        <div class="alert info" id="limit" hidden style="margin:14px 0 0">
+          <b id="limit-title"></b><span id="limit-text"></span>
+          <div id="limit-act" style="margin-top:10px" hidden><button type="button" class="btn ghost small" id="ask-admin">관리자에게 확인 요청</button></div>
+        </div>
+        <div class="drop" id="drop">
           <input type="file" id="file" accept="image/*" hidden>
           <button type="button" class="btn" id="pick">캐릭터 화면 캡처 올리기</button>
-          <p class="hint" id="pick-hint">내 캐릭터가 화면 가운데에 크게 보이는 화면이어야 해요.</p>
+          <p class="hint" id="pick-hint">내 캐릭터가 화면 가운데에 크게 보이는 화면이어야 해요. 캐릭터당 하루 한 번 올릴 수 있어요.</p>
         </div>
 
         <div class="newlook" id="newlook" hidden>
@@ -513,6 +517,21 @@
     var c = $('me-cls'); c.textContent = m.cls || '직업 미상'; c.dataset.cls = m.cls || '';
     $('me-stats').textContent = '레벨 ' + (m.level || '–') + ' · 전투력 ' + power(m.power);
     $('me-raid').textContent = '레이드 참여: 누적 ' + count(m, 'total') + '회 · 이번 달 ' + count(m, 'month') + '회 · 이번 주 ' + count(m, 'week') + '회';
+    // One self-update a day: once it is used, the upload box gives way to a note saying when it opens again.
+    var su = state.selfUpdate || { used: {} }, turn = su.used[m.uid];
+    $('drop').hidden = !!turn; $('limit').hidden = !turn; $('limit-act').hidden = turn !== 'ask';
+    if (turn && draft) resetDraft();
+    if (turn === 'ask') {
+      $('limit-title').textContent = '오늘 올린 캡처가 예전 것으로 보여요';
+      $('limit-text').textContent = '저장된 정보보다 레벨이나 전투력이 낮았어요. 최신 화면이 맞다면 관리자에게 확인을 요청할 수 있어요. 새 캡처는 ' + resetLabel(su.resetAt) + '부터 올릴 수 있어요.';
+    } else if (turn) {
+      $('limit-title').textContent = '오늘은 이미 올렸어요';
+      $('limit-text').textContent = '캐릭터당 하루 한 번 올릴 수 있어요. ' + resetLabel(su.resetAt) + '부터 다시 할 수 있어요.';
+    }
+  }
+  function resetLabel(ms) {                               // the turn-over as Korea reads it: "11월 26일 오전 9시"
+    var d = new Date((ms || Date.now()) + 9 * 3600000);
+    return (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일 오전 9시';
   }
   function resetDraft() { draft = null; $('newlook').hidden = true; $('file').value = ''; }
   $('pick').addEventListener('click', function () { $('file').click(); });
@@ -556,8 +575,8 @@
     drawDraft();
   });
 
-  $('send').addEventListener('click', function () { submit(false); });
-  function submit(ask) {
+  $('send').addEventListener('click', function () { submit(); });
+  function submit() {
     if (!draft || busy || !me) return;
     busy = true; $('send').disabled = true; $('send').textContent = '확인하는 중…';
     var C = GuildCutout;
@@ -565,7 +584,6 @@
       .then(function (b) {
         var fd = new FormData();
         fd.append('uid', me); fd.append('char', b[0], 'char'); fd.append('face', b[1], 'face'); fd.append('head', b[2], 'head.jpg'); fd.append('shot', b[3], 'shot.jpg');
-        if (ask) fd.append('ask', '1');
         return fetch(API + '/update', { method: 'POST', body: fd });
       })
       .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
@@ -573,6 +591,17 @@
       .catch(function () { note('alert', '보내지 못했어요', '인터넷 연결을 확인하고 다시 시도해 주세요.'); })
       .then(function () { busy = false; $('send').disabled = false; $('send').textContent = '이 모습으로 바꾸기'; });
   }
+  // Asking the admin to look at today's "older" capture: the server kept the pictures, so only the request goes.
+  $('ask-admin').addEventListener('click', function () {
+    if (busy || !me) return;
+    busy = true; $('ask-admin').disabled = true;
+    var fd = new FormData(); fd.append('uid', me); fd.append('ask', '1');
+    fetch(API + '/update', { method: 'POST', body: fd })
+      .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+      .then(function (res) { showResult(res.status, res.body); })
+      .catch(function () { note('alert', '보내지 못했어요', '인터넷 연결을 확인하고 다시 시도해 주세요.'); })
+      .then(function () { busy = false; $('ask-admin').disabled = false; });
+  });
   function note(kind, title, text, extra) {
     var box = $('result'); box.textContent = '';
     var a = el('div', kind); a.appendChild(el('b', '', title)); if (text) a.appendChild(el('span', '', text));
@@ -596,14 +625,22 @@
       note('alert info', '관리자 확인을 기다리는 중이에요', b.reason === 'older'
         ? '관리자가 캡처를 보고 승인하면 반영돼요.'
         : '캡처의 글자를 자동으로 확인하지 못했어요. 관리자가 직접 보고 승인하면 반영돼요.');
+      load();
+    } else if (b.error === 'daily_limit') {
+      resetDraft();
+      note('alert info', '오늘은 이미 올렸어요', '캐릭터당 하루 한 번 올릴 수 있어요. ' + resetLabel(b.resetAt) + '부터 다시 할 수 있어요.');
+      load();
+    } else if (b.error === 'mismatch_limit') {
+      resetDraft();
+      note('alert', '오늘은 더 올릴 수 없어요', '닉네임이 다른 캡처가 여러 번 올라왔어요. ' + resetLabel(b.resetAt) + '부터 다시 할 수 있어요.');
     } else if (b.reason === 'nickname') {
       note('alert', '닉네임이 달라요', '캡처에서는 닉네임이 "' + (b.read.nickname || '?') + '"(으)로 읽혔어요. ' + (m ? m.nickname : '') + ' 님 본인의 캐릭터 화면을 올려 주세요.');
     } else if (b.reason === 'older') {
-      var ask = el('div'); ask.style.marginTop = '10px';
-      var btn = el('button', 'btn ghost small', '관리자에게 확인 요청'); btn.type = 'button';
-      btn.addEventListener('click', function () { submit(true); });
-      ask.appendChild(compare(b.read, b.onFile)); var w = el('div'); w.style.marginTop = '10px'; w.appendChild(btn); ask.appendChild(w);
-      note('alert', '예전 캡처로 보여요', '저장된 정보보다 레벨이나 전투력이 낮아요. 지금 화면을 새로 캡처해 올려 주세요. 최신 화면이 맞다면 관리자에게 확인을 요청할 수 있어요.', ask);
+      // The turn is used; the note above the upload box (after the reload) carries the "ask the admin" button.
+      resetDraft();
+      var cmp = el('div'); cmp.style.marginTop = '10px'; cmp.appendChild(compare(b.read, b.onFile));
+      note('alert', '예전 캡처로 보여요', '저장된 정보보다 레벨이나 전투력이 낮아 반영하지 않았어요.', cmp);
+      load();
     } else if (b.error === 'too_many') {
       note('alert', '잠시 뒤에 다시 해 주세요', '한 시간에 올릴 수 있는 횟수를 넘었어요.');
     } else if (String(b.error || '').indexOf('too_large') === 0) {
