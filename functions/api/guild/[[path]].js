@@ -32,6 +32,8 @@ const MISMATCHES_PER_DAY = 3;
 const POST = { title: 60, body: 5000, source: 200, link: 300, links: 3, images: 4, image: 500_000, comment: 500, page: 30 };
 const POSTS_PER_DAY = 5;
 const COMMENTS_PER_DAY = 40;
+// How far back a run of missed raids is counted.
+const STREAK_DAYS = 30;
 // Vision models tried in order until one returns something readable.
 const VISION_MODELS = ['@cf/mistralai/mistral-small-3.1-24b-instruct'];
 
@@ -141,34 +143,66 @@ async function state({ db, now }) {
   const dow = (new Date(now + KST_MS).getUTCDay() + 6) % 7; // Monday = 0
   const weekStart = kstDate(now - dow * 86_400_000);
   const since = dayStart(now);
-  const [members, total, month, week, days, turns] = await db.batch([
+  const [members, totals, days, turns] = await db.batch([
     db.prepare('SELECT * FROM guild_members WHERE active = 1'),
-    db.prepare('SELECT uid, COUNT(*) AS n FROM guild_raid_attend GROUP BY uid'),
-    db.prepare('SELECT uid, COUNT(*) AS n FROM guild_raid_attend WHERE date >= ? GROUP BY uid').bind(monthStart),
-    db.prepare('SELECT uid, COUNT(*) AS n FROM guild_raid_attend WHERE date >= ? GROUP BY uid').bind(weekStart),
+    db.prepare("SELECT value FROM guild_meta WHERE key = 'raid_totals'"),
     db.prepare('SELECT date FROM guild_raid_days ORDER BY date'),
     db.prepare(`SELECT uid, status, reason, char IS NOT NULL AS kept FROM guild_updates WHERE created_at >= ? AND ${USES_TURN} ORDER BY id`).bind(since),
   ]);
   // Who has used today's self-update: 'used', or 'ask' when it was judged older and the admin can still be asked.
   const used = {};
   for (const t of turns.results) used[t.uid] = t.status === 'rejected' && t.reason === 'older' && t.kept ? 'ask' : 'used';
-  const map = (res) => Object.fromEntries(res.results.map((r) => [r.uid, r.n]));
   const dates = days.results.map((r) => r.date);
+
+  // This page is read far more often than attendance is saved, and the free database counts every row read. So the
+  // all-time counts are kept ready (rebuilt whenever a day is saved), and only recent days are read here: enough
+  // for this month, this week and the run of missed raids.
+  const total = totals.results.length ? JSON.parse(totals.results[0].value) : await raidTotals(db);
+  const recent = dates.slice(-STREAK_DAYS);
+  const month = {};
+  const week = {};
+  const miss = {};
+  if (dates.length) {
+    const from = [monthStart, weekStart, recent[0]].sort()[0];
+    const { results } = await db.prepare('SELECT date, uid FROM guild_raid_attend WHERE date >= ?').bind(from).all();
+    const came = {};
+    for (const r of results) {
+      if (r.date >= monthStart) month[r.uid] = (month[r.uid] || 0) + 1;
+      if (r.date >= weekStart) week[r.uid] = (week[r.uid] || 0) + 1;
+      (came[r.date] ||= new Set()).add(r.uid);
+    }
+    // Raids missed in a row, counting back from the latest recorded one.
+    for (const m of members.results) {
+      let n = 0;
+      for (let i = recent.length - 1; i >= 0 && !(came[recent[i]] && came[recent[i]].has(m.uid)); i--) n++;
+      if (n) miss[m.uid] = n;
+    }
+  }
   return {
     now,
     today,
     members: members.results.map(memberView),
     selfUpdate: { perDay: 1, resetAt: since + DAY_MS, used },
     raid: {
-      total: map(total),
-      month: map(month),
-      week: map(week),
+      total,
+      month,
+      week,
+      miss,
+      missCap: STREAK_DAYS,
       days: { total: dates.length, month: dates.filter((d) => d >= monthStart).length, week: dates.filter((d) => d >= weekStart).length },
       monthStart,
       weekStart,
       lastDate: dates.length ? dates[dates.length - 1] : null,
     },
   };
+}
+
+// All-time raid counts per member, rebuilt from the attendance rows and kept for the state page.
+async function raidTotals(db) {
+  const { results } = await db.prepare('SELECT uid, COUNT(*) AS n FROM guild_raid_attend GROUP BY uid').all();
+  const total = Object.fromEntries(results.map((r) => [r.uid, r.n]));
+  await setMeta(db, 'raid_totals', JSON.stringify(total));
+  return total;
 }
 
 function mimeOf(bytes) {
@@ -726,6 +760,7 @@ async function admin(ctx, method, path) {
     if (method === 'DELETE') {
       if (!isDate(date)) return json({ error: 'bad_date' }, 400);
       await db.batch([db.prepare('DELETE FROM guild_raid_attend WHERE date = ?').bind(date), db.prepare('DELETE FROM guild_raid_days WHERE date = ?').bind(date)]);
+      await raidTotals(db);
       return json({ ok: true }, 200);
     }
     if (method === 'PUT') {
@@ -741,6 +776,7 @@ async function admin(ctx, method, path) {
         ...present.map((u) => db.prepare('INSERT INTO guild_raid_attend (date, uid) VALUES (?, ?)').bind(b.date, u)),
         db.prepare('INSERT INTO guild_raid_days (date, saved_at) VALUES (?, ?) ON CONFLICT(date) DO UPDATE SET saved_at = excluded.saved_at').bind(b.date, now),
       ]);
+      await raidTotals(db);
       return json({ ok: true, date: b.date, present }, 200);
     }
   }

@@ -89,6 +89,7 @@
   .row .ct { text-align: right; font-weight: 700; font-size: 1.02rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .row .ct small { display: block; font-weight: 400; font-size: 0.72rem; color: var(--text-mute); }
   .row.zero .ct { color: var(--text-mute); font-weight: 400; }
+  .row .ct small.miss, .cap .miss { color: var(--bad); font-weight: 400; font-size: 0.72rem; white-space: nowrap; }
   .row.me { background: linear-gradient(90deg, var(--light-dim), rgba(242, 226, 174, 0) 75%); box-shadow: inset 2px 0 0 var(--light); }
   .row.me .no { color: var(--light); }
   .mine { position: sticky; bottom: 62px; z-index: 6; margin-top: 14px; background: var(--bg-3); border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5); }
@@ -511,6 +512,13 @@
       return count(b, p) - count(a, p) || (b.power || 0) - (a.power || 0) || a.nickname.localeCompare(b.nickname, 'ko');
     });
   }
+  // Raids missed in a row up to the latest recorded one: "연속 불참 2일". Missing only the latest raid is not a run,
+  // so it says nothing until the second.
+  function missed(m) {
+    var n = (state.raid.miss || {})[m.uid] || 0, cap = state.raid.missCap || 30;
+    if (n < 2) return '';
+    return '연속 불참 ' + (n >= cap && state.raid.days.total > cap ? cap + '일+' : n + '일');
+  }
   function spot(elm, m, place) {
     elm.textContent = '';
     var fig = el('div', 'fig'), plinth = el('div', 'plinth'), cap = el('div', 'cap');
@@ -521,6 +529,7 @@
     img.onerror = function () { img.replaceWith(el('div', 'ghost')); };
     fig.appendChild(img);
     cap.appendChild(el('b', 'nm', m.nickname)); cap.appendChild(clsEl(m)); cap.appendChild(el('span', 'cnt', count(m) + '회'));
+    if (missed(m)) cap.appendChild(el('span', 'miss', missed(m)));
   }
   function rowEl(m, place) {
     var li = el('li', 'row' + (count(m) ? '' : ' zero') + (m.uid === me ? ' me' : ''));
@@ -531,6 +540,7 @@
     var ct = el('span', 'ct', count(m) + '회');
     var days = state.raid.days[period];
     if (days) { ct.appendChild(el('small', '', days + '일 중')); li.style.setProperty('--share', Math.min(100, Math.round(count(m) / days * 100)) + '%'); }
+    if (missed(m)) ct.appendChild(el('small', 'miss', missed(m)));
     li.appendChild(ct);
     return li;
   }
@@ -1079,7 +1089,7 @@
   function toast(text) { var t = $('toast'); t.textContent = text; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 3000); }
 
   route(); load();
-  setInterval(function () { if (document.visibilityState === 'visible' && !busy && !draft) load(); }, 60000);
+  setInterval(function () { if (document.visibilityState === 'visible' && !busy && !draft) load(); }, 180000);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && !busy && !draft) load(); });
 })();
 </script>
