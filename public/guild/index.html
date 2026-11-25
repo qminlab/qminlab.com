@@ -180,6 +180,8 @@
   #g-post .title { display: block; margin: 0; font-size: 1.45rem; line-height: 1.35; overflow-wrap: anywhere; }
   #g-post > .by { margin-top: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--line); font-size: 0.84rem; }
   #g-post > .by .face { width: 26px; height: 26px; }
+  .share { margin-left: auto; border: 1px solid var(--line-strong); background: transparent; color: var(--text); border-radius: var(--radius); padding: 0 14px; min-height: 36px; font-size: 0.86rem; font-weight: 600; }
+  .share:hover { background: rgba(214, 220, 255, 0.06); }
   .g-body { margin-top: 16px; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; }
   .g-body a, .g-meta a, .note a { overflow-wrap: anywhere; text-underline-offset: 3px; }
   .g-pics { display: grid; gap: 10px; margin-top: 16px; }
@@ -907,7 +909,8 @@
   function showPost(comments) {
     var p = gPost;
     $('g-title').textContent = p.title;
-    $('g-by').replaceWith(Object.assign(byline(p.uid, p.nickname, p.createdAt, p.updatedAt ? ['고침'] : []), { id: 'g-by' }));
+    var share = el('button', 'share', '공유'); share.type = 'button'; share.addEventListener('click', sharePost);
+    $('g-by').replaceWith(Object.assign(byline(p.uid, p.nickname, p.createdAt, (p.updatedAt ? ['고침'] : []).concat([share])), { id: 'g-by' }));
     $('g-body').textContent = ''; $('g-body').appendChild(linked(p.body));
     var pics = $('g-pics'); pics.textContent = '';
     p.images.forEach(function (src, i) {
@@ -925,6 +928,25 @@
     showComments(comments);
     $('g-cform').hidden = !me; $('g-cneed').hidden = !!me;
     var who = me && byUid(me); $('g-cas').textContent = who ? who.nickname + ' 이름으로 올라가요' : '';
+  }
+  // Sharing hands out the post's short address (/guild/p/{id}), which chat apps can preview with its title and picture.
+  function sharePost() {
+    if (!gPost) return;
+    var url = location.origin + '/guild/p/' + gPost.id;
+    var touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (touch && navigator.share) {
+      navigator.share({ title: gPost.title, url: url }).catch(function (e) { if (!e || e.name !== 'AbortError') copyLink(url); });
+    } else copyLink(url);
+  }
+  function copyLink(url) {
+    var said = function () { toast('글 링크를 복사했어요'); };
+    var byHand = function () {
+      var box = document.createElement('input'); box.value = url; box.setAttribute('readonly', ''); box.style.position = 'fixed'; box.style.opacity = '0';
+      document.body.appendChild(box); box.select(); var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      box.remove(); if (ok) said(); else toast(url);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(said, byHand); else byHand();
   }
   function showComments(list) {
     var ul = $('g-notes'); ul.textContent = '';
