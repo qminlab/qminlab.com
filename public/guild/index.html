@@ -512,10 +512,11 @@
       return count(b, p) - count(a, p) || (b.power || 0) - (a.power || 0) || a.nickname.localeCompare(b.nickname, 'ko');
     });
   }
-  // Raids missed in a row up to the latest recorded one: "연속 불참 2일", or '' for someone who came last time.
+  // Raids missed in a row up to the latest recorded one: "연속 불참 2일". Missing only the latest raid is not a run,
+  // so it says nothing until the second.
   function missed(m) {
-    var n = (state.raid.miss || {})[m.uid], cap = state.raid.missCap || 30;
-    if (!n) return '';
+    var n = (state.raid.miss || {})[m.uid] || 0, cap = state.raid.missCap || 30;
+    if (n < 2) return '';
     return '연속 불참 ' + (n >= cap && state.raid.days.total > cap ? cap + '일+' : n + '일');
   }
   function spot(elm, m, place) {
