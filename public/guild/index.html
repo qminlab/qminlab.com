@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f1226">
+<link rel="icon" href="/icon.svg">
+<title>라이트 길드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&display=swap">
+<link rel="stylesheet" href="guild.css">
+<style>
+  body:not([data-view="raid"]) #view-raid, body:not([data-view="members"]) #view-members,
+  body:not([data-view="me"]) #view-me, body:not([data-view="guide"]) #view-guide { display: none; }
+
+  /* ───── Raid ranking: the hall ───── */
+  .hall {
+    position: relative; container-type: inline-size; overflow: hidden;
+    margin: 0 calc(-16px - env(safe-area-inset-right)) 0 calc(-16px - env(safe-area-inset-left));
+    padding: 30px 10px 0;
+    background:
+      radial-gradient(ellipse 80% 46% at 50% 0, rgba(120, 132, 230, 0.26), rgba(120, 132, 230, 0) 74%),
+      linear-gradient(#141838, #0b0d1e 88%);
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 760px) { .hall { margin: 16px 0 0; border: 1px solid var(--line); border-radius: var(--radius-lg); } }
+  .podium { list-style: none; margin: 0 auto; padding: 0; max-width: 640px; display: flex; align-items: flex-end; justify-content: center; }
+  .spot { flex: 0 0 31%; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+  .spot.p1 { flex-basis: 38%; order: 2; } .spot.p2 { order: 1; } .spot.p3 { order: 3; }
+  .fig { position: relative; width: 100%; height: min(39cqw, 250px); display: flex; align-items: flex-end; justify-content: center; }
+  .p1 .fig { height: min(50cqw, 320px); }
+  /* The light: a soft cone falling from above the frame onto first place, and the pool it makes. */
+  .p1 .fig::before {
+    content: ""; position: absolute; left: 50%; bottom: 0; width: 60cqw; height: 200%; transform: translateX(-50%); pointer-events: none;
+    background: conic-gradient(from 168deg at 50% 0, rgba(255, 236, 180, 0) 0deg, rgba(255, 236, 180, 0.34) 7deg, rgba(255, 236, 180, 0.34) 17deg, rgba(255, 236, 180, 0) 24deg);
+  }
+  .p1 .fig::after {
+    content: ""; position: absolute; left: 50%; bottom: -5%; width: 96%; height: 18%; transform: translateX(-50%); pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(255, 236, 180, 0.55), rgba(255, 236, 180, 0) 70%);
+  }
+  .fig img.ch { position: relative; z-index: 1; display: block; max-height: 100%; max-width: 116%; object-fit: contain; object-position: bottom; }
+  .p1 img.ch { filter: drop-shadow(0 0 14px rgba(255, 232, 170, 0.4)); }
+  .p2 img.ch, .p3 img.ch { filter: brightness(0.8) saturate(0.92); }
+  .fig .ghost { height: 70%; aspect-ratio: 3 / 4; border-radius: 40% 40% 6px 6px; background: rgba(214, 220, 255, 0.08); }
+  .plinth {
+    position: relative; z-index: 2; width: 100%; display: grid; place-items: center;
+    background: linear-gradient(#272c5c, #15183a); border-top: 1px solid rgba(214, 220, 255, 0.34);
+  }
+  .p1 .plinth { height: min(21cqw, 132px); background: linear-gradient(#3b3f78, #191c40); border: solid rgba(255, 238, 190, 0.22); border-width: 0 1px; border-top: 1px solid rgba(255, 238, 190, 0.85); }
+  .p2 .plinth { height: min(14cqw, 88px); } .p3 .plinth { height: min(10cqw, 62px); }
+  .plinth .num { font-family: var(--serif); font-weight: 700; line-height: 1; font-size: min(10cqw, 3.6rem); color: var(--light); }
+  .p2 .num { font-size: min(7.5cqw, 2.6rem); color: #cdd3ec; } .p3 .num { font-size: min(6cqw, 2.1rem); color: #d8ab88; }
+  .cap { width: 100%; text-align: center; padding: 10px 4px 16px; display: grid; gap: 1px; justify-items: center; }
+  .cap .nm { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--serif); font-weight: 700; font-size: clamp(0.84rem, 3.7cqw, 1.05rem); }
+  .cap .cls { font-size: 0.74rem; }
+  .cap .cnt { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text-soft); font-size: 0.92rem; }
+  .p1 .cap .nm { font-size: clamp(0.92rem, 4.2cqw, 1.2rem); } .p1 .cap .cnt { color: var(--light); }
+  @media (prefers-reduced-motion: no-preference) {
+    .p1 .fig::before { animation: beam 1.1s ease-out both; }
+    @keyframes beam { from { opacity: 0; } }
+  }
+
+  /* The guild rule that gives the ranking its stakes */
+  .rule { word-break: keep-all; display: flex; align-items: baseline; gap: 6px 10px; flex-wrap: wrap; margin: 16px 0 0; padding: 11px 14px; font-size: 0.92rem; border: 1px solid rgba(242, 226, 174, 0.34); border-radius: var(--radius); background: var(--light-dim); }
+  .rule .tag { flex: none; font-size: 0.74rem; color: var(--light); border: 1px solid rgba(242, 226, 174, 0.5); border-radius: 3px; padding: 1px 7px; }
+  .rule b { color: var(--light); font-weight: 700; }
+  .rule small { color: var(--text-mute); font-size: 0.76rem; white-space: nowrap; }
+  .rule .go { margin-left: auto; border: 0; background: none; padding: 4px 0; color: var(--light); font-size: 0.8rem; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+  .cut { display: flex; align-items: center; gap: 10px; padding: 9px 6px; color: var(--light); font-size: 0.78rem; white-space: nowrap; }
+  .cut::before, .cut::after { content: ""; flex: 1; height: 1px; background: rgba(242, 226, 174, 0.45); }
+  .row .note { display: block; font-size: 0.74rem; color: var(--light); }
+  .row .note.out { color: var(--bad); }
+  .meta { display: flex; justify-content: space-between; gap: 4px 12px; flex-wrap: wrap; color: var(--text-mute); font-size: 0.8rem; margin: 12px 0 0; }
+
+  /* ───── From fourth place: a ruled table. The rule under each row lights up to the share of raids attended. ───── */
+  .thead, .row { display: grid; grid-template-columns: 30px 40px minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+  .thead { color: var(--text-mute); font-size: 0.76rem; padding: 0 6px 8px; margin-top: 22px; border-bottom: 1px solid var(--line-strong); }
+  .thead span:first-child { text-align: center; } .thead span:last-child { text-align: right; }
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .row { position: relative; padding: 10px 6px; border-bottom: 1px solid var(--line); }
+  .row::after { content: ""; position: absolute; left: 0; bottom: -1px; height: 1px; width: var(--share, 0%); background: rgba(242, 226, 174, 0.7); }
+  .row .no { text-align: center; font-family: var(--serif); font-weight: 700; font-size: 1.05rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+  .row .who { min-width: 0; }
+  .row .who b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .who .cls { display: flex; }
+  .row .ct { text-align: right; font-weight: 700; font-size: 1.02rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .row .ct small { display: block; font-weight: 400; font-size: 0.72rem; color: var(--text-mute); }
+  .row.zero .ct { color: var(--text-mute); font-weight: 400; }
+  .row.me { background: linear-gradient(90deg, var(--light-dim), rgba(242, 226, 174, 0) 75%); box-shadow: inset 2px 0 0 var(--light); }
+  .row.me .no { color: var(--light); }
+  .mine { position: sticky; bottom: 62px; z-index: 6; margin-top: 14px; background: var(--bg-3); border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5); }
+  .mine .row { border-bottom: 0; }
+  .mine .row::after { bottom: 0; }
+  @media (min-width: 760px) { .mine { bottom: 12px; } }
+
+  /* ───── Members: a gallery of characters ───── */
+  .tools { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .people { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 10px; }
+  .person { width: 100%; padding: 0; text-align: left; display: block; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--bg-2); }
+  .person:hover { border-color: var(--line-strong); }
+  .person .pic { height: 148px; padding: 12px 6px 0; display: flex; align-items: flex-end; justify-content: center; border-bottom: 1px solid var(--line); }
+  .person .pic img { display: block; max-height: 100%; max-width: 100%; object-fit: contain; object-position: bottom; }
+  .person .info { display: grid; gap: 2px; padding: 9px 11px 10px; }
+  .person b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .person .sub { display: flex; justify-content: space-between; gap: 6px; font-size: 0.8rem; color: var(--text-soft); }
+  .person .sub .pw { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+  .person.me { border-color: rgba(242, 226, 174, 0.6); }
+
+  .detail .portrait { border-radius: var(--radius); border: 1px solid var(--line); height: 240px; display: grid; place-items: end center; padding-bottom: 14px; overflow: hidden; }
+  .detail .portrait img { max-height: 208px; max-width: 90%; filter: drop-shadow(0 0 12px rgba(255, 232, 170, 0.28)); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 12px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .stats div { background: var(--bg-2); padding: 10px 6px; text-align: center; }
+  .stats small { display: block; color: var(--text-mute); font-size: 0.74rem; }
+  .stats b { font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+
+  /* ───── My character ───── */
+  .mecard { display: flex; gap: 16px; align-items: center; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--bg-2); padding: 14px; }
+  .mecard .pic { width: 112px; height: 136px; flex: none; border-radius: var(--radius); display: grid; place-items: end center; padding-bottom: 8px; overflow: hidden; }
+  .mecard .pic img { max-width: 96%; max-height: 122px; }
+  .mecard p { margin: 0; }
+  .mecard .big { font-family: var(--serif); font-weight: 700; font-size: 1.2rem; }
+  .steps { margin: 8px 0 0; padding-left: 1.2em; color: var(--text-soft); font-size: 0.9rem; }
+  .steps li { margin: 4px 0; }
+  .steps b { color: var(--text); font-weight: 600; }
+  .drop { margin-top: 14px; border: 1px dashed var(--line-strong); border-radius: var(--radius-lg); padding: 24px 14px; text-align: center; }
+  .newlook { margin-top: 14px; }
+  .newlook .pair { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: end; }
+  .newlook .canvas-wrap { border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 12px; text-align: center; touch-action: manipulation; }
+  .newlook canvas.ch { max-width: 100%; max-height: 300px; cursor: crosshair; }
+  .newlook .facebox { text-align: center; }
+  .newlook .facebox canvas { width: 84px; height: 84px; border-radius: 50%; box-shadow: 0 0 0 1px var(--line-strong); background: #d9deee; display: block; margin: 0 auto 6px; }
+  .newlook .facebox small { color: var(--text-mute); font-size: 0.76rem; }
+  .acts-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .acts-row .btn { flex: 1 1 160px; }
+  dl.read { margin: 8px 0 0; display: grid; grid-template-columns: auto 1fr 1fr; gap: 3px 12px; font-size: 0.92rem; }
+  dl.read dt { color: inherit; opacity: 0.75; }
+  dl.read dd { margin: 0; font-weight: 700; }
+
+  /* ───── Coming-soon view ───── */
+  .coming { max-width: 30rem; margin: 28px auto 0; }
+  .coming .tag { font-size: 0.78rem; color: var(--light); border: 1px solid rgba(242, 226, 174, 0.5); border-radius: 3px; padding: 2px 8px; }
+  .coming h2 { display: block; margin: 14px 0 6px; font-family: var(--serif); font-size: 1.5rem; }
+  .coming p { margin: 0; color: var(--text-soft); }
+  .coming ul { list-style: none; margin: 20px 0 0; padding: 0; border-top: 1px solid var(--line); }
+  .coming li { padding: 12px 2px; border-bottom: 1px solid var(--line); }
+</style>
+</head>
+<body data-view="raid">
+<div class="shell">
+  <header class="top">
+    <h1><a href="#raid"><span class="mark" aria-hidden="true"></span>라이트 <small>길드</small></a></h1>
+    <nav class="menu side" aria-label="메뉴">
+      <a href="#raid" data-nav="raid">레이드 랭킹</a>
+      <a href="#members" data-nav="members">길드원</a>
+      <a href="#me" data-nav="me">내 캐릭터</a>
+      <a href="#guide" data-nav="guide">공략 <span class="soon">예정</span></a>
+      <a href="/guild-vote/">아이콘 투표</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="pane" id="boot">
+      <div class="alert" id="alert" hidden><b id="alert-title"></b><span id="alert-text"></span>
+        <div style="margin-top:10px"><button type="button" class="btn ghost small" id="retry">다시 불러오기</button></div></div>
+      <p class="loading" id="loading">불러오는 중…</p>
+    </div>
+
+    <!-- 레이드 랭킹 -->
+    <section class="pane" id="view-raid" hidden>
+      <div class="seg" role="group" aria-label="랭킹 기간">
+        <button type="button" data-period="total" aria-pressed="true">누적</button>
+        <button type="button" data-period="month" aria-pressed="false">이번 달</button>
+        <button type="button" data-period="week" aria-pressed="false">이번 주</button>
+      </div>
+
+      <div class="hall" id="stage">
+        <ol class="podium" aria-label="상위 3명">
+          <li class="spot p1" id="spot1"></li>
+          <li class="spot p2" id="spot2"></li>
+          <li class="spot p3" id="spot3"></li>
+        </ol>
+      </div>
+      <p class="rule"><span class="tag">길드 규칙</span><span>하루 미접속 시 강퇴 · <b>레이드 참여율 상위 30명은 제외</b> <small>이번 달 순위 기준</small></span><button type="button" class="go" id="rule-go">이번 달 순위 보기</button></p>
+      <div class="meta"><span id="raid-days"></span><span id="raid-rule">횟수가 같으면 전투력 높은 순</span></div>
+
+      <div class="thead" aria-hidden="true"><span>순위</span><span></span><span>길드원</span><span>레이드 참여</span></div>
+      <ol class="rows" id="rows"></ol>
+      <div class="mine" id="mine" hidden></div>
+    </section>
+
+    <!-- 길드원 -->
+    <section class="pane wide" id="view-members" hidden>
+      <div class="tools">
+        <input class="field" id="search" type="search" placeholder="닉네임 찾기" autocomplete="off" aria-label="닉네임 찾기">
+        <select class="field" id="sort" aria-label="정렬" style="width:auto">
+          <option value="power">전투력순</option>
+          <option value="level">레벨순</option>
+          <option value="raid">레이드 참여순</option>
+          <option value="name">이름순</option>
+        </select>
+      </div>
+      <div class="chips" id="cls-chips" role="group" aria-label="직업 고르기"></div>
+      <p class="hint" id="people-count"></p>
+      <ul class="people" id="people"></ul>
+    </section>
+
+    <!-- 내 캐릭터 -->
+    <section class="pane" id="view-me" hidden>
+      <h2><label for="me-nick">내 닉네임</label> <small>이 기기에 기억돼요</small></h2>
+      <select class="field" id="me-nick"><option value="">닉네임 고르기</option></select>
+
+      <div id="me-body" hidden>
+        <div class="mecard" style="margin-top:12px">
+          <div class="pic lit"><img id="me-char" alt=""></div>
+          <div>
+            <p class="big" id="me-name"></p>
+            <p class="cls" id="me-cls"></p>
+            <p id="me-stats" style="font-weight:600;margin-top:4px"></p>
+            <p class="hint" id="me-raid" style="margin-top:4px"></p>
+          </div>
+        </div>
+
+        <h2>캐릭터 모습 · 정보 바꾸기</h2>
+        <ol class="steps">
+          <li>게임 아래 메뉴에서 <b>캐릭터</b> 화면을 열고 화면을 캡처해요.</li>
+          <li>그 캡처를 아래에 올리면 닉네임·레벨·전투력을 읽어 본인 화면인지, 최신인지 확인해요.</li>
+          <li>확인되면 캐릭터 모습과 정보가 바로 바뀌어요.</li>
+        </ol>
+        <div class="alert info" id="limit" hidden style="margin:14px 0 0">
+          <b id="limit-title"></b><span id="limit-text"></span>
+          <div id="limit-act" style="margin-top:10px" hidden><button type="button" class="btn ghost small" id="ask-admin">관리자에게 확인 요청</button></div>
+        </div>
+        <div class="drop" id="drop">
+          <input type="file" id="file" accept="image/*" hidden>
+          <button type="button" class="btn" id="pick">캐릭터 화면 캡처 올리기</button>
+          <p class="hint" id="pick-hint">내 캐릭터가 화면 가운데에 크게 보이는 화면이어야 해요. 캐릭터당 하루 한 번 올릴 수 있어요.</p>
+        </div>
+
+        <div class="newlook" id="newlook" hidden>
+          <h2>이렇게 보여요 <small>얼굴 동그라미가 어긋났으면 캐릭터 얼굴을 눌러 주세요</small></h2>
+          <div class="pair">
+            <div class="canvas-wrap lit"><canvas class="ch" id="new-char"></canvas></div>
+            <div class="facebox"><canvas id="new-face" width="120" height="120"></canvas><small>목록에 쓰는 얼굴</small></div>
+          </div>
+          <div class="acts-row">
+            <button type="button" class="btn ghost" id="again">다른 캡처로</button>
+            <button type="button" class="btn" id="send">이 모습으로 바꾸기</button>
+          </div>
+        </div>
+        <div id="result" style="margin-top:14px" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- strategy guides: placeholder until the feature is built -->
+    <section class="pane" id="view-guide" hidden>
+      <div class="coming">
+        <span class="tag">제작 예정</span>
+        <h2>공략 정보 공유</h2>
+        <p>길드원끼리 공략을 모아 두는 곳이에요. 지금 만들고 있어요.</p>
+        <ul>
+          <li>직업별 육성 팁</li>
+          <li>길드원이 직접 올리는 공략 글</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">길드원 전용 페이지 · <a href="admin/">관리자</a></footer>
+  <nav class="menu bottom" aria-label="메뉴">
+    <a href="#raid" data-nav="raid">랭킹</a>
+    <a href="#members" data-nav="members">길드원</a>
+    <a href="#me" data-nav="me">내 캐릭터</a>
+    <a href="#guide" data-nav="guide">공략</a>
+    <a href="/guild-vote/">투표</a>
+  </nav>
+</div>
+
+<div class="modal" id="detail" hidden role="dialog" aria-modal="true" aria-labelledby="detail-name">
+  <div class="sheet detail">
+    <header id="detail-name"></header>
+    <div class="body">
+      <div class="portrait lit"><img id="detail-char" alt=""></div>
+      <p style="margin:10px 0 0;text-align:center"><span class="cls" id="detail-cls"></span></p>
+      <div class="stats">
+        <div><small>레벨</small><b id="d-level"></b></div>
+        <div><small>전투력</small><b id="d-power"></b></div>
+        <div><small>클래스 레벨</small><b id="d-clv"></b></div>
+        <div><small>레이드 누적</small><b id="d-total"></b></div>
+        <div><small>이번 달</small><b id="d-month"></b></div>
+        <div><small>이번 주</small><b id="d-week"></b></div>
+      </div>
+      <div class="acts">
+        <button type="button" class="btn ghost" id="detail-close">닫기</button>
+        <button type="button" class="btn" id="detail-me">이게 나예요</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script src="cutout.js"></script>
+<script>
+(function () {
+  'use strict';
+  var API = '/api/guild';
+  var CLASSES = ['투사', '주술사', '기사', '현자'];
+  var $ = function (id) { return document.getElementById(id); };
+  var state = null, period = 'total', clsFilter = '', detailUid = '';
+  var me = read('guild:me') || '';
+  var draft = null;                 // 올리려는 새 캐릭터: { char, face, head, shot }
+  var busy = false;
+
+  function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function write(k, v) { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch (e) {} }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function power(n) {
+    if (n == null) return '–';
+    if (n >= 1e6) return (n / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M';
+    if (n >= 1e3) return Math.round(n / 1e3) + 'K';
+    return String(n);
+  }
+  function byUid(uid) { for (var i = 0; i < state.members.length; i++) if (state.members[i].uid === uid) return state.members[i]; return null; }
+  function count(m, p) { return (state.raid[p || period] || {})[m.uid] || 0; }
+  function faceEl(m, big) {
+    var f = el('span', 'face' + (big ? ' big' : '')), img = new Image();
+    img.alt = ''; img.loading = 'lazy'; img.src = m.face;
+    img.onerror = function () { img.remove(); };
+    f.appendChild(img); return f;
+  }
+  function clsEl(m, extra) {
+    var c = el('span', 'cls', (m.cls || '직업 미상') + (extra ? ' · ' + extra : ''));
+    c.dataset.cls = m.cls || ''; return c;
+  }
+
+  // ───── 불러오기 ─────
+  function load() {
+    return fetch(API + '/state', { headers: { Accept: 'application/json' }, cache: 'no-store' })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+      .then(function (res) {
+        if (!res.ok) { fail(res.body && res.body.error); return; }
+        state = res.body;
+        if (me && !byUid(me)) { me = ''; write('guild:me', ''); }
+        $('boot').hidden = true;
+        route(); render();
+      })
+      .catch(function () { if (!state) fail('network'); });
+  }
+  function fail(code) {
+    $('loading').hidden = true;
+    $('alert-title').textContent = code === 'no_database' ? '저장 공간이 아직 연결되지 않았어요' : '정보를 불러오지 못했어요';
+    $('alert-text').textContent = code === 'no_database' ? '관리자가 Cloudflare에서 GUILD_DB 연결을 마치면 바로 열려요.' : '인터넷 연결을 확인하고 다시 시도해 주세요.';
+    $('alert').hidden = false;
+  }
+  $('retry').addEventListener('click', function () { $('alert').hidden = true; $('loading').hidden = false; load(); });
+
+  // ───── 화면 전환 ─────
+  var VIEWS = ['raid', 'members', 'me', 'guide'];
+  function route() {
+    var v = (location.hash || '#raid').slice(1);
+    if (VIEWS.indexOf(v) < 0) v = 'raid';
+    document.body.dataset.view = v;
+    VIEWS.forEach(function (name) { $('view-' + name).hidden = !state || name !== v; });
+    var links = document.querySelectorAll('[data-nav]');
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].dataset.nav === v) links[i].setAttribute('aria-current', 'page'); else links[i].removeAttribute('aria-current');
+    }
+  }
+  window.addEventListener('hashchange', function () { route(); window.scrollTo(0, 0); });
+
+  function render() { if (!state) return; renderRaid(); renderMembers(); renderMe(); }
+
+  // ───── 레이드 랭킹 ─────
+  var SAFE = 30;
+  function ranked(p) {
+    return state.members.slice().sort(function (a, b) {
+      return count(b, p) - count(a, p) || (b.power || 0) - (a.power || 0) || a.nickname.localeCompare(b.nickname, 'ko');
+    });
+  }
+  function spot(elm, m, place) {
+    elm.textContent = '';
+    var fig = el('div', 'fig'), plinth = el('div', 'plinth'), cap = el('div', 'cap');
+    plinth.appendChild(el('span', 'num', String(place)));
+    elm.appendChild(fig); elm.appendChild(plinth); elm.appendChild(cap);
+    if (!m) { fig.appendChild(el('div', 'ghost')); cap.appendChild(el('span', 'cnt', '–')); return; }
+    var img = new Image(); img.className = 'ch'; img.alt = m.nickname + ' 캐릭터'; img.src = m.char;
+    img.onerror = function () { img.replaceWith(el('div', 'ghost')); };
+    fig.appendChild(img);
+    cap.appendChild(el('b', 'nm', m.nickname)); cap.appendChild(clsEl(m)); cap.appendChild(el('span', 'cnt', count(m) + '회'));
+  }
+  function rowEl(m, place) {
+    var li = el('li', 'row' + (count(m) ? '' : ' zero') + (m.uid === me ? ' me' : ''));
+    li.appendChild(el('span', 'no', String(place)));
+    li.appendChild(faceEl(m));
+    var who = el('span', 'who'); who.appendChild(el('b', '', m.nickname)); who.appendChild(clsEl(m, power(m.power)));
+    li.appendChild(who);
+    var ct = el('span', 'ct', count(m) + '회');
+    var days = state.raid.days[period];
+    if (days) { ct.appendChild(el('small', '', days + '일 중')); li.style.setProperty('--share', Math.min(100, Math.round(count(m) / days * 100)) + '%'); }
+    li.appendChild(ct);
+    return li;
+  }
+  function renderRaid() {
+    var list = ranked(), days = state.raid.days[period];
+    spot($('spot1'), list[0], 1); spot($('spot2'), list[1], 2); spot($('spot3'), list[2], 3);
+    var label = { total: '지금까지', month: '이번 달', week: '이번 주' }[period];
+    $('raid-days').textContent = days
+      ? label + ' 레이드 기록 ' + days + '일' + (state.raid.lastDate ? ' · 마지막 ' + dateLabel(state.raid.lastDate) : '')
+      : label + ' 레이드 기록이 아직 없어요 — 지금은 전투력순이에요';
+    var rows = $('rows'); rows.textContent = '';
+    // The inactivity rule spares the top SAFE of this month's ranking; mark where that ends on the month tab.
+    var month = period === 'month' ? list : ranked('month');
+    var safeOn = state.raid.days.month > 0 && month.length > SAFE;
+    $('rule-go').hidden = period === 'month';
+    for (var i = 3; i < list.length; i++) {
+      rows.appendChild(rowEl(list[i], i + 1));
+      if (safeOn && period === 'month' && i === SAFE - 1) rows.appendChild(el('li', 'cut', '여기까지 강퇴 제외 · 이번 달 상위 ' + SAFE + '명'));
+    }
+    // 내 순위는 화면 아래에 따라다닌다
+    var mine = $('mine'); mine.textContent = '';
+    var at = -1;
+    for (var k = 0; k < list.length; k++) if (list[k].uid === me) at = k;
+    mine.hidden = at < 0;
+    if (at >= 0) {
+      var r = rowEl(list[at], at + 1); r.className += ' me';
+      if (safeOn) {
+        // Always this month's standing, whichever tab is open.
+        var mAt = 0; while (month[mAt].uid !== me) mAt++;
+        var gap = count(month[SAFE - 1], 'month') - count(month[mAt], 'month');
+        var where = period === 'month' ? '' : '이번 달 ' + (mAt + 1) + '위 · ';
+        r.querySelector('.who').appendChild(mAt < SAFE ? el('span', 'note', where + '강퇴 제외')
+          : el('span', 'note out', where + (gap > 0 ? SAFE + '위와 ' + gap + '회 차이' : SAFE + '위와 같은 횟수')));
+      }
+      var ol = el('ol', 'rows'); ol.style.margin = '0'; ol.appendChild(r); mine.appendChild(ol);
+    }
+  }
+  function dateLabel(d) {
+    var p = d.split('-'), dt = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
+    return (+p[1]) + '월 ' + (+p[2]) + '일(' + '일월화수목금토'[dt.getUTCDay()] + ')';
+  }
+  $('rule-go').addEventListener('click', function () { document.querySelector('[data-period="month"]').click(); });
+  var segs = document.querySelectorAll('[data-period]');
+  for (var s = 0; s < segs.length; s++) segs[s].addEventListener('click', function (e) {
+    period = e.currentTarget.dataset.period;
+    for (var j = 0; j < segs.length; j++) segs[j].setAttribute('aria-pressed', String(segs[j] === e.currentTarget));
+    renderRaid();
+  });
+
+  // ───── 길드원 ─────
+  (function chips() {
+    var box = $('cls-chips');
+    [''].concat(CLASSES).forEach(function (c) {
+      var b = el('button', 'chip', c || '전체'); b.type = 'button'; b.dataset.c = c; b.setAttribute('aria-pressed', String(c === ''));
+      b.addEventListener('click', function () {
+        clsFilter = c;
+        var all = box.children; for (var i = 0; i < all.length; i++) all[i].setAttribute('aria-pressed', String(all[i].dataset.c === c));
+        renderMembers();
+      });
+      box.appendChild(b);
+    });
+  })();
+  $('search').addEventListener('input', renderMembers);
+  $('sort').addEventListener('change', renderMembers);
+  function renderMembers() {
+    var q = $('search').value.trim().toLowerCase(), sort = $('sort').value;
+    var list = state.members.filter(function (m) {
+      return (!clsFilter || m.cls === clsFilter) && (!q || m.nickname.toLowerCase().indexOf(q) >= 0);
+    }).sort(function (a, b) {
+      if (sort === 'name') return a.nickname.localeCompare(b.nickname, 'ko');
+      if (sort === 'level') return (b.level || 0) - (a.level || 0) || (b.power || 0) - (a.power || 0);
+      if (sort === 'raid') return count(b, 'total') - count(a, 'total') || (b.power || 0) - (a.power || 0);
+      return (b.power || 0) - (a.power || 0);
+    });
+    $('people-count').textContent = list.length + '명' + (list.length < state.members.length ? ' (전체 ' + state.members.length + '명)' : '');
+    var ul = $('people'); ul.textContent = '';
+    list.forEach(function (m) {
+      var li = el('li'), b = el('button', 'person' + (m.uid === me ? ' me' : '')); b.type = 'button';
+      var pic = el('span', 'pic lit'), img = new Image();
+      img.alt = ''; img.loading = 'lazy'; img.src = m.char; img.onerror = function () { img.remove(); };
+      pic.appendChild(img); b.appendChild(pic);
+      var info = el('span', 'info'), sub = el('span', 'sub');
+      info.appendChild(el('b', '', m.nickname));
+      sub.appendChild(clsEl(m, m.level ? 'Lv.' + m.level : '')); sub.appendChild(el('span', 'pw', power(m.power)));
+      info.appendChild(sub); b.appendChild(info);
+      b.addEventListener('click', function () { openDetail(m.uid); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  function openDetail(uid) {
+    var m = byUid(uid); if (!m) return;
+    detailUid = uid;
+    $('detail-name').textContent = m.nickname;
+    $('detail-char').src = m.char; $('detail-char').alt = m.nickname + ' 캐릭터';
+    var c = $('detail-cls'); c.textContent = m.cls || '직업 미상'; c.dataset.cls = m.cls || '';
+    $('d-level').textContent = m.level || '–'; $('d-power').textContent = power(m.power); $('d-clv').textContent = m.classLevel || '–';
+    $('d-total').textContent = count(m, 'total') + '회'; $('d-month').textContent = count(m, 'month') + '회'; $('d-week').textContent = count(m, 'week') + '회';
+    $('detail-me').hidden = uid === me;
+    $('detail').hidden = false; $('detail-close').focus();
+  }
+  function closeDetail() { $('detail').hidden = true; }
+  $('detail-close').addEventListener('click', closeDetail);
+  $('detail').addEventListener('click', function (e) { if (e.target === $('detail')) closeDetail(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDetail(); });
+  $('detail-me').addEventListener('click', function () { setMe(detailUid); closeDetail(); toast('내 닉네임으로 기억했어요'); });
+
+  // ───── 내 캐릭터 ─────
+  function setMe(uid) { me = uid || ''; write('guild:me', me); resetDraft(); $('result').textContent = ''; render(); }
+  $('me-nick').addEventListener('change', function (e) { setMe(e.target.value); });
+  function renderMe() {
+    var sel = $('me-nick');
+    if (sel.options.length <= 1) {
+      state.members.slice().sort(function (a, b) { return a.nickname.localeCompare(b.nickname, 'ko'); }).forEach(function (m) {
+        var o = el('option', '', m.nickname); o.value = m.uid; sel.appendChild(o);
+      });
+    }
+    sel.value = me;
+    var m = me && byUid(me);
+    $('me-body').hidden = !m;
+    if (!m) return;
+    $('me-char').src = m.char; $('me-char').alt = m.nickname + ' 캐릭터';
+    $('me-name').textContent = m.nickname;
+    var c = $('me-cls'); c.textContent = m.cls || '직업 미상'; c.dataset.cls = m.cls || '';
+    $('me-stats').textContent = '레벨 ' + (m.level || '–') + ' · 전투력 ' + power(m.power);
+    $('me-raid').textContent = '레이드 참여: 누적 ' + count(m, 'total') + '회 · 이번 달 ' + count(m, 'month') + '회 · 이번 주 ' + count(m, 'week') + '회';
+    // One self-update a day: once it is used, the upload box gives way to a note saying when it opens again.
+    var su = state.selfUpdate || { used: {} }, turn = su.used[m.uid];
+    $('drop').hidden = !!turn; $('limit').hidden = !turn; $('limit-act').hidden = turn !== 'ask';
+    if (turn && draft) resetDraft();
+    if (turn === 'ask') {
+      $('limit-title').textContent = '오늘 올린 캡처가 예전 것으로 보여요';
+      $('limit-text').textContent = '저장된 정보보다 레벨이나 전투력이 낮았어요. 최신 화면이 맞다면 관리자에게 확인을 요청할 수 있어요. 새 캡처는 ' + resetLabel(su.resetAt) + '부터 올릴 수 있어요.';
+    } else if (turn) {
+      $('limit-title').textContent = '오늘은 이미 올렸어요';
+      $('limit-text').textContent = '캐릭터당 하루 한 번 올릴 수 있어요. ' + resetLabel(su.resetAt) + '부터 다시 할 수 있어요.';
+    }
+  }
+  function resetLabel(ms) {                               // the turn-over as Korea reads it: "11월 26일 오전 9시"
+    var d = new Date((ms || Date.now()) + 9 * 3600000);
+    return (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일 오전 9시';
+  }
+  function resetDraft() { draft = null; $('newlook').hidden = true; $('file').value = ''; }
+  $('pick').addEventListener('click', function () { $('file').click(); });
+  $('again').addEventListener('click', function () { resetDraft(); $('result').textContent = ''; $('file').click(); });
+  $('file').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f) return;
+    $('result').textContent = '';
+    var url = URL.createObjectURL(f), img = new Image();
+    img.onload = function () {
+      URL.revokeObjectURL(url);
+      var cut = null;
+      try { cut = GuildCutout.cut(img, 'self'); } catch (err) { cut = null; }
+      if (!cut || cut.canvas.height < img.naturalHeight * 0.08) {
+        resetDraft();
+        note('alert', '캐릭터를 찾지 못했어요', '게임의 캐릭터 화면(캐릭터가 가운데에 크게 서 있는 화면)을 캡처한 그림인지 확인해 주세요.');
+        return;
+      }
+      var c = GuildCutout.crops(img);
+      draft = { char: cut.canvas, face: cut.face, head: c.head, shot: c.shot };
+      drawDraft();
+      $('newlook').hidden = false;
+      $('newlook').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); note('alert', '그림을 열지 못했어요', '캡처한 그림 파일(PNG·JPG)을 골라 주세요.'); };
+    img.src = url;
+  });
+  function drawDraft() {
+    var cv = $('new-char'); cv.width = draft.char.width; cv.height = draft.char.height;
+    var ctx = cv.getContext('2d'); ctx.drawImage(draft.char, 0, 0);
+    ctx.lineWidth = Math.max(2, cv.width / 160); ctx.strokeStyle = 'rgba(255,255,255,0.95)'; ctx.setLineDash([cv.width / 40, cv.width / 60]);
+    ctx.beginPath(); ctx.arc(draft.face.x, draft.face.y, draft.face.r, 0, Math.PI * 2); ctx.stroke();
+    var fc = $('new-face').getContext('2d'); fc.clearRect(0, 0, 120, 120);
+    fc.drawImage(GuildCutout.faceCanvas(draft.char, draft.face, 120), 0, 0);
+  }
+  $('new-char').addEventListener('click', function (e) {
+    if (!draft) return;
+    var r = e.currentTarget.getBoundingClientRect();
+    draft.face.x = Math.round((e.clientX - r.left) * draft.char.width / r.width);
+    draft.face.y = Math.round((e.clientY - r.top) * draft.char.height / r.height);
+    drawDraft();
+  });
+
+  $('send').addEventListener('click', function () { submit(); });
+  function submit() {
+    if (!draft || busy || !me) return;
+    busy = true; $('send').disabled = true; $('send').textContent = '확인하는 중…';
+    var C = GuildCutout;
+    Promise.all([C.pictureBlob(draft.char), C.pictureBlob(C.faceCanvas(draft.char, draft.face, 120)), C.toBlob(draft.head, 'image/jpeg', 0.9), C.toBlob(draft.shot, 'image/jpeg', 0.8)])
+      .then(function (b) {
+        var fd = new FormData();
+        fd.append('uid', me); fd.append('char', b[0], 'char'); fd.append('face', b[1], 'face'); fd.append('head', b[2], 'head.jpg'); fd.append('shot', b[3], 'shot.jpg');
+        return fetch(API + '/update', { method: 'POST', body: fd });
+      })
+      .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+      .then(function (res) { showResult(res.status, res.body); })
+      .catch(function () { note('alert', '보내지 못했어요', '인터넷 연결을 확인하고 다시 시도해 주세요.'); })
+      .then(function () { busy = false; $('send').disabled = false; $('send').textContent = '이 모습으로 바꾸기'; });
+  }
+  // Asking the admin to look at today's "older" capture: the server kept the pictures, so only the request goes.
+  $('ask-admin').addEventListener('click', function () {
+    if (busy || !me) return;
+    busy = true; $('ask-admin').disabled = true;
+    var fd = new FormData(); fd.append('uid', me); fd.append('ask', '1');
+    fetch(API + '/update', { method: 'POST', body: fd })
+      .then(function (r) { return r.json().then(function (j) { return { status: r.status, body: j }; }); })
+      .then(function (res) { showResult(res.status, res.body); })
+      .catch(function () { note('alert', '보내지 못했어요', '인터넷 연결을 확인하고 다시 시도해 주세요.'); })
+      .then(function () { busy = false; $('ask-admin').disabled = false; });
+  });
+  function note(kind, title, text, extra) {
+    var box = $('result'); box.textContent = '';
+    var a = el('div', kind); a.appendChild(el('b', '', title)); if (text) a.appendChild(el('span', '', text));
+    if (extra) a.appendChild(extra);
+    box.appendChild(a); a.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  function compare(read, onFile) {
+    var dl = el('dl', 'read');
+    [['', '캡처에서 읽은 값', '저장된 값'], ['레벨', read.level == null ? '못 읽음' : read.level, onFile.level || '–'], ['전투력', read.power == null ? '못 읽음' : power(read.power), power(onFile.power)]]
+      .forEach(function (r) { dl.appendChild(el('dt', '', r[0])); dl.appendChild(el('dd', '', String(r[1]))); dl.appendChild(el('dd', '', String(r[2]))); });
+    return dl;
+  }
+  function showResult(status, b) {
+    var m = byUid(me);
+    if (b.status === 'applied') {
+      resetDraft();
+      note('alert ok', '바꿨어요!', '레벨 ' + b.read.level + ' · 전투력 ' + power(b.read.power) + ' 로 저장했고 캐릭터 모습도 새로 올렸어요.');
+      load();
+    } else if (b.status === 'pending') {
+      resetDraft();
+      note('alert info', '관리자 확인을 기다리는 중이에요', b.reason === 'older'
+        ? '관리자가 캡처를 보고 승인하면 반영돼요.'
+        : '캡처의 글자를 자동으로 확인하지 못했어요. 관리자가 직접 보고 승인하면 반영돼요.');
+      load();
+    } else if (b.error === 'daily_limit') {
+      resetDraft();
+      note('alert info', '오늘은 이미 올렸어요', '캐릭터당 하루 한 번 올릴 수 있어요. ' + resetLabel(b.resetAt) + '부터 다시 할 수 있어요.');
+      load();
+    } else if (b.error === 'mismatch_limit') {
+      resetDraft();
+      note('alert', '오늘은 더 올릴 수 없어요', '닉네임이 다른 캡처가 여러 번 올라왔어요. ' + resetLabel(b.resetAt) + '부터 다시 할 수 있어요.');
+    } else if (b.reason === 'nickname') {
+      note('alert', '닉네임이 달라요', '캡처에서는 닉네임이 "' + (b.read.nickname || '?') + '"(으)로 읽혔어요. ' + (m ? m.nickname : '') + ' 님 본인의 캐릭터 화면을 올려 주세요.');
+    } else if (b.reason === 'older') {
+      // The turn is used; the note above the upload box (after the reload) carries the "ask the admin" button.
+      resetDraft();
+      var cmp = el('div'); cmp.style.marginTop = '10px'; cmp.appendChild(compare(b.read, b.onFile));
+      note('alert', '예전 캡처로 보여요', '저장된 정보보다 레벨이나 전투력이 낮아 반영하지 않았어요.', cmp);
+      load();
+    } else if (b.error === 'too_many') {
+      note('alert', '잠시 뒤에 다시 해 주세요', '한 시간에 올릴 수 있는 횟수를 넘었어요.');
+    } else if (String(b.error || '').indexOf('too_large') === 0) {
+      note('alert', '그림이 너무 커요', '게임 화면을 그대로 캡처한 그림으로 다시 시도해 주세요.');
+    } else {
+      note('alert', '처리하지 못했어요', '잠시 뒤에 다시 시도해 주세요. 계속 안 되면 관리자에게 알려 주세요.');
+    }
+  }
+
+  var toastTimer = 0;
+  function toast(text) { var t = $('toast'); t.textContent = text; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 3000); }
+
+  route(); load();
+  setInterval(function () { if (document.visibilityState === 'visible' && !busy && !draft) load(); }, 60000);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && !busy && !draft) load(); });
+})();
+</script>
+</body>
+</html>

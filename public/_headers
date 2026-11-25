@@ -5,3 +5,7 @@
 # Guild emblem poll: a private page for guild members, not a search result.
 /guild-vote/*
   X-Robots-Tag: noindex
+
+# Guild hub: pages for guild members, not search results.
+/guild/*
+  X-Robots-Tag: noindex
