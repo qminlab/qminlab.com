@@ -122,8 +122,31 @@
   .mecard .pic img { max-width: 96%; max-height: 122px; }
   .mecard p { margin: 0; }
   .mecard .big { font-family: var(--serif); font-weight: 700; font-size: 1.2rem; }
-  .steps { margin: 8px 0 0; padding-left: 1.2em; color: var(--text-soft); font-size: 0.9rem; }
-  .steps li { margin: 4px 0; }
+  /* How to capture: the example screen with numbered marks, and steps that point at the same numbers. */
+  .howto { display: grid; grid-template-columns: 124px minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 359px) { .howto { grid-template-columns: minmax(0, 1fr); } .howto .shot { width: 150px; margin: 0 auto; } }
+  .shot { display: block; width: 100%; padding: 0; border: 0; background: none; color: inherit; text-align: center; }
+  .shot .cap { display: block; margin-top: 6px; font-size: 0.74rem; color: var(--text-mute); }
+  .frame { position: relative; display: block; border: 1px solid var(--line-strong); border-radius: var(--radius-lg); overflow: hidden; background: #dfe4ea; }
+  .frame img { display: block; width: 100%; height: auto; }
+  .mk { position: absolute; border: 2px solid var(--light); border-radius: 6px; box-shadow: 0 0 0 1px rgba(15, 18, 38, 0.7); }
+  .mk.m1 { left: 2%; top: 89.6%; width: 18.5%; height: 6.8%; }
+  .mk.m2 { left: 0.5%; top: 7.2%; width: 38%; height: 7.4%; }
+  .mk.m3 { left: 27%; top: 30.6%; width: 47.5%; height: 21.4%; }
+  .mk b, .steps .n, .legend .n {
+    display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%;
+    background: var(--light); color: var(--on-light); font-style: normal; font-weight: 700; font-size: 0.78rem; line-height: 1; vertical-align: 0.05em;
+  }
+  .mk b { position: absolute; left: -0.6em; top: -0.6em; box-shadow: 0 0 0 1px rgba(15, 18, 38, 0.7); }
+  .mk.m1 b { top: auto; bottom: 100%; left: 0; margin-bottom: 2px; }
+  .mk.m2 b { left: auto; right: -0.6em; }
+  .shot .mk b { font-size: 0.62rem; }
+  .steps { margin: 0; padding-left: 1.2em; color: var(--text-soft); font-size: 0.9rem; }
+  .steps li { margin: 0 0 8px; }
+  .guide .frame { max-width: min(280px, max(150px, calc((100dvh - 300px) * 0.46))); margin: 0 auto; }
+  .legend { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; font-size: 0.92rem; }
+  .legend li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; }
+  .legend .n { margin-top: 0.15em; }
   .steps b { color: var(--text); font-weight: 600; }
   .drop { margin-top: 14px; border: 1px dashed var(--line-strong); border-radius: var(--radius-lg); padding: 24px 14px; text-align: center; }
   .newlook { margin-top: 14px; }
@@ -157,7 +180,7 @@
       <a href="#members" data-nav="members">길드원</a>
       <a href="#me" data-nav="me">내 캐릭터</a>
       <a href="#guide" data-nav="guide">공략 <span class="soon">예정</span></a>
-      <a href="/guild-vote/">아이콘 투표</a>
+      <a href="/guild-vote/">휘장 투표</a>
     </nav>
   </header>
 
@@ -224,19 +247,25 @@
         </div>
 
         <h2>캐릭터 모습 · 정보 바꾸기</h2>
-        <ol class="steps">
-          <li>게임 아래 메뉴에서 <b>캐릭터</b> 화면을 열고 화면을 캡처해요.</li>
-          <li>그 캡처를 아래에 올리면 닉네임·레벨·전투력을 읽어 본인 화면인지, 최신인지 확인해요.</li>
-          <li>확인되면 캐릭터 모습과 정보가 바로 바뀌어요.</li>
-        </ol>
+        <div class="howto">
+          <button type="button" class="shot" id="guide-open" aria-label="예시 화면 크게 보기">
+            <span class="frame"><img src="img/guide/character-tab.webp" alt="게임의 캐릭터 탭 화면 예시" width="540" height="1171" loading="lazy"><i class="mk m1" aria-hidden="true"><b>1</b></i><i class="mk m2" aria-hidden="true"><b>2</b></i><i class="mk m3" aria-hidden="true"><b>3</b></i></span>
+            <span class="cap">예시 · 눌러서 크게</span>
+          </button>
+          <ol class="steps">
+            <li>게임 맨 아래 메뉴에서 <span class="n">1</span> <b>캐릭터</b> 탭을 눌러요.</li>
+            <li>그 화면을 그대로 캡처해요. <span class="n">2</span> 닉네임·레벨·전투력과 <span class="n">3</span> 내 캐릭터가 잘리지 않아야 해요.</li>
+            <li>캡처를 아래에 올려요. <span class="n">2</span>를 읽어 본인 화면인지, 최신인지 확인하고 <span class="n">3</span>을 오려서 바로 바꿔요.</li>
+          </ol>
+        </div>
         <div class="alert info" id="limit" hidden style="margin:14px 0 0">
           <b id="limit-title"></b><span id="limit-text"></span>
           <div id="limit-act" style="margin-top:10px" hidden><button type="button" class="btn ghost small" id="ask-admin">관리자에게 확인 요청</button></div>
         </div>
         <div class="drop" id="drop">
           <input type="file" id="file" accept="image/*" hidden>
-          <button type="button" class="btn" id="pick">캐릭터 화면 캡처 올리기</button>
-          <p class="hint" id="pick-hint">내 캐릭터가 화면 가운데에 크게 보이는 화면이어야 해요. 캐릭터당 하루 한 번 올릴 수 있어요.</p>
+          <button type="button" class="btn" id="pick">캐릭터 탭 캡처 올리기</button>
+          <p class="hint" id="pick-hint">다른 유저 정보 창이 아니라, 예시처럼 내 캐릭터 탭 화면이어야 해요. 캐릭터당 하루 한 번 올릴 수 있어요.</p>
         </div>
 
         <div class="newlook" id="newlook" hidden>
@@ -296,6 +325,20 @@
         <button type="button" class="btn ghost" id="detail-close">닫기</button>
         <button type="button" class="btn" id="detail-me">이게 나예요</button>
       </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="guide" hidden role="dialog" aria-modal="true" aria-labelledby="guide-title">
+  <div class="sheet guide">
+    <header id="guide-title">이런 화면을 올려 주세요</header>
+    <div class="body">
+      <span class="frame"><img src="img/guide/character-tab.webp" alt="게임의 캐릭터 탭 화면 예시" width="540" height="1171" loading="lazy"><i class="mk m1" aria-hidden="true"><b>1</b></i><i class="mk m2" aria-hidden="true"><b>2</b></i><i class="mk m3" aria-hidden="true"><b>3</b></i></span>
+      <ul class="legend">
+        <li><span class="n">1</span><span>게임 맨 아래 메뉴의 <b>캐릭터</b> 탭을 누르면 나오는 화면이에요.</span></li>
+        <li><span class="n">2</span><span>닉네임·레벨·전투력을 읽어 본인 화면인지, 최신인지 확인해요.</span></li>
+        <li><span class="n">3</span><span>가운데 내 캐릭터를 오려서 랭킹과 길드원 목록에 써요.</span></li>
+      </ul>
+      <div class="acts"><button type="button" class="btn ghost" id="guide-close">닫기</button></div>
     </div>
   </div>
 </div>
@@ -502,7 +545,11 @@
   function closeDetail() { $('detail').hidden = true; }
   $('detail-close').addEventListener('click', closeDetail);
   $('detail').addEventListener('click', function (e) { if (e.target === $('detail')) closeDetail(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDetail(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeDetail(); $('guide').hidden = true; } });
+  // The capture example, enlarged
+  $('guide-open').addEventListener('click', function () { $('guide').hidden = false; $('guide-close').focus({ preventScroll: true }); $('guide').querySelector('.sheet').scrollTop = 0; });
+  $('guide-close').addEventListener('click', function () { $('guide').hidden = true; $('guide-open').focus(); });
+  $('guide').addEventListener('click', function (e) { if (e.target === $('guide')) $('guide').hidden = true; });
   $('detail-me').addEventListener('click', function () { setMe(detailUid); closeDetail(); toast('내 닉네임으로 기억했어요'); });
 
   // ───── 내 캐릭터 ─────
@@ -554,7 +601,7 @@
       try { cut = GuildCutout.cut(img, 'self'); } catch (err) { cut = null; }
       if (!cut || cut.canvas.height < img.naturalHeight * 0.08) {
         resetDraft();
-        note('alert', '캐릭터를 찾지 못했어요', '게임의 캐릭터 화면(캐릭터가 가운데에 크게 서 있는 화면)을 캡처한 그림인지 확인해 주세요.');
+        note('alert', '캐릭터를 찾지 못했어요', '예시처럼 게임의 캐릭터 탭 화면을 캡처한 그림인지 확인해 주세요.');
         return;
       }
       var c = GuildCutout.crops(img);
@@ -641,7 +688,7 @@
       resetDraft();
       note('alert', '오늘은 더 올릴 수 없어요', '닉네임이 다른 캡처가 여러 번 올라왔어요. ' + resetLabel(b.resetAt) + '부터 다시 할 수 있어요.');
     } else if (b.reason === 'nickname') {
-      note('alert', '닉네임이 달라요', '캡처에서는 닉네임이 "' + (b.read.nickname || '?') + '"(으)로 읽혔어요. ' + (m ? m.nickname : '') + ' 님 본인의 캐릭터 화면을 올려 주세요.');
+      note('alert', '닉네임이 달라요', '캡처에서는 닉네임이 "' + (b.read.nickname || '?') + '"(으)로 읽혔어요. ' + (m ? m.nickname : '') + ' 님 본인의 캐릭터 탭 화면을 올려 주세요.');
     } else if (b.reason === 'older') {
       // The turn is used; the note above the upload box (after the reload) carries the "ask the admin" button.
       resetDraft();
