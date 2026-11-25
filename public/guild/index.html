@@ -9,9 +9,16 @@
 <title>라이트 길드</title>
 <link rel="stylesheet" href="guild.css">
 <style>
-  body[data-view="raid"] #view-members, body[data-view="raid"] #view-me,
-  body[data-view="members"] #view-raid, body[data-view="members"] #view-me,
-  body[data-view="me"] #view-raid, body[data-view="me"] #view-members { display: none; }
+  body:not([data-view="raid"]) #view-raid, body:not([data-view="members"]) #view-members,
+  body:not([data-view="me"]) #view-me, body:not([data-view="guide"]) #view-guide { display: none; }
+
+  /* ───── coming-soon view ───── */
+  .coming { text-align: center; padding: 36px 20px; }
+  .coming .tag { display: inline-block; background: var(--ink); color: var(--accent); font-weight: 800; font-size: 0.82rem; border-radius: 999px; padding: 5px 12px; }
+  .coming h2 { display: block; text-align: center; margin: 14px 0 6px; font-size: 1.35rem; }
+  .coming p { margin: 0 auto; max-width: 30em; color: var(--ink-soft); line-height: 1.6; }
+  .coming ul { list-style: none; margin: 18px auto 0; padding: 0; max-width: 22em; text-align: left; display: grid; gap: 8px; }
+  .coming li { background: rgba(0,0,0,0.05); border-radius: 12px; padding: 10px 14px; font-weight: 700; }
 
   /* ───── 단상 ───── */
   .stage {
@@ -120,6 +127,7 @@
       <a href="#raid" data-nav="raid">레이드 랭킹</a>
       <a href="#members" data-nav="members">길드원</a>
       <a href="#me" data-nav="me">내 캐릭터</a>
+      <a href="#guide" data-nav="guide">공략 <span class="soon">예정</span></a>
       <a href="/guild-vote/">아이콘 투표</a>
     </nav>
   </header>
@@ -213,6 +221,20 @@
         <div id="result" style="margin-top:14px" aria-live="polite"></div>
       </div>
     </section>
+
+    <!-- strategy guides: placeholder until the feature is built -->
+    <section class="pane" id="view-guide" hidden>
+      <div class="card coming">
+        <span class="tag">제작 예정</span>
+        <h2>공략 정보 공유</h2>
+        <p>길드원끼리 공략을 모아 두는 곳이에요. 지금 만들고 있어요.</p>
+        <ul>
+          <li>레이드 보스 공략</li>
+          <li>직업별 육성 팁</li>
+          <li>길드원이 직접 올리는 공략 글</li>
+        </ul>
+      </div>
+    </section>
   </main>
 
   <footer class="foot">길드원 전용 페이지 · <a href="admin/" style="color:inherit">관리자</a></footer>
@@ -220,6 +242,7 @@
     <a href="#raid" data-nav="raid">랭킹</a>
     <a href="#members" data-nav="members">길드원</a>
     <a href="#me" data-nav="me">내 캐릭터</a>
+    <a href="#guide" data-nav="guide">공략</a>
     <a href="/guild-vote/">투표</a>
   </nav>
 </div>
@@ -303,11 +326,12 @@
   $('retry').addEventListener('click', function () { $('alert').hidden = true; $('loading').hidden = false; load(); });
 
   // ───── 화면 전환 ─────
+  var VIEWS = ['raid', 'members', 'me', 'guide'];
   function route() {
     var v = (location.hash || '#raid').slice(1);
-    if (['raid', 'members', 'me'].indexOf(v) < 0) v = 'raid';
+    if (VIEWS.indexOf(v) < 0) v = 'raid';
     document.body.dataset.view = v;
-    ['raid', 'members', 'me'].forEach(function (name) { $('view-' + name).hidden = !state || name !== v; });
+    VIEWS.forEach(function (name) { $('view-' + name).hidden = !state || name !== v; });
     var links = document.querySelectorAll('[data-nav]');
     for (var i = 0; i < links.length; i++) {
       if (links[i].dataset.nav === v) links[i].setAttribute('aria-current', 'page'); else links[i].removeAttribute('aria-current');
