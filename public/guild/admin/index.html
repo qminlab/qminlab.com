@@ -4,58 +4,62 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#222222">
+<meta name="theme-color" content="#0f1226">
 <link rel="icon" href="/icon.svg">
 <title>라이트 길드 관리자</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&display=swap">
 <link rel="stylesheet" href="../guild.css">
 <style>
   .gate { max-width: 420px; margin: 24px auto 0; }
-  .tabs { margin-bottom: 16px; }
+  .tabs { margin-bottom: 20px; }
   .daybar { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; }
-  .daynote { margin: 10px 0 0; font-weight: 700; }
-  .picker-tools { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; margin-top: 12px; }
+  .daynote { margin: 10px 0 0; font-weight: 600; color: var(--text-soft); }
+  .picker-tools { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; margin-top: 14px; }
   .checks { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+  /* One toggle per member: an outline when absent, lit when present. */
   .check {
-    width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: center; text-align: left;
-    border: 2px solid #cfcfcf; background: var(--card); border-radius: 999px; padding: 4px 12px 4px 4px; min-height: 52px; font-weight: 700;
+    width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 9px; align-items: center; text-align: left;
+    border: 1px solid var(--line); background: transparent; color: var(--text-soft); border-radius: var(--radius); padding: 5px 10px 5px 6px; min-height: 50px; font-weight: 600;
   }
   .check span.nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .check .face { width: 40px; height: 40px; }
-  .check[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--accent); }
-  .check[aria-pressed="true"] .face { border-color: var(--accent); }
+  .check .face { width: 36px; height: 36px; opacity: 0.55; }
+  .check[aria-pressed="true"] { background: var(--light-dim); border-color: var(--light); color: var(--light); }
+  .check[aria-pressed="true"] .face { opacity: 1; }
   .savebar {
-    position: sticky; bottom: 0; z-index: 5; margin: 16px -16px -28px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-    background: var(--panel); border-top: 1px solid var(--line);
+    position: sticky; bottom: 0; z-index: 5; margin: 20px -16px -32px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: #0b0d1e; border-top: 1px solid var(--line-strong);
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
   }
-  .savebar b { font-size: 1.05rem; }
+  .savebar b { font-family: var(--serif); font-size: 1.1rem; }
   .days { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-  .days button { border: 2px solid #bdbdbd; background: #f6f6f6; border-radius: 999px; padding: 5px 12px; font-weight: 700; font-size: 0.86rem; min-height: 38px; }
-  .days button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--accent); }
+  .days button { border: 1px solid var(--line-strong); background: transparent; color: var(--text-soft); border-radius: var(--radius); padding: 5px 11px; font-weight: 600; font-size: 0.86rem; min-height: 38px; }
+  .days button[aria-pressed="true"] { border-color: var(--light); color: var(--light); background: var(--light-dim); }
 
-  .req { background: var(--card); border-radius: var(--radius); padding: 14px; margin-top: 10px; }
+  .req { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 14px; margin-top: 10px; }
   .req .pics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; align-items: start; }
-  .req .pics figure { margin: 0; background: #ddd; border-radius: 10px; overflow: hidden; text-align: center; }
+  .req .pics figure { margin: 0; background: #0b0d1e; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; text-align: center; }
   .req .pics img { display: block; margin: 0 auto; max-height: 320px; max-width: 100%; }
-  .req .pics figure.new { background: linear-gradient(#edc277, #b9683a); padding: 10px; }
-  .req figcaption { font-size: 0.78rem; color: var(--ink-soft); padding: 4px; background: var(--card); }
+  .req .pics figure.new { background: radial-gradient(ellipse 75% 62% at 50% 0, rgba(150, 160, 240, 0.3), rgba(150, 160, 240, 0) 72%), #121530; padding: 10px; }
+  .req figcaption { font-size: 0.78rem; color: var(--text-mute); padding: 5px; border-top: 1px solid var(--line); }
   .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
   .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .acts-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
   .acts-row .btn { flex: 1 1 120px; }
 
-  .roster { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; }
-  .roster li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--card); border-radius: 14px; padding: 7px 10px; }
-  .roster li.off { opacity: 0.55; }
-  .roster b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .newpic { margin-top: 10px; background: linear-gradient(#edc277, #b9683a); border-radius: 12px; padding: 10px; text-align: center; }
+  .roster { list-style: none; margin: 12px 0 0; padding: 0; border-top: 1px solid var(--line-strong); }
+  .roster li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 9px 4px; border-bottom: 1px solid var(--line); }
+  .roster li.off { opacity: 0.5; }
+  .roster b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .newpic { margin-top: 10px; border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; text-align: center; }
   .newpic canvas { max-width: 100%; max-height: 220px; cursor: crosshair; }
 </style>
 </head>
 <body>
 <div class="shell">
   <header class="top">
-    <h1><a href="../">라이트 길드</a></h1><span class="sub">관리자</span>
+    <h1><a href="../"><span class="mark" aria-hidden="true"></span>라이트 <small>길드</small></a></h1><span class="sub">관리자</span>
     <nav class="menu side" style="display:flex" aria-label="메뉴">
       <a href="../">길드 사이트로</a>
       <button type="button" id="logout" hidden>로그아웃</button>
@@ -155,7 +159,7 @@
       <input type="file" id="e-file" accept="image/*" hidden>
       <button type="button" class="btn ghost small" id="e-pick">캡처에서 새 그림 만들기</button>
       <p class="hint">유저 정보 창 캡처나 캐릭터 화면 캡처를 고르면 캐릭터만 오려내요. 얼굴 위치는 그림을 눌러 맞춰요.</p>
-      <div class="newpic" id="e-newpic" hidden><canvas id="e-canvas"></canvas></div>
+      <div class="newpic lit" id="e-newpic" hidden><canvas id="e-canvas"></canvas></div>
       <p class="hint" id="e-msg" style="color:var(--bad);min-height:1.3em"></p>
       <div class="acts">
         <button type="button" class="btn ghost" id="e-cancel">취소</button>
