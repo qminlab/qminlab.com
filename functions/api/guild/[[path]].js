@@ -249,7 +249,7 @@ async function readShot(env, bytes) {
       const obj = parseJson(typeof out === 'string' ? out : (out?.response ?? out?.choices?.[0]?.message?.content));
       if (obj) {
         const cls = CLASSES.find((c) => norm(obj.class).includes(c)) || null;
-        return { nickname: obj.nickname ? String(obj.nickname).trim() : null, level: levelValue(obj.level), power: powerValue(obj.power), cls, model };
+        return { nickname: obj.nickname ? String(obj.nickname).trim() : null, level: levelValue(obj.level), power: powerValue(obj.power), cls, model, usage: out?.usage ?? null };
       }
       last = 'unparsed: ' + JSON.stringify(out).slice(0, 300);
     } catch (err) {
@@ -372,7 +372,7 @@ async function update(ctx) {
     const log = (extra) =>
       db
         .prepare('INSERT INTO guild_updates (uid, status, reason, read_json, shot, char, face, ip_hash, created_at, decided_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-        .bind(uid, status, reason ?? null, JSON.stringify({ ...seen, detail: read.detail, model: read.model }), ...extra, who, now, status === 'pending' ? null : now);
+        .bind(uid, status, reason ?? null, JSON.stringify({ ...seen, detail: read.detail, model: read.model, usage: read.usage }), ...extra, who, now, status === 'pending' ? null : now);
 
     if (status === 'applied') {
       await applyUpdate(db, uid, { level: read.level, power: read.power, cls: read.cls }, char, face, now);
@@ -388,7 +388,7 @@ async function update(ctx) {
     }
     const fresh = await db.prepare('SELECT * FROM guild_members WHERE uid = ?').bind(uid).first();
     return json(
-      { status, reason: reason ?? null, read: seen, onFile: { level: member.level, power: member.power }, member: memberView(fresh), resetAt: since + DAY_MS },
+      { status, reason: reason ?? null, read: seen, onFile: { level: member.level, power: member.power }, member: memberView(fresh), resetAt: since + DAY_MS, usage: read.usage ?? null },
       status === 'rejected' ? 409 : 200,
     );
   } catch (err) {
