@@ -88,6 +88,18 @@ async function database(env, request) {
     db.prepare('CREATE INDEX IF NOT EXISTS guild_post_images_post ON guild_post_images (post_id, pos)'),
     db.prepare('CREATE INDEX IF NOT EXISTS guild_comments_post ON guild_comments (post_id, id)'),
   ]);
+  // Columns added after the first release. A table that already exists is not touched by CREATE TABLE above, so
+  // each addition runs once and the step reached is remembered.
+  const step = Number((await db.prepare("SELECT value FROM guild_meta WHERE key = 'schema'").first())?.value) || 1;
+  if (step < 2) {
+    try {
+      // When a member was registered by the admin, or last came back; empty for the founding roster.
+      await db.prepare('ALTER TABLE guild_members ADD COLUMN joined_at INTEGER').run();
+    } catch {
+      // already there: another request got here first
+    }
+    await setMeta(db, 'schema', '2');
+  }
   // First run: fill the roster from the file that ships with the site.
   const any = await db.prepare('SELECT 1 FROM guild_members LIMIT 1').first();
   if (!any && env.ASSETS) {
@@ -172,10 +184,12 @@ async function state({ db, now }) {
       if (r.date >= weekStart) week[r.uid] = (week[r.uid] || 0) + 1;
       (came[r.date] ||= new Set()).add(r.uid);
     }
-    // Raids missed in a row, counting back from the latest recorded one.
+    // Raids missed in a row, counting back from the latest recorded one. Raids from before a member was registered
+    // or came back are not theirs to miss.
     for (const m of members.results) {
+      const joined = m.joined_at ? kstDate(m.joined_at) : '';
       let n = 0;
-      for (let i = recent.length - 1; i >= 0 && !(came[recent[i]] && came[recent[i]].has(m.uid)); i--) n++;
+      for (let i = recent.length - 1; i >= 0 && recent[i] >= joined && !(came[recent[i]] && came[recent[i]].has(m.uid)); i--) n++;
       if (n) miss[m.uid] = n;
     }
   }
@@ -856,9 +870,10 @@ async function admin(ctx, method, path) {
       const next = { cls: cls ?? cur.cls, level: level ?? cur.level, power: power ?? cur.power, classLevel: classLevel ?? cur.class_level };
       // "Last updated" is about the member's information: leaving or coming back does not move it.
       const changed = name !== cur.nickname || next.cls !== cur.cls || next.level !== cur.level || next.power !== cur.power || next.classLevel !== cur.class_level;
+      const active = b.active === false ? 0 : b.active === true ? 1 : cur.active;
       await db
-        .prepare('UPDATE guild_members SET nickname = ?, cls = ?, class_level = ?, level = ?, power = ?, active = ?, updated_at = ? WHERE uid = ?')
-        .bind(name, next.cls, next.classLevel, next.level, next.power, b.active === false ? 0 : b.active === true ? 1 : cur.active, changed ? now : cur.updated_at, cur.uid)
+        .prepare('UPDATE guild_members SET nickname = ?, cls = ?, class_level = ?, level = ?, power = ?, active = ?, updated_at = ?, joined_at = ? WHERE uid = ?')
+        .bind(name, next.cls, next.classLevel, next.level, next.power, active, changed ? now : cur.updated_at, active && !cur.active ? now : cur.joined_at ?? null, cur.uid)
         .run();
       return json({ ok: true, uid: cur.uid }, 200);
     }
@@ -867,8 +882,8 @@ async function admin(ctx, method, path) {
     const uid = /^\d{6,20}$/.test(String(b.gameUid || '')) ? String(b.gameUid) : 'm' + now;
     if (await db.prepare('SELECT 1 FROM guild_members WHERE uid = ?').bind(uid).first()) return json({ error: 'uid_taken' }, 409);
     await db
-      .prepare('INSERT INTO guild_members (uid, nickname, cls, class_level, level, power, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
-      .bind(uid, nickname, cls, classLevel, level, power, now)
+      .prepare('INSERT INTO guild_members (uid, nickname, cls, class_level, level, power, updated_at, joined_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(uid, nickname, cls, classLevel, level, power, now, now)
       .run();
     return json({ ok: true, uid }, 200);
   }

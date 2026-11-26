@@ -225,7 +225,11 @@
     var init = { method: opt.method || 'GET', headers: { Accept: 'application/json' }, cache: 'no-store', credentials: 'same-origin' };
     if (opt.json) { init.headers['Content-Type'] = 'application/json'; init.body = JSON.stringify(opt.json); }
     if (opt.form) init.body = opt.form;
-    return fetch(API + path, init).then(function (r) { return r.json().then(function (j) { return { status: r.status, ok: r.ok, body: j }; }); });
+    return fetch(API + path, init).then(function (r) {
+      // Tell a hub page open in this browser that something was saved, so it reloads instead of showing old numbers.
+      if (r.ok && init.method !== 'GET') { try { localStorage.setItem('guild:changed', String(Date.now())); } catch (e) {} }
+      return r.json().then(function (j) { return { status: r.status, ok: r.ok, body: j }; });
+    });
   }
   function kstToday(offsetDays) { return new Date(Date.now() + 9 * 3600000 - (offsetDays || 0) * 86400000).toISOString().slice(0, 10); }
   function power(n) { if (n == null) return ''; return n >= 1e6 ? (n / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : String(n); }

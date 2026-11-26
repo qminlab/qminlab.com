@@ -1100,8 +1100,19 @@
   function toast(text) { var t = $('toast'); t.textContent = text; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 3000); }
 
   route(); load();
-  setInterval(function () { if (document.visibilityState === 'visible' && !busy && !draft) load(); }, 180000);
-  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && !busy && !draft) load(); });
+  // Keep the numbers current: every three minutes, whenever the page comes back into view (another tab, another
+  // app, the back button), and at once when the admin page in this browser saves something.
+  var lastLoad = 0;
+  function refresh(force) {
+    if (busy || draft || document.visibilityState !== 'visible') return;
+    if (!force && Date.now() - lastLoad < 5000) return;
+    lastLoad = Date.now(); load();
+  }
+  setInterval(function () { refresh(false); }, 180000);
+  document.addEventListener('visibilitychange', function () { refresh(false); });
+  window.addEventListener('focus', function () { refresh(false); });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) refresh(true); });
+  window.addEventListener('storage', function (e) { if (e.key === 'guild:changed') refresh(true); });
 })();
 </script>
 </body>
