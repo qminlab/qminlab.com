@@ -57,7 +57,13 @@
 
   .roster { list-style: none; margin: 12px 0 0; padding: 0; border-top: 1px solid var(--line-strong); }
   .roster li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 9px 4px; border-bottom: 1px solid var(--line); }
-  .roster li.off { opacity: 0.5; }
+  .roster li.off .face, .roster li.off b, .roster li.off .cls { opacity: 0.55; }
+  .roster small { display: block; color: var(--text-mute); font-size: 0.74rem; }
+  .roster .acts { display: flex; gap: 6px; }
+  .roster .acts .btn { padding: 6px 11px; }
+  .roster-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  #e-card .hint { margin-top: 6px; }
+  #e-note:empty { display: none; }
   .roster b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .newpic { margin-top: 10px; border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; text-align: center; }
   .newpic canvas { max-width: 100%; max-height: 220px; cursor: crosshair; }
@@ -102,7 +108,7 @@
         <div class="seg tabs" role="group" aria-label="관리 화면">
           <button type="button" data-tab="raid" aria-pressed="true">참석 입력</button>
           <button type="button" data-tab="pending" aria-pressed="false" id="tab-pending">갱신 대기</button>
-          <button type="button" data-tab="roster" aria-pressed="false">길드원</button>
+          <button type="button" data-tab="roster" aria-pressed="false">길드원 관리</button>
         </div>
 
         <!-- 참석 입력 -->
@@ -114,6 +120,8 @@
             <button type="button" class="btn ghost small" id="yesterday">어제</button>
           </div>
           <p class="daynote" id="daynote"></p>
+          <div class="alert" id="not-today" hidden style="margin:10px 0 0"><b>오늘이 아닌 날짜예요</b><span id="not-today-text"></span>
+            <div style="margin-top:10px"><button type="button" class="btn ghost small" id="go-today">오늘로 이동</button></div></div>
 
           <h2><label for="names">참석한 닉네임</label> <small>띄어쓰기로 나열해요</small></h2>
           <textarea class="field" id="names" rows="3" placeholder="살인중독 베이비 아트7 누르 바서주" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
@@ -149,8 +157,14 @@
 
         <!-- 길드원 -->
         <section id="tab-roster-body" hidden>
-          <div class="acts-row" style="margin-top:0"><button type="button" class="btn small" id="add">길드원 추가</button></div>
+          <div class="roster-top">
+            <input class="field" id="r-find" type="search" placeholder="닉네임 찾기" aria-label="닉네임 찾기" autocomplete="off">
+            <button type="button" class="btn small" id="add">신규 길드원 추가</button>
+          </div>
+          <h2>현재 길드원 <small id="r-count"></small></h2>
           <ul class="roster" id="roster"></ul>
+          <h2 id="r-left-h" hidden>탈퇴한 길드원 <small id="r-left-count"></small></h2>
+          <ul class="roster" id="roster-left"></ul>
         </section>
       </div>
     </div>
@@ -161,7 +175,14 @@
   <form class="sheet" id="edit-form" autocomplete="off">
     <header id="edit-title">길드원</header>
     <div class="body">
-      <label class="lbl" for="e-nick" style="margin-top:0">닉네임</label>
+      <div id="e-card">
+        <input type="file" id="e-file" accept="image/*" hidden>
+        <button type="button" class="btn ghost small" id="e-pick">정보 창 캡처 올리기</button>
+        <p class="hint" id="e-card-hint"></p>
+        <div class="newpic lit" id="e-newpic" hidden><canvas id="e-canvas"></canvas></div>
+        <p class="hint" id="e-note" aria-live="polite"></p>
+      </div>
+      <label class="lbl" for="e-nick">닉네임</label>
       <input class="field" id="e-nick" maxlength="24" required>
       <div class="grid3">
         <div><label class="lbl" for="e-cls">직업</label>
@@ -169,13 +190,11 @@
         <div><label class="lbl" for="e-level">레벨</label><input class="field" id="e-level" inputmode="numeric"></div>
         <div><label class="lbl" for="e-power">전투력</label><input class="field" id="e-power" placeholder="631K"></div>
       </div>
-      <label class="lbl" for="e-active">상태</label>
-      <select class="field" id="e-active"><option value="1">길드원</option><option value="0">탈퇴 (랭킹에서 숨김, 기록은 남김)</option></select>
-      <label class="lbl">캐릭터 그림</label>
-      <input type="file" id="e-file" accept="image/*" hidden>
-      <button type="button" class="btn ghost small" id="e-pick">캡처에서 새 그림 만들기</button>
-      <p class="hint">유저 정보 창 캡처나 캐릭터 화면 캡처를 고르면 캐릭터만 오려내요. 얼굴 위치는 그림을 눌러 맞춰요.</p>
-      <div class="newpic lit" id="e-newpic" hidden><canvas id="e-canvas"></canvas></div>
+      <div id="e-uid-row">
+        <label class="lbl" for="e-uid">게임 UID <span style="font-weight:400;color:var(--text-mute)">비워 두어도 돼요</span></label>
+        <input class="field" id="e-uid" inputmode="numeric" maxlength="20" placeholder="정보 창의 UID 숫자">
+      </div>
+      <input type="hidden" id="e-form-class-level">
       <p class="hint" id="e-msg" style="color:var(--bad);min-height:1.3em"></p>
       <div class="acts">
         <button type="button" class="btn ghost" id="e-cancel">취소</button>
@@ -206,10 +225,16 @@
     var init = { method: opt.method || 'GET', headers: { Accept: 'application/json' }, cache: 'no-store', credentials: 'same-origin' };
     if (opt.json) { init.headers['Content-Type'] = 'application/json'; init.body = JSON.stringify(opt.json); }
     if (opt.form) init.body = opt.form;
-    return fetch(API + path, init).then(function (r) { return r.json().then(function (j) { return { status: r.status, ok: r.ok, body: j }; }); });
+    return fetch(API + path, init).then(function (r) {
+      // Tell a hub page open in this browser that something was saved, so it reloads instead of showing old numbers.
+      if (r.ok && init.method !== 'GET') { try { localStorage.setItem('guild:changed', String(Date.now())); } catch (e) {} }
+      return r.json().then(function (j) { return { status: r.status, ok: r.ok, body: j }; });
+    });
   }
   function kstToday(offsetDays) { return new Date(Date.now() + 9 * 3600000 - (offsetDays || 0) * 86400000).toISOString().slice(0, 10); }
   function power(n) { if (n == null) return ''; return n >= 1e6 ? (n / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : String(n); }
+  function longDate(d) { var p = d.split('-'), dt = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); return (+p[1]) + '월 ' + (+p[2]) + '일(' + '일월화수목금토'[dt.getUTCDay()] + ')'; }
+  function stamp(ms) { if (!ms) return ''; var d = new Date(ms + 9 * 3600000); return (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일'; }
   function dateLabel(d) { var p = d.split('-'), dt = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); return (+p[1]) + '/' + (+p[2]) + '(' + '일월화수목금토'[dt.getUTCDay()] + ')'; }
   function faceEl(m) { var f = el('span', 'face'), img = new Image(); img.alt = ''; img.loading = 'lazy'; img.src = m.face; img.onerror = function () { img.remove(); }; f.appendChild(img); return f; }
   var toastTimer = 0;
@@ -403,9 +428,29 @@
       for (var i = 0; i < items.length; i++) items[i].firstChild.setAttribute('aria-pressed', String(!!present[items[i].firstChild.dataset.uid]));
       $('daynote').textContent = dateLabel(date) + ' — ' + (r.body.saved ? '저장된 기록이 있어요 (' + r.body.present.length + '명). 고쳐서 다시 저장할 수 있어요.' : '아직 기록이 없어요. 참석한 닉네임을 적어 주세요.');
       $('wipe').hidden = !r.body.saved;
-      count(); markDay();
+      count(); markDay(); syncDate();
     });
   }
+  // Attendance goes to whatever date is showing, and a page left open keeps showing an old one. So the button
+  // names the date, a date other than today is called out, and a page that was left alone moves itself to today.
+  function syncDate() {
+    var d = $('date').value, t = kstToday();
+    $('date').max = t;
+    $('apply').textContent = d ? longDate(d) + ' 참석 적용' : '참석 적용';
+    $('not-today').hidden = !d || d === t;
+    if (d && d !== t) $('not-today-text').textContent = '지금 적는 참석은 ' + longDate(d) + ' 기록에 들어가요. 오늘은 ' + longDate(t) + '이에요.';
+  }
+  var seenToday = kstToday(), hiddenAt = 0;
+  function comeBack() {
+    var t = kstToday(), away = hiddenAt ? Date.now() - hiddenAt : 0; hiddenAt = 0;
+    if ($('app').hidden) return;
+    var idle = !dirty && !$('names').value.trim();
+    if (idle && $('date').value !== t && (t !== seenToday || away > 1800000)) { pickDate(t); toast('날짜를 오늘(' + longDate(t) + ')로 옮겼어요'); }
+    seenToday = t; syncDate();
+  }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') hiddenAt = Date.now(); else comeBack(); });
+  setInterval(function () { if (document.visibilityState === 'visible' && kstToday() !== seenToday) comeBack(); }, 60000);
+  $('go-today').addEventListener('click', function () { pickDate(kstToday()); });
   function loadDays() {
     return api('/admin/days').then(function (r) { days = r.body.days || []; renderDays(); });
   }
@@ -444,7 +489,7 @@
     });
   });
   var onYes = null;
-  function ask(title, text, yes) { $('confirm-title').textContent = title; $('confirm-text').textContent = text; onYes = yes; $('confirm').hidden = false; $('confirm-no').focus(); }
+  function ask(title, text, yes, label) { $('confirm-title').textContent = title; $('confirm-text').textContent = text; $('confirm-yes').textContent = label || '지우기'; onYes = yes; $('confirm').hidden = false; $('confirm-no').focus(); }
   $('confirm-no').addEventListener('click', function () { $('confirm').hidden = true; });
   $('confirm-yes').addEventListener('click', function () { $('confirm').hidden = true; if (onYes) onYes(); });
 
@@ -487,25 +532,49 @@
     });
   }
 
-  // ───── 길드원 ─────
+  // ───── 길드원 관리 ─────
+  function reloadRoster() { return api('/admin/roster').then(function (r) { members = r.body.members || []; buildChecks(); renderRoster(); }); }
   function renderRoster() {
-    var ul = $('roster'); ul.textContent = '';
-    members.slice().sort(function (a, b) { return (b.active - a.active) || a.nickname.localeCompare(b.nickname, 'ko'); }).forEach(function (m) {
+    var q = norm($('r-find').value.trim()), on = $('roster'), off = $('roster-left'), nOn = 0, nOff = 0;
+    on.textContent = ''; off.textContent = '';
+    members.slice().sort(function (a, b) { return a.nickname.localeCompare(b.nickname, 'ko'); }).forEach(function (m) {
+      if (m.active) nOn++; else nOff++;
+      if (q && norm(m.nickname).indexOf(q) < 0) return;
       var li = el('li', m.active ? '' : 'off'); li.appendChild(faceEl(m));
-      var mid = el('div'); mid.appendChild(el('b', '', m.nickname + (m.active ? '' : ' (탈퇴)')));
+      var mid = el('div'); mid.appendChild(el('b', '', m.nickname));
       var c = el('span', 'cls', (m.cls || '직업 미상') + ' · Lv.' + (m.level || '–') + ' · ' + (power(m.power) || '–')); c.dataset.cls = m.cls || ''; mid.appendChild(c);
+      if (m.updatedAt) mid.appendChild(el('small', '', stamp(m.updatedAt) + ' 갱신'));
       li.appendChild(mid);
-      var b = el('button', 'btn ghost small', '수정'); b.type = 'button'; b.addEventListener('click', function () { openEdit(m); });
-      li.appendChild(b); ul.appendChild(li);
+      var acts = el('div', 'acts'), edit = el('button', 'btn ghost small', '수정'); edit.type = 'button';
+      edit.addEventListener('click', function () { openEdit(m); }); acts.appendChild(edit);
+      var move = el('button', m.active ? 'btn danger small' : 'btn ghost small', m.active ? '탈퇴' : '복귀'); move.type = 'button';
+      move.addEventListener('click', function () {
+        if (!m.active) { setActive(m, true); return; }
+        ask('길드원 탈퇴', m.nickname + ' 님을 탈퇴 처리할까요? 랭킹과 길드원 목록에서 빠지고, 참석 기록은 남아요. 나중에 복귀시킬 수 있어요.', function () { setActive(m, false); }, '탈퇴 처리');
+      });
+      acts.appendChild(move); li.appendChild(acts);
+      (m.active ? on : off).appendChild(li);
+    });
+    $('r-count').textContent = nOn + '명'; $('r-left-h').hidden = !nOff; $('r-left-count').textContent = nOff + '명';
+  }
+  function setActive(m, active) {
+    api('/admin/member', { method: 'POST', json: { uid: m.uid, active: active } }).then(function (r) {
+      if (!r.ok) { toast('처리하지 못했어요. 잠시 뒤에 다시 시도해 주세요.'); return; }
+      toast(m.nickname + (active ? ' 님을 복귀시켰어요' : ' 님을 탈퇴 처리했어요')); reloadRoster();
     });
   }
+  $('r-find').addEventListener('input', renderRoster);
   function openEdit(m) {
     editing = m; newPic = null;
-    $('edit-title').textContent = m ? m.nickname + ' 수정' : '길드원 추가';
+    $('edit-title').textContent = m ? m.nickname + ' 수정' : '신규 길드원 추가';
     $('e-nick').value = m ? m.nickname : ''; $('e-cls').value = m ? m.cls || '' : ''; $('e-level').value = m ? m.level || '' : ''; $('e-power').value = m ? power(m.power) : '';
-    $('e-active').value = m && !m.active ? '0' : '1'; $('e-active').disabled = !m;
-    $('e-newpic').hidden = true; $('e-file').value = ''; $('e-msg').textContent = '';
-    $('edit').hidden = false; $('e-nick').focus();
+    $('e-uid').value = ''; $('e-uid-row').hidden = !!m; $('e-form-class-level').value = '';
+    $('e-pick').textContent = m ? '캡처로 그림·정보 바꾸기' : '정보 창 캡처 올리기';
+    $('e-card-hint').textContent = m
+      ? '정보 창 캡처나 캐릭터 탭 캡처를 올리면 캐릭터를 오려 새 그림으로 쓰고, 레벨·전투력·직업을 읽어 채워요.'
+      : '게임에서 그 길드원을 눌러 나오는 정보 창을 캡처해 올리면, 캐릭터 그림을 오려 내고 닉네임·직업·레벨·전투력·UID를 읽어 아래 칸을 채워요. 캡처가 없으면 직접 적어도 돼요.';
+    $('e-newpic').hidden = true; $('e-file').value = ''; $('e-msg').textContent = ''; $('e-note').textContent = '';
+    $('edit').hidden = false; $('edit-form').scrollTop = 0; if (m) $('e-nick').focus(); else $('e-pick').focus();
   }
   $('add').addEventListener('click', function () { openEdit(null); });
   $('e-cancel').addEventListener('click', function () { $('edit').hidden = true; });
@@ -516,11 +585,44 @@
     img.onload = function () {
       URL.revokeObjectURL(url);
       var cut = null; try { cut = GuildCutout.cut(img, 'auto'); } catch (err) {}
-      if (!cut) { $('e-msg').textContent = '캐릭터를 찾지 못했어요. 다른 캡처로 해 보세요.'; return; }
-      newPic = cut; drawNew(); $('e-newpic').hidden = false; $('e-msg').textContent = '';
+      if (cut) { newPic = cut; drawNew(); $('e-newpic').hidden = false; $('e-msg').textContent = ''; }
+      else { newPic = null; $('e-newpic').hidden = true; $('e-msg').textContent = '캐릭터를 찾지 못했어요. 그림 없이 저장되니, 다른 캡처로 다시 해 보세요.'; }
+      readCapture(img, cut ? cut.layout : 'card');
     };
+    img.onerror = function () { URL.revokeObjectURL(url); $('e-msg').textContent = '열 수 없는 그림이에요.'; };
     img.src = url;
   });
+  // The part of a capture that carries the words: the top of the info card, or the top of the character tab.
+  function wordsCrop(img, layout) {
+    var W = img.naturalWidth, H = img.naturalHeight, y0 = layout === 'card' ? 0.15 : 0, y1 = layout === 'card' ? 0.5 : 0.3;
+    var k = Math.min(1, 1100 / W), cv = document.createElement('canvas');
+    cv.width = Math.round(W * k); cv.height = Math.round(H * (y1 - y0) * k);
+    cv.getContext('2d').drawImage(img, 0, H * y0, W, H * (y1 - y0), 0, 0, cv.width, cv.height);
+    return cv;
+  }
+  var readRun = 0;
+  function readCapture(img, layout) {
+    var run = ++readRun, was = editing;
+    $('e-note').textContent = '캡처의 글자를 읽는 중…';
+    GuildCutout.toBlob(wordsCrop(img, layout), 'image/jpeg', 0.9).then(function (blob) {
+      var fd = new FormData(); fd.append('image', blob, 'words.jpg'); fd.append('layout', layout);
+      return api('/admin/read', { method: 'POST', form: fd });
+    }).then(function (r) {
+      if (run !== readRun || was !== editing || $('edit').hidden) return;
+      var v = r.body || {};
+      if (!r.ok || v.error || (!v.nickname && v.level == null && v.power == null)) { $('e-note').textContent = '글자를 읽지 못했어요. 아래 칸에 직접 적어 주세요.'; return; }
+      if (editing && v.nickname && norm(v.nickname) !== norm(editing.nickname)) {
+        $('e-note').textContent = '캡처의 닉네임이 "' + v.nickname + '"(이)라서 정보는 채우지 않았어요. ' + editing.nickname + ' 님의 캡처가 맞는지 확인해 주세요.'; return;
+      }
+      if (!editing && v.nickname) $('e-nick').value = v.nickname;
+      if (v.cls) $('e-cls').value = v.cls;
+      if (v.level != null) $('e-level').value = v.level;
+      if (v.power != null) $('e-power').value = power(v.power);
+      if (!editing && v.gameUid) $('e-uid').value = v.gameUid;
+      $('e-form-class-level').value = v.classLevel != null ? v.classLevel : '';
+      $('e-note').textContent = '읽은 값으로 채웠어요. 틀린 글자가 없는지 확인한 뒤 저장해 주세요.';
+    }).catch(function () { if (run === readRun) $('e-note').textContent = '글자를 읽지 못했어요. 아래 칸에 직접 적어 주세요.'; });
+  }
   function drawNew() {
     var cv = $('e-canvas'); cv.width = newPic.canvas.width; cv.height = newPic.canvas.height;
     var ctx = cv.getContext('2d'); ctx.drawImage(newPic.canvas, 0, 0);
@@ -533,11 +635,19 @@
   });
   $('edit-form').addEventListener('submit', function (e) {
     e.preventDefault();
-    var body = { nickname: $('e-nick').value.trim(), cls: $('e-cls').value, level: $('e-level').value, power: $('e-power').value };
-    if (editing) { body.uid = editing.uid; body.active = $('e-active').value === '1'; }
+    var body = { nickname: $('e-nick').value.trim(), cls: $('e-cls').value, level: $('e-level').value, power: $('e-power').value, classLevel: $('e-form-class-level').value };
+    if (editing) body.uid = editing.uid;
+    else {
+      body.gameUid = $('e-uid').value.trim();
+      if (body.gameUid && !/^\d{6,20}$/.test(body.gameUid)) { $('e-msg').textContent = 'UID는 숫자만 적어 주세요. 모르면 비워 두어도 돼요.'; return; }
+    }
     $('e-save').disabled = true;
     api('/admin/member', { method: 'POST', json: body }).then(function (r) {
-      if (!r.ok) { $('e-save').disabled = false; $('e-msg').textContent = r.body.error === 'nickname_taken' ? '이미 있는 닉네임이에요.' : '저장하지 못했어요.'; return null; }
+      if (!r.ok) {
+        $('e-save').disabled = false;
+        $('e-msg').textContent = r.body.error === 'nickname_taken' ? '이미 있는 닉네임이에요. 탈퇴한 길드원이면 목록 아래에서 복귀시켜 주세요.' : r.body.error === 'uid_taken' ? '이미 등록된 UID예요.' : '저장하지 못했어요.';
+        return null;
+      }
       if (!newPic) return r;
       var C = GuildCutout;
       return Promise.all([C.pictureBlob(newPic.canvas), C.pictureBlob(C.faceCanvas(newPic.canvas, newPic.face, 120))]).then(function (b) {
@@ -547,9 +657,9 @@
     }).then(function (r) {
       $('e-save').disabled = false;
       if (!r) return;
-      if (!r.ok) { $('e-msg').textContent = '정보는 저장했지만 그림을 올리지 못했어요.'; return; }
-      $('edit').hidden = true; toast('저장했어요');
-      api('/admin/roster').then(function (r2) { members = r2.body.members; buildChecks(); renderRoster(); });
+      if (!r.ok) { $('e-msg').textContent = '정보는 저장했지만 그림을 올리지 못했어요.'; reloadRoster(); return; }
+      $('edit').hidden = true; toast(editing ? '저장했어요' : '길드원을 추가했어요');
+      reloadRoster();
     });
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { $('edit').hidden = true; $('confirm').hidden = true; } });
