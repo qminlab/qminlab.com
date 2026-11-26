@@ -10,7 +10,8 @@
 //   POST /api/guild/posts                      write a post (a member must be chosen); POST .../{id} edits, DELETE removes
 //   POST /api/guild/posts/{id}/comments        comment; DELETE /api/guild/comments/{id} removes
 //   GET  /api/guild/posts/img/{id}             a picture attached to a post
-//   /api/guild/admin/...                       password set-up, login, attendance by day, pending updates, roster
+//   /api/guild/admin/...                       password set-up, login, attendance by day, pending updates, roster,
+//                                              reading a capture to fill in a member's form
 //
 // The admin password is chosen by the admin on first visit and stored only as a salted PBKDF2 hash.
 
@@ -268,6 +269,19 @@ const READ_PROMPT = [
   'Answer with JSON only: {"nickname": string|null, "level": number|null, "power": string|null, "class": string|null}. Use null for anything you cannot read. Do not guess.',
 ].join('\n');
 
+// The card that opens when another player is tapped. The admin uploads it to add a member without typing.
+const CARD_PROMPT = [
+  'This image is the top part of a player information card from a Korean mobile game.',
+  'Read these exactly as they are written in the image:',
+  '- nickname: the player name in the middle of the card, right of a small round red icon (often Korean, e.g. "배찌").',
+  '- level: the number after "레벨" at the right edge, on the same line as the nickname.',
+  '- power: the combat power written large under "전투력" at the top left, e.g. "1.12M" or "631K". Keep the K or M.',
+  '- class: the Korean class name under the combat power. It is one of 투사, 주술사, 기사, 현자.',
+  '- class_level: the number after "클래스 레벨 Lv.".',
+  '- uid: the digits after "UID:".',
+  'Answer with JSON only: {"nickname": string|null, "level": number|null, "power": string|null, "class": string|null, "class_level": number|null, "uid": string|null}. Use null for anything you cannot read. Do not guess.',
+].join('\n');
+
 function parseJson(text) {
   if (text && typeof text === 'object') return text;
   const m = /\{[\s\S]*\}/.exec(String(text ?? ''));
@@ -280,7 +294,7 @@ function parseJson(text) {
 }
 
 // What the screenshot says: { nickname, level, power, cls } — or { error } when it could not be read at all.
-async function readShot(env, bytes) {
+async function readShot(env, bytes, prompt = READ_PROMPT) {
   if (!env.AI) return { error: 'no_ai' };
   const url = `data:${mimeOf(bytes) || 'image/jpeg'};base64,${base64(bytes)}`;
   let last = '';
@@ -291,7 +305,7 @@ async function readShot(env, bytes) {
           {
             role: 'user',
             content: [
-              { type: 'text', text: READ_PROMPT },
+              { type: 'text', text: prompt },
               { type: 'image_url', image_url: { url } },
             ],
           },
@@ -302,7 +316,8 @@ async function readShot(env, bytes) {
       const obj = parseJson(typeof out === 'string' ? out : (out?.response ?? out?.choices?.[0]?.message?.content));
       if (obj) {
         const cls = CLASSES.find((c) => norm(obj.class).includes(c)) || null;
-        return { nickname: obj.nickname ? String(obj.nickname).trim() : null, level: levelValue(obj.level), power: powerValue(obj.power), cls, model, usage: out?.usage ?? null };
+        const gameUid = /^\d{6,20}$/.test(String(obj.uid ?? '').trim()) ? String(obj.uid).trim() : null;
+        return { nickname: obj.nickname ? String(obj.nickname).trim() : null, level: levelValue(obj.level), power: powerValue(obj.power), cls, classLevel: levelValue(obj.class_level), gameUid, model, usage: out?.usage ?? null };
       }
       last = 'unparsed: ' + JSON.stringify(out).slice(0, 300);
     } catch (err) {
@@ -811,28 +826,50 @@ async function admin(ctx, method, path) {
     return json({ ok: true }, 200);
   }
 
+  // Read a capture for the admin, to fill in a member's form: the info card of another player, or a character tab.
+  if (method === 'POST' && path === '/read') {
+    try {
+      const form = await request.formData();
+      const bytes = await fileBytes(form, 'image', MAX.head, true);
+      const read = await readShot(ctx.env, bytes, form.get('layout') === 'card' ? CARD_PROMPT : READ_PROMPT);
+      if (read.error) return json({ error: read.error }, 200);
+      return json({ nickname: read.nickname, level: read.level, power: read.power, cls: read.cls, classLevel: read.classLevel ?? null, gameUid: read.gameUid ?? null }, 200);
+    } catch (err) {
+      if (err instanceof HttpError) return json({ error: err.code }, err.status);
+      return json({ error: 'bad_request' }, 400);
+    }
+  }
+
   if (method === 'POST' && path === '/member') {
     const b = await body();
     const nickname = typeof b.nickname === 'string' ? b.nickname.trim() : '';
     const cls = CLASSES.includes(b.cls) ? b.cls : null;
     const level = b.level === '' || b.level == null ? null : levelValue(b.level);
     const power = b.power === '' || b.power == null ? null : powerValue(b.power);
+    const classLevel = b.classLevel === '' || b.classLevel == null ? null : levelValue(b.classLevel);
     if (b.uid) {
       const cur = await db.prepare('SELECT * FROM guild_members WHERE uid = ?').bind(String(b.uid)).first();
       if (!cur) return json({ error: 'not_found' }, 404);
       const name = nickname || cur.nickname;
       const clash = await db.prepare('SELECT 1 FROM guild_members WHERE nickname = ? AND uid != ?').bind(name, cur.uid).first();
       if (clash) return json({ error: 'nickname_taken' }, 409);
+      const next = { cls: cls ?? cur.cls, level: level ?? cur.level, power: power ?? cur.power, classLevel: classLevel ?? cur.class_level };
+      // "Last updated" is about the member's information: leaving or coming back does not move it.
+      const changed = name !== cur.nickname || next.cls !== cur.cls || next.level !== cur.level || next.power !== cur.power || next.classLevel !== cur.class_level;
       await db
-        .prepare('UPDATE guild_members SET nickname = ?, cls = ?, level = ?, power = ?, active = ?, updated_at = ? WHERE uid = ?')
-        .bind(name, cls ?? cur.cls, level ?? cur.level, power ?? cur.power, b.active === false ? 0 : b.active === true ? 1 : cur.active, now, cur.uid)
+        .prepare('UPDATE guild_members SET nickname = ?, cls = ?, class_level = ?, level = ?, power = ?, active = ?, updated_at = ? WHERE uid = ?')
+        .bind(name, next.cls, next.classLevel, next.level, next.power, b.active === false ? 0 : b.active === true ? 1 : cur.active, changed ? now : cur.updated_at, cur.uid)
         .run();
       return json({ ok: true, uid: cur.uid }, 200);
     }
     if (!nickname || nickname.length > 24) return json({ error: 'bad_nickname' }, 400);
     if (await db.prepare('SELECT 1 FROM guild_members WHERE nickname = ?').bind(nickname).first()) return json({ error: 'nickname_taken' }, 409);
     const uid = /^\d{6,20}$/.test(String(b.gameUid || '')) ? String(b.gameUid) : 'm' + now;
-    await db.prepare('INSERT INTO guild_members (uid, nickname, cls, level, power, updated_at) VALUES (?, ?, ?, ?, ?, ?)').bind(uid, nickname, cls, level, power, now).run();
+    if (await db.prepare('SELECT 1 FROM guild_members WHERE uid = ?').bind(uid).first()) return json({ error: 'uid_taken' }, 409);
+    await db
+      .prepare('INSERT INTO guild_members (uid, nickname, cls, class_level, level, power, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
+      .bind(uid, nickname, cls, classLevel, level, power, now)
+      .run();
     return json({ ok: true, uid }, 200);
   }
 

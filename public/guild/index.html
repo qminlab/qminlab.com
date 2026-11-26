@@ -109,6 +109,7 @@
   .person b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .person .sub { display: flex; justify-content: space-between; gap: 6px; font-size: 0.8rem; color: var(--text-soft); }
   .person .sub .pw { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+  .person .upd { font-size: 0.72rem; color: var(--text-mute); }
   .person.me { border-color: rgba(242, 226, 174, 0.6); }
 
   .detail .portrait { border-radius: var(--radius); border: 1px solid var(--line); height: 240px; display: grid; place-items: end center; padding-bottom: 14px; overflow: hidden; }
@@ -281,6 +282,7 @@
             <p class="cls" id="me-cls"></p>
             <p id="me-stats" style="font-weight:600;margin-top:4px"></p>
             <p class="hint" id="me-raid" style="margin-top:4px"></p>
+            <p class="hint" id="me-upd" style="margin-top:4px"></p>
           </div>
         </div>
 
@@ -397,6 +399,7 @@
     <div class="body">
       <div class="portrait lit"><img id="detail-char" alt=""></div>
       <p style="margin:10px 0 0;text-align:center"><span class="cls" id="detail-cls"></span></p>
+      <p class="hint" id="detail-upd" style="margin:2px 0 0;text-align:center;font-size:0.78rem"></p>
       <div class="stats">
         <div><small>레벨</small><b id="d-level"></b></div>
         <div><small>전투력</small><b id="d-power"></b></div>
@@ -625,7 +628,9 @@
       var info = el('span', 'info'), sub = el('span', 'sub');
       info.appendChild(el('b', '', m.nickname));
       sub.appendChild(clsEl(m, m.level ? 'Lv.' + m.level : '')); sub.appendChild(el('span', 'pw', power(m.power)));
-      info.appendChild(sub); b.appendChild(info);
+      info.appendChild(sub);
+      if (m.updatedAt) info.appendChild(el('span', 'upd', stamp(m.updatedAt) + ' 갱신'));
+      b.appendChild(info);
       b.addEventListener('click', function () { openDetail(m.uid); });
       li.appendChild(b); ul.appendChild(li);
     });
@@ -636,6 +641,7 @@
     $('detail-name').textContent = m.nickname;
     $('detail-char').src = m.char; $('detail-char').alt = m.nickname + ' 캐릭터';
     var c = $('detail-cls'); c.textContent = m.cls || '직업 미상'; c.dataset.cls = m.cls || '';
+    $('detail-upd').textContent = m.updatedAt ? '마지막 정보 갱신 ' + stamp(m.updatedAt) : '';
     $('d-level').textContent = m.level || '–'; $('d-power').textContent = power(m.power); $('d-clv').textContent = m.classLevel || '–';
     $('d-total').textContent = count(m, 'total') + '회'; $('d-month').textContent = count(m, 'month') + '회'; $('d-week').textContent = count(m, 'week') + '회';
     $('detail-me').hidden = uid === me;
@@ -670,6 +676,7 @@
     var c = $('me-cls'); c.textContent = m.cls || '직업 미상'; c.dataset.cls = m.cls || '';
     $('me-stats').textContent = '레벨 ' + (m.level || '–') + ' · 전투력 ' + power(m.power);
     $('me-raid').textContent = '레이드 참여: 누적 ' + count(m, 'total') + '회 · 이번 달 ' + count(m, 'month') + '회 · 이번 주 ' + count(m, 'week') + '회';
+    $('me-upd').textContent = m.updatedAt ? '마지막 정보 갱신: ' + stamp(m.updatedAt) : '';
     // One self-update a day: once it is used, the upload box gives way to a note saying when it opens again.
     var su = state.selfUpdate || { used: {} }, turn = su.used[m.uid];
     $('drop').hidden = !!turn; $('limit').hidden = !turn; $('limit-act').hidden = turn !== 'ask';
@@ -681,6 +688,10 @@
       $('limit-title').textContent = '오늘은 이미 올렸어요';
       $('limit-text').textContent = '캐릭터당 하루 한 번 올릴 수 있어요. ' + resetLabel(su.resetAt) + '부터 다시 할 수 있어요.';
     }
+  }
+  function stamp(ms) {                                    // a day as Korea reads it: "11월 25일"
+    var d = new Date(ms + 9 * 3600000);
+    return (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일';
   }
   function resetLabel(ms) {                               // the turn-over as Korea reads it: "11월 26일 오전 9시"
     var d = new Date((ms || Date.now()) + 9 * 3600000);
